@@ -13,3 +13,5 @@ optimizer = GradientDescent(0.001, MeanSquaredError)
 model.fit(X, Y, optimizer=optimizer, epochs=25)
 
 print(model.predict(X))
+
+model.save('test')
