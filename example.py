@@ -1,14 +1,14 @@
 from models import LinearRegression
-from optimizers import MiniBatchGD
+from optimizers import MomentumGD
 from loss_func import MeanSquaredError
 from utils import read_data, printmat
 
 
-X, Y = read_data('dataset1.txt')
+X, Y = read_data('dataset2.txt')
 
 model = LinearRegression()
 
-optimizer = MiniBatchGD(0.0001, MeanSquaredError)
+optimizer = MomentumGD(0.00000001, MeanSquaredError)
 
 model.fit(X, Y, optimizer=optimizer, epochs=100)
 
