@@ -1,17 +1,17 @@
 from models import LinearRegression
-from optimizers import SGD
+from optimizers import MiniBatchGD
 from loss_func import MeanSquaredError
-from utils import read_data
+from utils import read_data, printmat
 
 
 X, Y = read_data('dataset1.txt')
 
 model = LinearRegression()
 
-optimizer = SGD(0.0001, MeanSquaredError)
+optimizer = MiniBatchGD(0.0001, MeanSquaredError)
 
-model.fit(X, Y, optimizer=optimizer, epochs=25)
+model.fit(X, Y, optimizer=optimizer, epochs=100)
 
-print(model.predict(X))
+printmat('predictions', model.predict(X))
 
 model.save('test')

@@ -41,3 +41,32 @@ class SGD(StochasticGradientDescent):
     really long class name StochasticGradientDescent
     '''
     pass
+
+
+class MiniBatchGradientDescent():
+
+    def __init__(
+            self, learning_rate=0.01,
+            loss_func=MeanSquaredError,
+            batch_size=5
+    ):
+        self.learning_rate = learning_rate
+        self.loss_func = loss_func
+        self.batch_size = batch_size
+
+    def iterate(self, X, Y, W):
+        M, N = X.shape
+        index = [random.randint(0, M-1) for i in range(self.batch_size)]
+        x = X[index, :]
+        y = Y[:, index]
+        x.shape = (self.batch_size, N)
+        y.shape = (1, self.batch_size)
+        return W - self.learning_rate * self.loss_func.derivative(x, y, W)
+
+
+class MiniBatchGD(MiniBatchGradientDescent):
+    '''
+    An abstract class to provide an alias to the
+    really long class name MiniBatchGradientDescent
+    '''
+    pass
