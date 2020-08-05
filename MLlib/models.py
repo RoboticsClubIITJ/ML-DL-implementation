@@ -1,5 +1,5 @@
-from optimizers import GradientDescent
-from utils import generate_weights
+from .optimizers import GradientDescent
+from .utils import generate_weights
 import numpy as np
 import pickle
 
