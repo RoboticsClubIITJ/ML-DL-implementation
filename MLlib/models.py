@@ -6,13 +6,12 @@ import pickle
 
 class LinearRegression():
 
-    def fit(self, X, Y, optimizer=GradientDescent, epochs=25):
+    def fit(self, X, Y, optimizer=GradientDescent, epochs=25, zeros=False):
 
-        self.weights = generate_weights(X.shape[1], 1)
+        self.weights = generate_weights(X.shape[1], 1, zeros=zeros)
 
         print("Starting training with loss:",
               optimizer.loss_func.loss(X, Y, self.weights))
-
         for epoch in range(1, epochs+1):
             print("======================================")
             self.weights = optimizer.iterate(X, Y, self.weights)
