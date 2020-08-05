@@ -4,7 +4,7 @@ import pickle
 
 def read_data(file):
     '''
-    Read the training data from a file in the same directory.
+    Read the training data from a file in the specified directory.
 
     Parameters
     ==========
@@ -53,13 +53,13 @@ def printmat(name, matrix):
     print(matrix, '\n')
 
 
-def generate_weights(rows, cols, zeroes=False):
+def generate_weights(rows, cols, zeros=False):
     '''
     Generates a Matrix of weights according to the
     specified rows and columns
     '''
-    if zeroes:
-        return np.zeroes(rows, cols)
+    if zeros:
+        return np.zeros((rows, cols))
     else:
         return np.random.rand(rows, cols)
 
