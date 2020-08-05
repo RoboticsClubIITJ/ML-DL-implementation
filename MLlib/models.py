@@ -1,6 +1,7 @@
-from optimizers import GradientDescent
-from utils import generate_weights
+from .optimizers import GradientDescent
+from .utils import generate_weights
 import numpy as np
+import pickle
 
 
 class LinearRegression():
@@ -22,6 +23,11 @@ class LinearRegression():
         print("======================================\n")
         print("Finished training with final loss:",
               optimizer.loss_func.loss(X, Y, self.weights))
+        print("=====================================================\n")
 
     def predict(self, X):
         return np.dot(X, self.weights)
+
+    def save(self, name):
+        with open(name + '.rob', 'ab') as robfile:
+            pickle.dump(self, robfile)

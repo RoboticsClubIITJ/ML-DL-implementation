@@ -1,15 +1,17 @@
-from models import LinearRegression
-from optimizers import GradientDescent
-from loss_func import MeanSquaredError
-from utils import read_data
+from MLlib.models import LinearRegression
+from MLlib.optimizers import MomentumGD
+from MLlib.loss_func import MeanSquaredError
+from MLlib.utils import read_data, printmat
 
 
-X, Y = read_data('dataset1.txt')
+X, Y = read_data('MLlib/datasets/linear_reg_00.txt')
 
 model = LinearRegression()
 
-optimizer = GradientDescent(0.001, MeanSquaredError)
+optimizer = MomentumGD(0.00001, MeanSquaredError)
 
-model.fit(X, Y, optimizer=optimizer, epochs=25)
+model.fit(X, Y, optimizer=optimizer, epochs=100)
 
-print(model.predict(X))
+printmat('predictions', model.predict(X))
+
+model.save('test')

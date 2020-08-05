@@ -1,4 +1,5 @@
 import numpy as np
+import pickle
 
 
 def read_data(file):
@@ -61,3 +62,10 @@ def generate_weights(rows, cols, zeroes=False):
         return np.zeroes(rows, cols)
     else:
         return np.random.rand(rows, cols)
+
+
+def load_model(name):
+    with open(name, 'rb') as robfile:
+        model = pickle.load(robfile)
+
+    return model
