@@ -2,7 +2,7 @@ from .optimizers import GradientDescent
 from .utils import generate_weights
 import numpy as np
 import pickle
-
+from .activations import sigmoid
 
 class LinearRegression():
 
@@ -30,3 +30,15 @@ class LinearRegression():
     def save(self, name):
         with open(name + '.rob', 'ab') as robfile:
             pickle.dump(self, robfile)
+
+
+class LogisticRegression(LinearRegression):
+
+    def predict(self, X):
+        prediction = np.dot(X, self.weights).T
+        prediction = sigmoid(prediction)
+        actual_predictions = np.zeros((1, X.shape[0]))
+        for i in range(prediction.shape[1]):
+            if prediction[0][i] > 0.5:
+                actual_predictions[0][i] = 1
+        return actual_predictions
