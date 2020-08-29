@@ -4,6 +4,7 @@ import numpy as np
 import pickle
 from .activations import sigmoid
 
+
 class LinearRegression():
 
     def fit(self, X, Y, optimizer=GradientDescent, epochs=25, zeros=False):
@@ -35,6 +36,10 @@ class LinearRegression():
 class LogisticRegression(LinearRegression):
 
     def predict(self, X):
+        prediction = np.dot(X, self.weights).T
+        return sigmoid(prediction)
+
+    def classify(self, X):
         prediction = np.dot(X, self.weights).T
         prediction = sigmoid(prediction)
         actual_predictions = np.zeros((1, X.shape[0]))

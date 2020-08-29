@@ -1,6 +1,6 @@
-from MLlib.models import LinearRegression, LogisticRegression
-from MLlib.optimizers import Adam, GradientDescent
-from MLlib.loss_func import MeanSquaredError, LogarithmicError
+from MLlib.models import LogisticRegression
+from MLlib.optimizers import GradientDescent
+from MLlib.loss_func import LogarithmicError
 from MLlib.utils import read_data, printmat
 
 

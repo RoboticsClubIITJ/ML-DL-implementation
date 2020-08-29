@@ -19,8 +19,7 @@ class LogarithmicError():
     def loss(X, Y, W):
         M = X.shape[0]
         H = sigmoid(np.dot(X, W).T)
-        e = (1/M)*(np.sum((-Y)*np.log(H)-(1-Y)*np.log(1-H)))
-        return e
+        return (1/M)*(np.sum((-Y)*np.log(H)-(1-Y)*np.log(1-H)))
 
     @staticmethod
     def derivative(X, Y, W):
