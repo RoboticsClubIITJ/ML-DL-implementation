@@ -3,14 +3,14 @@ from .utils import generate_weights
 import numpy as np
 import pickle
 from .activations import sigmoid
-
+import matplotlib.pyplot as plt
 
 class LinearRegression():
 
     def fit(self, X, Y, optimizer=GradientDescent, epochs=25, zeros=False):
 
         self.weights = generate_weights(X.shape[1], 1, zeros=zeros)
-
+        loss=[]
         print("Starting training with loss:",
               optimizer.loss_func.loss(X, Y, self.weights))
         for epoch in range(1, epochs+1):
@@ -19,6 +19,10 @@ class LinearRegression():
             print("epoch:", epoch)
             print("Loss in this step: ",
                   optimizer.loss_func.loss(X, Y, self.weights))
+            loss.append(float(optimizer.loss_func.loss(X, Y, self.weights)))
+        
+        epochs_range=range(1,epochs+1)
+        plt.plot(epochs_range, loss, 'bo', label='Training loss')
 
         print("======================================\n")
         print("Finished training with final loss:",
