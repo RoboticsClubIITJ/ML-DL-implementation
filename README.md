@@ -15,11 +15,11 @@ An implementation of ML and DL algorithms from scratch in python using nothing b
   $git --version
 If not installed earlier, it will prompt accordingly to install.
 
-2. Go to GIT website(https://git-scm.com/download/mac)
+2.Go to GIT website(https://git-scm.com/download/mac)
 
 ## For Linux
 
-1. Go to GIT website(https://git-scm.com/download/linux)
+1.Go to GIT website(https://git-scm.com/download/linux)
 
 2.If the system is Fedora(RPM based distribution), use dnf commmand 
   $sudo dnf install git-all
