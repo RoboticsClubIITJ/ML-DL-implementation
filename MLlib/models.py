@@ -2,6 +2,7 @@ from .optimizers import GradientDescent
 from .utils.misc_utils import generate_weights
 from .utils.decision_tree_utils import partition, find_best_split
 from .utils.decision_tree_utils import Leaf, Decision_Node
+from .utils .knn_utils import get_neighbours
 import numpy as np
 import pickle
 from .activations import sigmoid
@@ -126,3 +127,16 @@ class DecisionTreeClassifier():
             return self.classify(row, self.root.true_branch)
         else:
             return self.classify(row, self.root.false_branch)
+
+class KNN():
+    """
+    A single Class that can act as both KNN classifier or regressor based on arguements given to the prediction function.
+    """
+    def predict(self, train, test_row, num_neighbours=7, classify=True):
+        neigbours = get_neighbours(train, test_row, num_neighbours, distance_metrics="block")
+        ouput = [row[-1] for row in neigbours]
+        if classify:
+            prediction = max(set(ouput), key=ouput.count)
+        else:
+            prediction = sum(ouput)/len(ouput)
+        return prediction
