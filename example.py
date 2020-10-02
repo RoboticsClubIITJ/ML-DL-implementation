@@ -1,17 +1,17 @@
-from MLlib.models import LogisticRegression
-from MLlib.optimizers import GradientDescent
-from MLlib.loss_func import LogarithmicError
-from MLlib.utils import read_data, printmat
+from MLlib.models import LinearRegression
+from MLlib.optimizers import Adam
+from MLlib.loss_func import MeanSquaredError
+from MLlib.utils.misc_utils import read_data, printmat
 
 
-X, Y = read_data('MLlib/datasets/logistic_reg_00.txt')
+X, Y = read_data('MLlib/datasets/linear_reg_00.txt')
 
-logistic_model = LogisticRegression()
+linear_model = LinearRegression()
 
-optimizer = GradientDescent(0.05, LogarithmicError)
+optimizer = Adam(0.00001, MeanSquaredError)
 
-logistic_model.fit(X, Y, optimizer=optimizer, epochs=200, zeros=False)
+linear_model.fit(X, Y, optimizer=optimizer, epochs=200, zeros=False)
 
-printmat('predictions', logistic_model.predict(X))
+printmat('predictions', linear_model.predict(X))
 
-logistic_model.save('test')
+linear_model.save('test')
