@@ -68,3 +68,13 @@ An implementation of ML and DL algorithms from scratch in python using nothing b
    `pip install numpy`          (For version 2)
    
    `python3 -m pip install numpy`          (For version 3)
+
+# Finding the Issues for the Choosen Repository
+
+![ss](https://user-images.githubusercontent.com/54277039/94918186-af41d280-04cf-11eb-93b7-ffe9759d9cd5.JPG)
+
+![ss1](https://user-images.githubusercontent.com/54277039/94918272-dac4bd00-04cf-11eb-96bc-d4e5a67bd136.JPG)
+
+# "Good First Issues"
+
+![ss2](https://user-images.githubusercontent.com/54277039/94918307-e7e1ac00-04cf-11eb-993a-d0714c12711f.JPG)
