@@ -1,11 +1,11 @@
 # ML-DL-implementation
 An implementation of ML and DL algorithms from scratch in python using nothing but numpy.
 
-# Install Numpy on Different Operating Systems
+# Install Git on Different Operating Systems
 
 ## For Windows
 
-1.Go to GIT website (https://git-scm.com/download/win) and choose the suitable version. Remember that Git and Project naming Git for windows, are different.
+1.Go to Git website (https://git-scm.com/download/win) and choose the suitable version. Remember that Git and Project naming Git for windows, are different.
 
 2.Install Github Desktop (https://desktop.github.com/), which includes command line version of GIT as well as in GUI also. It works well with Powershell alongside solid credentials caching.
 
@@ -17,13 +17,13 @@ An implementation of ML and DL algorithms from scratch in python using nothing b
   
 If not installed earlier, it will prompt accordingly to install.
 
-2.Go to GIT website(https://git-scm.com/download/mac) and choose the suitable version.
+2.Go to Git website(https://git-scm.com/download/mac) and choose the suitable version.
 
 3.Install Github Desktop (https://desktop.github.com/), which includes command line version of GIT as well as in GUI also.
 
 ## For Linux
 
-1.Go to GIT website(https://git-scm.com/download/linux) and choose the suitable version.
+1.Go to Git website(https://git-scm.com/download/linux) and choose the suitable version.
 
 2.If the system is Fedora(RPM based distribution), use dnf commmand.
 
