@@ -69,7 +69,7 @@ An implementation of ML and DL algorithms from scratch in python using nothing b
    
    `python3 -m pip install numpy`          (For version 3)
 
-# Finding the Issues for the Choosen Repository
+# Finding "Issues" for the Choosen Repository
 
 * After logging into account and going to the respective Repository, Click on "Issues" button, located below the Title of Repository, as shown below.
 
