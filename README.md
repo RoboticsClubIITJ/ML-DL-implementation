@@ -5,7 +5,7 @@ An implementation of ML and DL algorithms from scratch in python using nothing b
 
 ## For Windows
 
-1.Go to GIT website (https://git-scm.com/download/win) and download will start automatically. Remember that Git and Project naming Git for windows, are different.
+1.Go to GIT website (https://git-scm.com/download/win) and choose the suitable version. Remember that Git and Project naming Git for windows, are different.
 
 2.Install Github Desktop (https://desktop.github.com/), which includes command line version of GIT as well as in GUI also. It works well with Powershell alongside solid credentials caching.
 
