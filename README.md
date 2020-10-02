@@ -17,16 +17,18 @@ An implementation of ML and DL algorithms from scratch in python using nothing b
   
 If not installed earlier, it will prompt accordingly to install.
 
-2.Go to GIT website(https://git-scm.com/download/mac)
+2.Go to GIT website(https://git-scm.com/download/mac) and choose the suitable version.
+
+3.Install Github Desktop (https://desktop.github.com/), which includes command line version of GIT as well as in GUI also.
 
 ## For Linux
 
-1.Go to GIT website(https://git-scm.com/download/linux)
+1.Go to GIT website(https://git-scm.com/download/linux) and choose the suitable version.
 
-2.If the system is Fedora(RPM based distribution), use dnf commmand 
+2.If the system is Fedora(RPM based distribution), use dnf commmand.
 
   `$ sudo dnf install git-all`
   
-3.If system is Ubuntu(Debian based distribution), use apt command
+3.If system is Ubuntu(Debian based distribution), use apt command.
 
   `$ sudo apt install git-all`
