@@ -19,7 +19,7 @@ setuptools.setup(
         "License :: OSI Approved :: BSD License",
         "Operating System :: OS Independent",
         "Topic :: Engineering",
-        "Topic :: Engineering :: Machine Leatning",
+        "Topic :: Engineering :: Machine Learning",
     ],
     python_requires='>=3.6',
 )
