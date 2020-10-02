@@ -8,7 +8,7 @@ X, Y = read_data('MLlib/datasets/linear_reg_00.txt')
 
 linear_model = LinearRegression()
 
-optimizer = Adam(0.001, MeanSquaredError)
+optimizer = Adam(0.00001, MeanSquaredError)
 
 linear_model.fit(X, Y, optimizer=optimizer, epochs=200, zeros=False)
 
