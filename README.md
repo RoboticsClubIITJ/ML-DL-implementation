@@ -25,8 +25,8 @@ If not installed earlier, it will prompt accordingly to install.
 
 2.If the system is Fedora(RPM based distribution), use dnf commmand 
 
-  `$sudo dnf install git-all'
+  `$sudo dnf install git-all`
   
 3.If system is Ubuntu(Debian based distribution), use apt command
 
-  '$sudo apt install git-all'
+  `$sudo apt install git-all`
