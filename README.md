@@ -12,7 +12,8 @@ An implementation of ML and DL algorithms from scratch in python using nothing b
 ## For Mac OS
 
 1.Install Xcode Command Line tools. For Mavericks(10.9) or above versions, this can be done by simply running git from terminal for the first time.
-  $git --version
+
+  '$git --version'
   
 If not installed earlier, it will prompt accordingly to install.
 
@@ -24,8 +25,8 @@ If not installed earlier, it will prompt accordingly to install.
 
 2.If the system is Fedora(RPM based distribution), use dnf commmand 
 
-  $sudo dnf install git-all
+  '$sudo dnf install git-all'
   
 3.If system is Ubuntu(Debian based distribution), use apt command
 
-  $sudo apt install git-all
+  '$sudo apt install git-all'
