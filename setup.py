@@ -3,6 +3,7 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+#TODO: Google Group for the team. And add that googlegroup id in author_email
 setuptools.setup(
     name="MLlib",
     version="0.0.0",
