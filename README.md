@@ -25,7 +25,7 @@ An implementation of ML and DL algorithms from scratch in python using nothing b
 
 * Go to Git website(https://git-scm.com/download/linux) and choose the suitable version.
 
-* If the system is Fedora(RPM-based distribution), use dnf commmand.
+* If the system is Fedora(RPM-based distribution), use dnf command.
 
   `$ sudo dnf install git-all`
   
