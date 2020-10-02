@@ -10,20 +10,22 @@ class LinearRegression():
     def fit(self, X, Y, optimizer=GradientDescent, epochs=25, zeros=False):
 
         self.weights = generate_weights(X.shape[1], 1, zeros=zeros)
-
+        costs = []
         print("Starting training with loss:",
               optimizer.loss_func.loss(X, Y, self.weights))
         for epoch in range(1, epochs+1):
             print("======================================")
             self.weights = optimizer.iterate(X, Y, self.weights)
             print("epoch:", epoch)
-            print("Loss in this step: ",
-                  optimizer.loss_func.loss(X, Y, self.weights))
+            epoch_cost = optimizer.loss_func.loss(X, Y, self.weights)
+            print("Loss in this step: ", epoch_cost)
+            costs.append(epoch_cost)
 
         print("======================================\n")
         print("Finished training with final loss:",
               optimizer.loss_func.loss(X, Y, self.weights))
         print("=====================================================\n")
+        return costs
 
     def predict(self, X):
         return np.dot(X, self.weights)
