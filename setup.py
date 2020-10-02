@@ -22,4 +22,8 @@ setuptools.setup(
         "Topic :: Engineering :: Machine Learning",
     ],
     python_requires='>=3.6',
+    install_requires=[
+            'numpy>=1.19.0',
+            'matplotlib>=3.0.0',
+            ],
 )
