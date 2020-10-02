@@ -71,10 +71,30 @@ An implementation of ML and DL algorithms from scratch in python using nothing b
 
 # Finding the Issues for the Choosen Repository
 
-![ss](https://user-images.githubusercontent.com/54277039/94918186-af41d280-04cf-11eb-93b7-ffe9759d9cd5.JPG)
+* After logging into account and going to the respective Repository, Click on "Issues" button, located below the Title of Repository, as shown below.
 
-![ss1](https://user-images.githubusercontent.com/54277039/94918272-dac4bd00-04cf-11eb-96bc-d4e5a67bd136.JPG)
+  ![ss](https://user-images.githubusercontent.com/54277039/94918186-af41d280-04cf-11eb-93b7-ffe9759d9cd5.JPG)
+
+* Now, many Issues will be visible, with their suitable labels for different purposes.
+
+  ![ss1](https://user-images.githubusercontent.com/54277039/94918272-dac4bd00-04cf-11eb-96bc-d4e5a67bd136.JPG)
+  
+* According to the conveinence, the Issue can be choosen by clicking on their title. In order to provide characteristics of an Issue, well-defined labels are supported with it. Click on "Labels" icon , on the left side of search bar.
 
 # "Good First Issues"
 
-![ss2](https://user-images.githubusercontent.com/54277039/94918307-e7e1ac00-04cf-11eb-993a-d0714c12711f.JPG)
+* The "Labels" icon will lead to definitions of each label, associated with Issues of Repository. In addition to this, Number of pull requests and open changes are also mentioned on the right side of definitions.
+
+  ![ss2](https://user-images.githubusercontent.com/54277039/94918307-e7e1ac00-04cf-11eb-993a-d0714c12711f.JPG)
+  
+# Clone Repository for Local System
+
+# Some Important Contribution Actions
+
+## Commit
+
+## Push
+
+## Pull Request
+
+# Running Code Examples on Local System 
