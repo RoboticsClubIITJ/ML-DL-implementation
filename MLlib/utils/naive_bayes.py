@@ -57,7 +57,7 @@ def make_likelihood_table(X, Y, x, y):
 
 def naive_bayes(X, Y):
     """
-    pyx: P(y/X) is proportional to p(y/x1)*p(y/x2)
+    pyx: P(y/X) is proportional to p(x1/y)*p(x2/y)...*p(y)
     using log and adding as multiplying for smaller numbers can make them very small
     As denominator P(X)=P(x1)*P(x2).. is common we can ignore it
     """
