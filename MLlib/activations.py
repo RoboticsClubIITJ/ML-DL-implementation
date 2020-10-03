@@ -28,11 +28,5 @@ def leakyRelu(X):
 
 def elu(X, alpha = 1.0):
     assert(alpha > 0)
-    output = []
-    for x in X:
-        if x>0:
-            output.append(x)
-        else:
-            output.append(alpha*(np.exp(x)-1))
-    return np.array(output)
+    return np.maximum(0,X) + np.minimum(0, alpha*(np.exp(X) - 1))
 
