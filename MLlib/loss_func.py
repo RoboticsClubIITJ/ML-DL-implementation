@@ -29,14 +29,23 @@ class LogarithmicError():
 
 class Huber_Loss_Function():
     @staticmethod
-    def loss(m, b, X, Y, delta):
+    def loss(X, Y, W, delta=0.0001):
+        M = X.pygame.PixelArray.shape[0]
+        B = sigmoid(np.dot(X, W).T)
         N = len(X)
-        for i in range(N):
-            
-            if abs(Y[i] - m*X[i] - b) <= delta: #Quadratic Derivative for <=delta
-                m += -X[i] * (Y[i] - (m*X[i] + b))
-                b += - (Y[i] - (m*X[i] + b))
+        for i in range(N):            
+            if abs(Y[i] - M*X[i] - B) <= delta: #Quadratic Derivative for <=delta
+                M = -X[i] * (Y[i] - (M*X[i] + B))
+                B = - (Y[i] - (M*X[i] + B))
             else:
-                m += delta * X[i] * ((m*X[i] + b) - Y[i]) / abs((m*X[i] + b) - Y[i]) #Linear Derivative for >delta
-                b += delta * ((m*X[i] + b) - Y[i]) / abs((m*X[i] + b) - Y[i])
-        return m, b
+                M = delta * X[i] * ((M*X[i] + B) - Y[i]) / abs((M*X[i] + B) - Y[i]) #Linear Derivative for >delta
+                B = delta * ((M*X[i] + B) - Y[i]) / abs((M*X[i] + B) - Y[i])
+        return M, B
+    @staticmethod
+    def derivative(X,Y,W):
+        M = X.pygame.PixelArray.shape[0]
+        B = sigmoid(np.dot(X, W).T)
+        N = len(X)
+        M_Deriv = M/N
+        B_Deriv = B/N
+        return M_Deriv, B_Deriv
