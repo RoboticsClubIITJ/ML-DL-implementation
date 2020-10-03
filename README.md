@@ -87,14 +87,16 @@ An implementation of ML and DL algorithms from scratch in python using nothing b
 
   ![ss2](https://user-images.githubusercontent.com/54277039/94918307-e7e1ac00-04cf-11eb-993a-d0714c12711f.JPG)
   
-# Clone Repository for Local System
+# Contribution Work-Flow
 
-# Some Important Contribution Actions
+## On Github Platform:
 
-## Commit
+* In order to Understand the concept of "Contribution", refer the following:
 
-## Push
+  https://guides.github.com/activities/hello-world/
 
-## Pull Request
+## On a Local System:
 
-# Running Code Examples on Local System 
+* For the convenience, this approach is also prefered. Refer the following for working on Repository Locally:
+
+  https://towardsdatascience.com/getting-started-with-git-and-github-6fcd0f2d4ac6
