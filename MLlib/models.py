@@ -1,26 +1,44 @@
-from .optimizers import GradientDescent
-from .utils.misc_utils import generate_weights
-from .utils.decision_tree_utils import partition, find_best_split
-from .utils.decision_tree_utils import Leaf, Decision_Node
+from optimizers import GradientDescent
+from utils.misc_utils import generate_weights
+from utils.decision_tree_utils import partition, find_best_split
+from utils.decision_tree_utils import Leaf, Decision_Node
+from utils .knn_utils import get_neighbours
+from utils.naive_bayes_utils import make_likelihood_table
 import numpy as np
 import pickle
-from .activations import sigmoid
+from activations import sigmoid
+from activations import sigmoid
+from datetime import datetime
+
+
 
 
 class LinearRegression():
 
-    def fit(self, X, Y, optimizer=GradientDescent, epochs=25, zeros=False):
+    def fit(self, X, Y, optimizer=GradientDescent, epochs=25, zeros=False, save_best=False):
 
         self.weights = generate_weights(X.shape[1], 1, zeros=zeros)
+        self.best_weights = {weights: None, loss: float('inf')}
 
         print("Starting training with loss:",
               optimizer.loss_func.loss(X, Y, self.weights))
-        for epoch in range(1, epochs+1):
+        for epoch in range(1, epochs + 1):
             print("======================================")
-            self.weights = optimizer.iterate(X, Y, self.weights)
             print("epoch:", epoch)
-            print("Loss in this step: ",
-                  optimizer.loss_func.loss(X, Y, self.weights))
+            self.weights = optimizer.iterate(X, Y, self.weights)
+            epoch_loss = optimizer.loss_func.loss(X, Y, self.weights)
+            if save_best and epoch_loss < best_weights['loss']:
+                print("updating best weights (loss: {})".format(epoch_loss))
+                best_weights['weights'] = self.weights
+                best_weights['loss'] = epoch_loss
+                version = "model_best_" + datetime.now().strftime(DATE_FORMAT)
+                print("Saving best model version: ", version)
+                self.save(version)
+            print("Loss in this step: ", epoch_loss)
+
+        version = "model_final_" + datetime.now().strftime(DATE_FORMAT)
+        print("Saving final model version: ", version)
+        self.save(version)
 
         print("======================================\n")
         print("Finished training with final loss:",
@@ -126,3 +144,50 @@ class DecisionTreeClassifier():
             return self.classify(row, self.root.true_branch)
         else:
             return self.classify(row, self.root.false_branch)
+
+
+class KNN():
+    """
+    A single Class that can act as both KNN classifier or regressor based on arguements given to the prediction function.
+    """
+
+    def predict(self, train, test_row, num_neighbours=7, classify=True):
+        neigbours = get_neighbours(
+            train, test_row, num_neighbours, distance_metrics="block")
+        ouput = [row[-1] for row in neigbours]
+        if classify:
+            prediction = max(set(ouput), key=ouput.count)
+        else:
+            prediction = sum(ouput) / len(ouput)
+        return prediction
+
+
+class Naive_Bayes():
+
+    """
+    pyx: P(y/X) is proportional to p(x1/y)*p(x2/y)...*p(y)
+    using log and adding as multiplying for smaller numbers can make them very small
+    As denominator P(X)=P(x1)*P(x2).. is common we can ignore it
+    """
+    def predict():
+
+        pyx = []
+
+        likelihood = make_likelihood_table(X, Y, x_label, y_class)
+
+        for j in range(len(Y)):
+            Sum = 0
+            for i in range(len(X)):
+                if(likelihood[i][j] == 0):
+                    continue
+
+                Sum += math.log(likelihood[i][j])
+
+                y_sum = (y_class == Y[j]).sum()
+
+                if y_sum:
+                    Sum += math.log(y_sum / len(y_class))
+                    pyx.append([Sum, X[i], Y[j]])
+
+        prediction = max(pyx)
+        return [prediction[1], prediction[2]]
