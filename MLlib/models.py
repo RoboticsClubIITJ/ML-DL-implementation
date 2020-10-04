@@ -6,11 +6,14 @@ from .utils .knn_utils import get_neighbours
 import numpy as np
 import pickle
 from .activations import sigmoid
+from datetime import datetime
+
+DATE_FORMAT = '%d-%m-%Y_%H:%M:%S'
 
 
 class LinearRegression():
 
-    def fit(self, X, Y, optimizer=GradientDescent, epochs=25, zeros=False):
+    def fit(self, X, Y, optimizer=GradientDescent, epochs=25, zeros=False, save_best=False):
 
         self.weights = generate_weights(X.shape[1], 1, zeros=zeros)
         self.best_weights = {weights: None, loss: float('inf')}
@@ -22,22 +25,26 @@ class LinearRegression():
             print("epoch:", epoch)
             self.weights = optimizer.iterate(X, Y, self.weights)
             epoch_loss = optimizer.loss_func.loss(X, Y, self.weights)
-            if epoch_loss < best_weights['loss']:
+            if save_best and epoch_loss < best_weights['loss']:
                 print("updating best weights (loss: {})".format(epoch_loss))
                 best_weights['weights'] = self.weights
                 best_weights['loss'] = epoch_loss
+                version = "model_best_" + datetime.now().strftime(DATE_FORMAT)
+                print("Saving best model version: ", version)
+                self.save(version)
             print("Loss in this step: ", epoch_loss)
+
+        version = "model_final_" + datetime.now().strftime(DATE_FORMAT)
+        print("Saving final model version: ", version)
+        self.save(version)
 
         print("======================================\n")
         print("Finished training with final loss:",
               optimizer.loss_func.loss(X, Y, self.weights))
         print("=====================================================\n")
 
-    def predict(self, X, weights='best'):
-        if weights == best:
-            return np.dot(X, self.best_weights['weights'])
-        elif weights == last:
-            return np.dot(X, self.weights)
+    def predict(self, X):
+        return np.dot(X, self.weights)
 
     def save(self, name):
         with open(name + '.rob', 'ab') as robfile:
