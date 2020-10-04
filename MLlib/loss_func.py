@@ -38,3 +38,15 @@ class AbsoluteError():
 		AbsError=(np.dot(X,W).T-Y)
 		return np.dot(np.divide(AbsError,np.absolute(AbsError),out=np.zeros_like(AbsError), where=(np.absolute(AbsError))!=0),X).T/M
 
+class SparseCategoricalCrossEntropy():
+    @staticmethod        
+    def loss(X, Y, W):
+        M=X.shape[0]
+        H=sigmoid(np.dot(X,W).T)*(len(Y)-1)
+        return (-1/M)*np.sum(np.multiply(Y,np.log(H)))
+
+    @staticmethod
+    def derivative(X, Y, W):
+        M=X.shape[0]
+        H=sigmoid(X)
+        return (1/M)*(np.dot(X.T, (H-T).T))
