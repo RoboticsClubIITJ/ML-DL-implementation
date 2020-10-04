@@ -1,5 +1,5 @@
 import numpy as np
-from .activations import sigmoid
+from activations import sigmoid
 
 
 class MeanSquaredError():
