@@ -1,11 +1,12 @@
-from .optimizers import GradientDescent
-from .utils.misc_utils import generate_weights
-from .utils.decision_tree_utils import partition, find_best_split
-from .utils.decision_tree_utils import Leaf, Decision_Node
-from .utils .knn_utils import get_neighbours
+from optimizers import GradientDescent
+from utils.misc_utils import generate_weights
+from utils.decision_tree_utils import partition, find_best_split
+from utils.decision_tree_utils import Leaf, Decision_Node
+from utils .knn_utils import get_neighbours
+from utils.naive_bayes_utils import make_likelihood_table
 import numpy as np
 import pickle
-from .activations import sigmoid
+from activations import sigmoid
 
 
 class LinearRegression():
@@ -16,7 +17,7 @@ class LinearRegression():
 
         print("Starting training with loss:",
               optimizer.loss_func.loss(X, Y, self.weights))
-        for epoch in range(1, epochs+1):
+        for epoch in range(1, epochs + 1):
             print("======================================")
             self.weights = optimizer.iterate(X, Y, self.weights)
             print("epoch:", epoch)
@@ -128,15 +129,49 @@ class DecisionTreeClassifier():
         else:
             return self.classify(row, self.root.false_branch)
 
+
 class KNN():
     """
     A single Class that can act as both KNN classifier or regressor based on arguements given to the prediction function.
     """
+
     def predict(self, train, test_row, num_neighbours=7, classify=True):
-        neigbours = get_neighbours(train, test_row, num_neighbours, distance_metrics="block")
+        neigbours = get_neighbours(
+            train, test_row, num_neighbours, distance_metrics="block")
         ouput = [row[-1] for row in neigbours]
         if classify:
             prediction = max(set(ouput), key=ouput.count)
         else:
-            prediction = sum(ouput)/len(ouput)
+            prediction = sum(ouput) / len(ouput)
         return prediction
+
+
+class Naive_Bayes():
+
+    """
+    pyx: P(y/X) is proportional to p(x1/y)*p(x2/y)...*p(y)
+    using log and adding as multiplying for smaller numbers can make them very small
+    As denominator P(X)=P(x1)*P(x2).. is common we can ignore it
+    """
+    def predict():
+
+        pyx = []
+
+        likelihood = make_likelihood_table(X, Y, x_label, y_class)
+
+        for j in range(len(Y)):
+            Sum = 0
+            for i in range(len(X)):
+                if(likelihood[i][j] == 0):
+                    continue
+
+                Sum += math.log(likelihood[i][j])
+
+                y_sum = (y_class == Y[j]).sum()
+
+                if y_sum:
+                    Sum += math.log(y_sum / len(y_class))
+                    pyx.append([Sum, X[i], Y[j]])
+
+        prediction = max(pyx)
+        return [prediction[1], prediction[2]]
