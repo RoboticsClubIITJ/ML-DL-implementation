@@ -1,6 +1,7 @@
 from math import sqrt
 import numpy as np
 
+
 def read_KNN_dataFile(file):
     """
     A function to read data for KNN dataset provided.
@@ -8,9 +9,11 @@ def read_KNN_dataFile(file):
     A = np.genfromtxt(file)
     return A
 
+
 def euclidean_distance(p1, p2):
     """
-    Returns the Euclidean Distance of a particular point from rest of the points in dataset.
+    Returns the Euclidean Distance of a particular
+    point from rest of the points in dataset.
     """
     distance = 0
     for i in range(len(p1)-1):
@@ -20,20 +23,23 @@ def euclidean_distance(p1, p2):
 
 def block_distance(p1, p2):
     """
-    Returns the Block Distance of a particular point from rest of the points in dataset.
+    Returns the Block Distance of a particular
+    point from rest of the points in dataset.
     """
     distance = 0
     for i in range(len(p1)-1):
         distance += abs(p1[i]-p2[i])
     return distance
 
+
 def get_neighbours(train, test_row, num_neighbours, distance_metrics="block"):
     """
-    Returns n nearest neighbours of a particular point in dataset based on euclidean or block distance.
+    Returns n nearest neighbours of a particular point
+    in dataset based on euclidean or block distance.
     """
     distances = []
     for train_row in train:
-        if distance_metrics=="block":
+        if distance_metrics == "block":
             distance = block_distance(test_row, train_row)
         else:
             distance = euclidean_distance(test_row, train_row)

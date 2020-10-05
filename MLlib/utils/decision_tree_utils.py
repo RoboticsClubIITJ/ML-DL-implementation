@@ -56,7 +56,7 @@ class Question:
         if is_numeric(self.value):
             condition = ">="
         return "Is %s %s %s?" % (
-            header[self.column], condition, str(self.value))
+            self.column, condition, str(self.value))
 
 
 def partition(rows, question):

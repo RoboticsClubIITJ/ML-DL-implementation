@@ -3,13 +3,15 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-#TODO: Google Group for the team. And add that googlegroup id in author_email
+# TODO: Google Group for the team. And add that googlegroup id in author_email
 setuptools.setup(
     name="MLlib",
     version="0.0.0",
     author="MLlib Development Team",
     author_email="_@_.com",
-    description="Package for ML and DL algorithms using nothing but numpy and matplotlib.",
+    description="""
+    Package for ML and DL algorithms using nothing but numpy and matplotlib.
+    """,
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/RoboticsClubIITJ/ML-DL-implementation",
@@ -23,7 +25,7 @@ setuptools.setup(
     ],
     python_requires='>=3.6',
     install_requires=[
-            'numpy>=1.19.0',
-            'matplotlib>=3.0.0',
-            ],
+        'numpy>=1.19.0',
+        'matplotlib>=3.0.0',
+    ],
 )
