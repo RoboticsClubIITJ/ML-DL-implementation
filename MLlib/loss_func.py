@@ -27,14 +27,22 @@ class LogarithmicError():
         H = sigmoid(np.dot(X, W).T)
         return (1/M)*(np.dot(X.T, (H-Y).T))
 
-class AbsoluteError():
-	@staticmethod
-	def loss(X,Y,W):
-		M=X.shape[0]
-		return np.sum(np.absolute(np.dot(X, W).T - Y)) / M
-	@staticmethod
-	def derivative(X,Y,W):
-		M=X.shape[0]
-		AbsError=(np.dot(X,W).T-Y)
-		return np.dot(np.divide(AbsError,np.absolute(AbsError),out=np.zeros_like(AbsError), where=(np.absolute(AbsError))!=0),X).T/M
 
+class AbsoluteError():
+    @staticmethod
+    def loss(X, Y, W):
+        M = X.shape[0]
+        return np.sum(np.absolute(np.dot(X, W).T - Y)) / M
+
+    @staticmethod
+    def derivative(X, Y, W):
+        M = X.shape[0]
+        AbsError = (np.dot(X, W).T-Y)
+        return np.dot(
+            np.divide(
+                AbsError,
+                np.absolute(AbsError),
+                out=np.zeros_like(AbsError),
+                where=(np.absolute(AbsError)) != 0),
+            X
+        ).T/M

@@ -7,18 +7,26 @@ from utils.naive_bayes_utils import make_likelihood_table
 import numpy as np
 import pickle
 from activations import sigmoid
-from activations import sigmoid
 from datetime import datetime
+import math
 
 
+DATE_FORMAT = '%d-%m-%Y_%H:%M:%S'
 
 
 class LinearRegression():
 
-    def fit(self, X, Y, optimizer=GradientDescent, epochs=25, zeros=False, save_best=False):
-
+    def fit(
+            self,
+            X,
+            Y,
+            optimizer=GradientDescent,
+            epochs=25,
+            zeros=False,
+            save_best=False
+    ):
         self.weights = generate_weights(X.shape[1], 1, zeros=zeros)
-        self.best_weights = {weights: None, loss: float('inf')}
+        self.best_weights = {"weights": None, "loss": float('inf')}
 
         print("Starting training with loss:",
               optimizer.loss_func.loss(X, Y, self.weights))
@@ -27,10 +35,10 @@ class LinearRegression():
             print("epoch:", epoch)
             self.weights = optimizer.iterate(X, Y, self.weights)
             epoch_loss = optimizer.loss_func.loss(X, Y, self.weights)
-            if save_best and epoch_loss < best_weights['loss']:
+            if save_best and epoch_loss < self.best_weights["loss"]:
                 print("updating best weights (loss: {})".format(epoch_loss))
-                best_weights['weights'] = self.weights
-                best_weights['loss'] = epoch_loss
+                self.best_weights['weights'] = self.weights
+                self.best_weights['loss'] = epoch_loss
                 version = "model_best_" + datetime.now().strftime(DATE_FORMAT)
                 print("Saving best model version: ", version)
                 self.save(version)
@@ -148,7 +156,8 @@ class DecisionTreeClassifier():
 
 class KNN():
     """
-    A single Class that can act as both KNN classifier or regressor based on arguements given to the prediction function.
+    A single Class that can act as both KNN classifier or regressor
+    based on arguements given to the prediction function.
     """
 
     def predict(self, train, test_row, num_neighbours=7, classify=True):
@@ -166,28 +175,29 @@ class Naive_Bayes():
 
     """
     pyx: P(y/X) is proportional to p(x1/y)*p(x2/y)...*p(y)
-    using log and adding as multiplying for smaller numbers can make them very small
-    As denominator P(X)=P(x1)*P(x2).. is common we can ignore it
+    using log and adding as multiplying for smaller
+    numbers can make them very small
+    As denominator P(X)=P(x1)*P(x2), is common we can ignore it.
     """
-    def predict():
+    def predict(X, Y, x_label, y_class):
 
         pyx = []
 
         likelihood = make_likelihood_table(X, Y, x_label, y_class)
 
         for j in range(len(Y)):
-            Sum = 0
+            total = 0
             for i in range(len(X)):
                 if(likelihood[i][j] == 0):
                     continue
 
-                Sum += math.log(likelihood[i][j])
+                total += math.log(likelihood[i][j])
 
                 y_sum = (y_class == Y[j]).sum()
 
                 if y_sum:
-                    Sum += math.log(y_sum / len(y_class))
-                    pyx.append([Sum, X[i], Y[j]])
+                    total += math.log(y_sum / len(y_class))
+                    pyx.append([total, X[i], Y[j]])
 
         prediction = max(pyx)
         return [prediction[1], prediction[2]]
