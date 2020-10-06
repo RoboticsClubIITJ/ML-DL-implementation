@@ -1,31 +1,6 @@
-# flake8: noqa
 import numpy as np
 
-
-def get_data():
-
-    with open('../datasets/naive_bayes_dataset.txt', 'r') as f:
-        words = [[string.strip('\n')
-                  for string in line.split(',')] for line in f]
-
-    # for testing default label="outlook" (sunny,rainy or overcast)
-
-    x_label = np.array([words[i][0] for i in range(len(words))])
-    y_class = np.array([words[i][-1] for i in range(len(words))])
-
-    # merging the two to get a matrix
-
-    M = np.array([[words[i][0], words[i][-1]] for i in range(len(words))])
-
-    # an array for unique values
-
-    Y = np.unique(y_class)
-    X = np.unique(x_label)
-
-    return(x_label, y_class, X, Y)
-
-
-def make_frequency_table(X, Y):
+def make_frequency_table(x, y, X, Y):
     """
     This function prepares a frequency table
     for every label in respective column.
@@ -34,6 +9,10 @@ def make_frequency_table(X, Y):
 
     for i in range(len(X)):
         freq[X[i]] = [0, 0]
+
+    # merging the two to get a matrix
+
+    M = np.array([[x[i], y[i]] for i in range(len(x))])
 
     for i in range(len(M)):
         if M[i][1] == Y[0]:
@@ -44,15 +23,17 @@ def make_frequency_table(X, Y):
     return freq
 
 
-def make_likelihood_table():
+def make_likelihood_table(x, y):
 
     # for each item divide by column sum
+    # an array for unique values
 
-    x, y, X, Y = get_data()
+    Y = np.unique(y)
+    X = np.unique(x)
 
     likelihood = [[0 for i in range(len(Y))] for j in range(len(X))]
 
-    freq = make_frequency_table(X, Y)
+    freq = make_frequency_table(x, y, X, Y)
 
     for j in range(len(Y)):
         Sum = (y == Y[j]).sum()

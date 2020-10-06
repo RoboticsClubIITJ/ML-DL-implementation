@@ -179,11 +179,11 @@ class Naive_Bayes():
     numbers can make them very small
     As denominator P(X)=P(x1)*P(x2), is common we can ignore it.
     """
-    def predict(X, Y, x_label, y_class):
+    def predict(self, x_label, y_class):
 
         pyx = []
 
-        likelihood = make_likelihood_table(X, Y, x_label, y_class)
+        likelihood = make_likelihood_table(x_label, y_class)
 
         for j in range(len(Y)):
             total = 0
