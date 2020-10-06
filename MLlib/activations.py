@@ -2,7 +2,7 @@ import numpy as np
 
 
 def sigmoid(X):
-    return 1/(1+np.exp(-X))
+    return 1/(1 + np.exp(-X))
 
 
 def tanh(X):
@@ -19,14 +19,13 @@ def softsign(X):
 
 
 def relu(X):
-    return np.maximum(0,X)
+    return np.maximum(0, X)
 
 
 def leakyRelu(X):
-    return np.maximum(0.01*X,X)
+    return np.maximum(0.01*X, X)
 
 
-def elu(X, alpha = 1.0):
+def elu(X, alpha=1.0):
     assert(alpha > 0)
-    return np.maximum(0,X) + np.minimum(0, alpha*(np.exp(X) - 1))
-
+    return np.maximum(0, X) + np.minimum(0, alpha*(np.exp(X) - 1))

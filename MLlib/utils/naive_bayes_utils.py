@@ -1,20 +1,21 @@
+# flake8: noqa
 import numpy as np
-import math
 
 
 def get_data():
 
     with open('../datasets/naive_bayes_dataset.txt', 'r') as f:
-    	l = [[string.strip('\n') for string in line.split(',')] for line in f]
+        words = [[string.strip('\n')
+                  for string in line.split(',')] for line in f]
 
     # for testing default label="outlook" (sunny,rainy or overcast)
 
-    x_label = np.array([l[i][0] for i in range(len(l))])
-    y_class = np.array([l[i][-1] for i in range(len(l))])
+    x_label = np.array([words[i][0] for i in range(len(words))])
+    y_class = np.array([words[i][-1] for i in range(len(words))])
 
     # merging the two to get a matrix
 
-    M = np.array([[l[i][0], l[i][-1]] for i in range(len(l))])
+    M = np.array([[words[i][0], words[i][-1]] for i in range(len(words))])
 
     # an array for unique values
 
@@ -26,7 +27,8 @@ def get_data():
 
 def make_frequency_table(X, Y):
     """
-    This function prepares a frequency table for every label in respective column.
+    This function prepares a frequency table
+    for every label in respective column.
     """
     freq = dict()
 
