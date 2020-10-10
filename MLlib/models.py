@@ -1,17 +1,25 @@
-from optimizers import GradientDescent
-from utils.misc_utils import generate_weights
-from utils.decision_tree_utils import partition, find_best_split
-from utils.decision_tree_utils import Leaf, Decision_Node
-from utils .knn_utils import get_neighbours
-from utils.naive_bayes_utils import make_likelihood_table
+from MLlib.optimizers import GradientDescent
+from MLlib.utils.misc_utils import generate_weights
+from MLlib.utils.decision_tree_utils import partition, find_best_split
+from MLlib.utils.decision_tree_utils import Leaf, Decision_Node
+from MLlib.utils .knn_utils import get_neighbours
+from MLlib.utils.naive_bayes_utils import make_likelihood_table
 import numpy as np
 import pickle
-from activations import sigmoid
+from MLlib.activations import sigmoid
 from datetime import datetime
 import math
+from MLlib.quark.Stackker import Sequential
 
 
-DATE_FORMAT = '%d-%m-%Y_%H:%M:%S'
+DATE_FORMAT = '%d-%m-%Y_%H-%M-%S'
+
+
+class Sequential(Sequential):
+    """
+    Abstract class.
+    """
+    pass
 
 
 class LinearRegression():
@@ -179,7 +187,7 @@ class Naive_Bayes():
     numbers can make them very small
     As denominator P(X)=P(x1)*P(x2), is common we can ignore it.
     """
-    def predict(X, Y, x_label, y_class):
+    def predict(self, X, Y, x_label, y_class):
 
         pyx = []
 
