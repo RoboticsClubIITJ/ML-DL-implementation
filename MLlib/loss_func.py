@@ -1,6 +1,6 @@
 import numpy as np
-from activations import sigmoid
-from activations import softmax
+from MLlib.activations import sigmoid
+from MLlib.activations import softmax
 
 
 class MeanSquaredError():
