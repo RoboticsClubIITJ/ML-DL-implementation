@@ -1,4 +1,5 @@
 from MLlib.optimizers import GradientDescent
+from MLlib.activations import sigmoid
 from MLlib.utils.misc_utils import generate_weights
 from MLlib.utils.decision_tree_utils import partition, find_best_split
 from MLlib.utils.decision_tree_utils import Leaf, Decision_Node
@@ -6,20 +7,11 @@ from MLlib.utils .knn_utils import get_neighbours
 from MLlib.utils.naive_bayes_utils import make_likelihood_table
 import numpy as np
 import pickle
-from MLlib.activations import sigmoid
 from datetime import datetime
 import math
-from MLlib.quark.Stackker import Sequential
 
 
 DATE_FORMAT = '%d-%m-%Y_%H-%M-%S'
-
-
-class Sequential(Sequential):
-    """
-    Abstract class.
-    """
-    pass
 
 
 class LinearRegression():
@@ -65,7 +57,7 @@ class LinearRegression():
         return np.dot(X, self.weights)
 
     def save(self, name):
-        with open(name + '.rob', 'ab') as robfile:
+        with open(name + '.rob', 'wb') as robfile:
             pickle.dump(self, robfile)
 
 
@@ -187,6 +179,7 @@ class Naive_Bayes():
     numbers can make them very small
     As denominator P(X)=P(x1)*P(x2), is common we can ignore it.
     """
+
     def predict(self, X, Y, x_label, y_class):
 
         pyx = []
