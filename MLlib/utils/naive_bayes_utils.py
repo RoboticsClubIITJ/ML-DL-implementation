@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def make_frequency_table(x, y, X, Y):
     """
     This function prepares a frequency table

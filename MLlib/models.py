@@ -182,7 +182,6 @@ class Naive_Bayes():
 
     def predict(self, x_label, y_class):
 
-
         pyx = []
 
         likelihood = make_likelihood_table(x_label, y_class)
