@@ -1,4 +1,4 @@
-from loss_func import MeanSquaredError
+from MLlib.loss_func import MeanSquaredError
 import numpy as np
 import random
 
