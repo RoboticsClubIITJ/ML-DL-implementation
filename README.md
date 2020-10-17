@@ -1,102 +1,65 @@
 # ML-DL-implementation
+
 An implementation of ML and DL algorithms from scratch in python using nothing but numpy.
 
-# Install Git on Different Operating Systems
+Matplotlib might be used in some places for visualisation.
 
-## For Windows
+## Why this repository?
 
-* Go to Git website (https://git-scm.com/download/win) and choose the suitable version. Remember that Git and Project naming Git for windows, are different.
+This repository gives beginners and newcomers in
+the field of AI and ML a chance to understand the
+inner workings of popular learning algorithms by presenting them with a simple to analyze the implementation of ML and DL algorithms in pure python using only numpy as a backend for linear algebraic computations for the sake of efficiency.
 
-* Install Github Desktop (https://desktop.github.com/), which includes command line version of Git as well as in GUI also. It works well with Powershell alongside solid credentials caching.
+The goal of this repository is not to create the most efficient implementation but the most transparent one, so that anyone with little knowledge of the field can contribute and learn.
 
-## For macOS
+## Contributing to the repository
 
-* Install Xcode Command Line tools. For Mavericks(10.9) or above versions, this can be done by simply running git from Terminal for the first time.
+Follow the following steps to get started with contributing to the repository.
 
-  `$ git --version`
-  
-  If not installed earlier, it will prompt accordingly to install.
+- Clone the project to you local environment.
+  Use
+  `git clone https://github.com/RoboticsClubIITJ/ML-DL-implementation/`
+  to get a local copy of the source code in your environment.
 
-* Go to Git website(https://git-scm.com/download/mac) and choose the suitable version.
+- Install dependencies: You can use pip to install the dependendies on your computer.
+  To install use
+  `pip install -r requirements.txt`
 
-* Install Github Desktop (https://desktop.github.com/), which includes command line version of GIT as well as in GUI also.
+- Installation:
+  use `python setup.py develop` if you want to setup for development or `python setup.py install` if you only want to try and test out the repository.
 
-## For Linux
+- Make changes, work on a existing issue or create one. Once assigned you can start working on the issue.
 
-* Go to Git website(https://git-scm.com/download/linux) and choose the suitable version.
-
-* If the system is Fedora(RPM-based distribution), use dnf command.
-
-  `$ sudo dnf install git-all`
-  
-* If system is Ubuntu(Debian-based distribution), use apt command.
-
-  `$ sudo apt install git-all`
-
-# Install Numpy on Different Operating Systems
-
-## For Windows
-
-* Go to Command Prompt and use `pip install` Command Line.
-
-  `pip install numpy`          (For version 2)
-  
-  `pip3 install numpy`          (For version 3)
- 
-## For macOS
-
-* Go to Terminal and use `pip install` Command Line.
-
-  `pip install numpy`
-
-## For Linux (Ubuntu)
-
-* As pip is not available by default , Open Terminal and use `apt install` Command Line.
-
-   `apt install python-pip python-pip3`          (For version 2 and 3)
-
-* After this, use `pip install` Command Line.
-
-   `pip install numpy`          (For version 2)
-   
-   `pip3 install numpy`          (For version 3)
-
-## For Linux (Fedora)
-
-* Open Terminal and Use `pip install` Command Line.
-
-   `pip install numpy`          (For version 2)
-   
-   `python3 -m pip install numpy`          (For version 3)
+- While you are working please make sure you follow standard programming guidelines. When you send us a PR, your code will be checked for PEP8 formatting and soon some tests will be added so that your code does not break already existing code. Use tools like flake8 to check your code for correct formatting.
 
 # Finding "Issues" for the Choosen Repository
 
-* After logging into account and going to the respective Repository, Click on "Issues" button, located below the Title of Repository, as shown below.
+- After logging into account and going to the respective Repository, Click on "Issues" button, located below the Title of Repository, as shown below.
 
   ![ss](https://user-images.githubusercontent.com/54277039/94918186-af41d280-04cf-11eb-93b7-ffe9759d9cd5.JPG)
 
-* Now, many Issues will be visible, with their suitable labels for different purposes.
+- Now, many Issues will be visible, with their suitable labels for different purposes.
 
   ![ss1](https://user-images.githubusercontent.com/54277039/94918272-dac4bd00-04cf-11eb-96bc-d4e5a67bd136.JPG)
-  
-* According to the conveinence, the Issue can be choosen by clicking on their title. In order to provide characteristics of an Issue, well-defined labels are supported with it. Click on "Labels" icon , on the left side of search bar.
+
+- According to the conveinence, the Issue can be choosen by clicking on their title. In order to provide characteristics of an Issue, well-defined labels are supported with it. Click on "Labels" icon , on the left side of search bar.
 
 # "Good First Issues"
 
-* The "Labels" icon will lead to definitions of each label, associated with Issues of Repository. In addition to this, Number of pull requests and open changes are also mentioned on the right side of definitions.
+- The "Labels" icon will lead to definitions of each label, associated with Issues of Repository. In addition to this, Number of pull requests and open changes are also mentioned on the right side of definitions.
 
   ![ss2](https://user-images.githubusercontent.com/54277039/94918307-e7e1ac00-04cf-11eb-993a-d0714c12711f.JPG)
-  
+
 # Contribution Work-Flow
 
 ## On Github Platform:
 
-* In order to Understand the concept of "Contribution", refer the following:
+- In order to Understand the concept of "Contribution", refer the following:
 
   https://guides.github.com/activities/hello-world/
 
 ## On a Local System:
 
-* For the convenience, this approach is also prefered. Refer the following for working on Repository Locally:
+- For the convenience, this approach is also prefered. Refer the following for working on Repository Locally:
 
-  https://towardsdatascience.com/getting-started-with-git-and-github-6fcd0f2d4ac6
+  https://medium.com/devlup-labs/working-with-github-and-git-6cd8c99b9e0
