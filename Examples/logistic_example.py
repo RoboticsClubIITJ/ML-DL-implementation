@@ -1,14 +1,14 @@
-from MLlib.models import LinearRegression
+from MLlib.models import LogisticRegression
 from MLlib.optimizers import Adam
-from MLlib.loss_func import MeanSquaredError
+from MLlib.loss_func import LogarithmicError
 from MLlib.utils.misc_utils import read_data, printmat
 
 
-X, Y = read_data('MLlib/datasets/linear_reg_00.txt')
+X, Y = read_data('datasets/logistic_reg_00.txt')
 
-linear_model = LinearRegression()
+linear_model = LogisticRegression()
 
-optimizer = Adam(0.01, MeanSquaredError)
+optimizer = Adam(0.03, LogarithmicError)
 
 linear_model.fit(X, Y, optimizer=optimizer, epochs=200, zeros=False)
 
