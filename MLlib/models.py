@@ -180,11 +180,14 @@ class Naive_Bayes():
     As denominator P(X)=P(x1)*P(x2), is common we can ignore it.
     """
 
-    def predict(self, X, Y, x_label, y_class):
+    def predict(self, x_label, y_class):
 
         pyx = []
 
-        likelihood = make_likelihood_table(X, Y, x_label, y_class)
+        likelihood = make_likelihood_table(x_label, y_class)
+
+        Y = np.unique(y_class)
+        X = np.unique(x_label)
 
         for j in range(len(Y)):
             total = 0
