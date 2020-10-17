@@ -4,7 +4,7 @@ from MLlib.loss_func import MeanSquaredError
 from MLlib.utils.misc_utils import read_data, printmat
 
 
-X, Y = read_data('MLlib/datasets/linear_reg_00.txt')
+X, Y = read_data('datasets/linear_reg_00.txt')
 
 linear_model = LinearRegression()
 
