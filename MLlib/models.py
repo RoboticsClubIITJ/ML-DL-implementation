@@ -216,8 +216,6 @@ class Gaussian_Naive_Bayes():
 
     def predict(self, data,  x_label, y_class):
 
-        p = []
-
         mean, var = get_mean_var(x_label, y_class)
 
         argmax = 0
