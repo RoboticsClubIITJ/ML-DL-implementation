@@ -208,10 +208,11 @@ class Naive_Bayes():
         prediction = max(pyx)
         return [prediction[1], prediction[2]]
 
+
 class Gaussian_Naive_Bayes():
 
-    #data is variable input given b user for which we predict the label. 
-    # Here we predict the gender from given list of height, weight, foot_size  
+    # data is variable input given b user for which we predict the label.
+    # Here we predict the gender from given list of height, weight, foot_size
 
     def predict(self, data,  x_label, y_class):
 
@@ -220,13 +221,13 @@ class Gaussian_Naive_Bayes():
         mean, var = get_mean_var(x_label, y_class)
 
         argmax = 0
-        for (k1,v1), (k2,v2) in zip(mean.items(), var.items()):
-            pre_prob = Counter(x_label)[k1]/len(x_label)
+        for (k1, v1), (k2, v2) in zip(mean.items(), var.items()):
+            pre_prob = Counter(x_label)[k1] / len(x_label)
             pro = 1
             for i in range(len(v1)):
-                pro*=p_y_given_x(data[i], v1[i], v2[i])
-            pxy = pro*pre_prob
-            if(pxy>argmax):
+                pro *= p_y_given_x(data[i], v1[i], v2[i])
+            pxy = pro * pre_prob
+            if(pxy > argmax):
                 prediction = k1
 
         return prediction
