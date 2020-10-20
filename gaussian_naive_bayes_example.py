@@ -7,9 +7,11 @@ with open('MLlib/datasets/gaussian_naive_bayes_dataset.txt', 'r') as f:
 
 # for testing default label="outlook" (sunny,rainy or overcast)
 
-x_label = np.array([words[i][0] for i in range(len(words))])
+size = len(words)
+
+x_label = np.array([words[i][0] for i in range(size)])
 y_class = np.array([[float(words[i][j])
-            for j in range(1, len(words[0]))]for i in range(len(words))])
+                     for j in range(1, len(words[0]))]for i in range(size)])
 
 GNB = Gaussian_Naive_Bayes()
 
