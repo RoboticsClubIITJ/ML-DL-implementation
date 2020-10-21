@@ -14,6 +14,7 @@ import math
 
 DATE_FORMAT = '%d-%m-%Y_%H-%M-%S'
 
+
 class LinearRegression():
     """
     Implement Linear Regression Model.
@@ -176,6 +177,7 @@ class LinearRegression():
         with open(name + '.rob', 'wb') as robfile:
             pickle.dump(self, robfile)
 
+
 class LogisticRegression(LinearRegression):
     """
     Implements Logistic Regression Model.
@@ -271,11 +273,13 @@ class LogisticRegression(LinearRegression):
         for i in range(prediction.shape[1]):
             if prediction[0][i] > 0.5:
                 actual_predictions[0][i] = 1
+                
         return actual_predictions
 
 class DecisionTreeClassifier():
 
     root = None
+    
     def fit(self, rows):
         """
         Build the tree.
@@ -345,6 +349,7 @@ class DecisionTreeClassifier():
         # to the example we're considering.
         if self.root.question.match(row):
             return self.classify(row, self.root.true_branch)
+        
         else:
             return self.classify(row, self.root.false_branch)
 
@@ -388,6 +393,7 @@ class Naive_Bayes():
                 if y_sum:
                     total += math.log(y_sum / len(y_class))
                     pyx.append([total, X[i], Y[j]])
+                    
         prediction = max(pyx)
         return [prediction[1], prediction[2]]
 
