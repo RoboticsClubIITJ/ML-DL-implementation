@@ -2,6 +2,7 @@ from MLlib.loss_func import MeanSquaredError
 import numpy as np
 import random
 
+
 class GradientDescent():
     """
     A classic gradient descent implementation.
@@ -120,6 +121,7 @@ class SGD(StochasticGradientDescent):
 
     pass
 
+
 class MiniBatchGradientDescent():
     """
      A  mini batch gradient descent implementation.
@@ -196,6 +198,7 @@ class MiniBatchGD(MiniBatchGradientDescent):
     """
 
     pass
+
 
 class MomentumGradientDescent():
     """
@@ -278,6 +281,7 @@ class MomentumGradientDescent():
         self.Vp = self.Vc
         return W
 
+
 class MomentumGD(MomentumGradientDescent):
     """
     An abstract class.
@@ -287,6 +291,7 @@ class MomentumGD(MomentumGradientDescent):
     """
 
     pass
+
 
 class NesterovAcceleratedGradientDescent():
     """
@@ -371,6 +376,7 @@ class NesterovAcceleratedGradientDescent():
         self.Vp = self.Vc
         return W
 
+
 class NesterovAccGD(NesterovAcceleratedGradientDescent):
     """
     An abstract class.
@@ -380,6 +386,7 @@ class NesterovAccGD(NesterovAcceleratedGradientDescent):
     """
 
     pass
+
 
 class Adagrad():
     """
@@ -454,6 +461,7 @@ class Adagrad():
         W = W - self.learning_rate / \
             np.sqrt(self.S + self.epsilon) * derivative
         return W
+
 
 class Adadelta():
     """
