@@ -276,6 +276,7 @@ class LogisticRegression(LinearRegression):
 
         return actual_predictions
 
+    
 class DecisionTreeClassifier():
 
     root = None
@@ -353,6 +354,7 @@ class DecisionTreeClassifier():
         else:
             return self.classify(row, self.root.false_branch)
 
+        
 class KNN():
     """
     A single Class that can act as both KNN classifier or regressor
@@ -395,6 +397,7 @@ class Naive_Bayes():
                     pyx.append([total, X[i], Y[j]])
 
         prediction = max(pyx)
+        
         return [prediction[1], prediction[2]]
 
 class Gaussian_Naive_Bayes():
