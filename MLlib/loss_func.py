@@ -1,6 +1,7 @@
 import numpy as np
 from MLlib.activations import sigmoid
 
+
 class MeanSquaredError():
     """
     Calculate Mean Squared Error.
@@ -51,6 +52,7 @@ class MeanSquaredError():
         """
         M = X.shape[0]
         return np.dot((np.dot(X, W).T - Y), X).T / M
+
 
 class LogarithmicError():
     """
@@ -104,6 +106,7 @@ class LogarithmicError():
         M = X.shape[0]
         H = sigmoid(np.dot(X, W).T)
         return (1/M)*(np.dot(X.T, (H-Y).T))
+
 
 class AbsoluteError():
     """
