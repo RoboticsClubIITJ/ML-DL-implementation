@@ -12,9 +12,7 @@ import pickle
 from datetime import datetime
 import math
 
-
 DATE_FORMAT = '%d-%m-%Y_%H-%M-%S'
-
 
 class LinearRegression():
     """
@@ -49,7 +47,6 @@ class LinearRegression():
         Model in rob format , in Local
         disk.
     """
-
     def fit(
             self,
             X,
@@ -179,7 +176,6 @@ class LinearRegression():
         with open(name + '.rob', 'wb') as robfile:
             pickle.dump(self, robfile)
 
-
 class LogisticRegression(LinearRegression):
     """
     Implements Logistic Regression Model.
@@ -277,11 +273,9 @@ class LogisticRegression(LinearRegression):
                 actual_predictions[0][i] = 1
         return actual_predictions
 
-
 class DecisionTreeClassifier():
 
     root = None
-
     def fit(self, rows):
         """
         Build the tree.
@@ -354,13 +348,11 @@ class DecisionTreeClassifier():
         else:
             return self.classify(row, self.root.false_branch)
 
-
 class KNN():
     """
     A single Class that can act as both KNN classifier or regressor
     based on arguements given to the prediction function.
     """
-
     def predict(self, train, test_row, num_neighbours=7, classify=True):
 
         neigbours = get_neighbours(
@@ -374,50 +366,38 @@ class KNN():
 
 
 class Naive_Bayes():
-
     """
     pyx: P(y/X) is proportional to p(x1/y)*p(x2/y)...*p(y)
     using log and adding as multiplying for smaller
     numbers can make them very small
     As denominator P(X)=P(x1)*P(x2), is common we can ignore it.
     """
-
     def predict(self, x_label, y_class):
 
         pyx = []
-
         likelihood = make_likelihood_table(x_label, y_class)
-
         Y = np.unique(y_class)
         X = np.unique(x_label)
-
         for j in range(len(Y)):
             total = 0
             for i in range(len(X)):
                 if(likelihood[i][j] == 0):
                     continue
-
                 total += math.log(likelihood[i][j])
-
                 y_sum = (y_class == Y[j]).sum()
-
                 if y_sum:
                     total += math.log(y_sum / len(y_class))
                     pyx.append([total, X[i], Y[j]])
-
         prediction = max(pyx)
         return [prediction[1], prediction[2]]
-
 
 class Gaussian_Naive_Bayes():
 
     # data is variable input given b user for which we predict the label.
     # Here we predict the gender from given list of height, weight, foot_size
-
     def predict(self, data,  x_label, y_class):
 
         mean, var = get_mean_var(x_label, y_class)
-
         argmax = 0
         for (k1, v1), (k2, v2) in zip(mean.items(), var.items()):
             pre_prob = Counter(x_label)[k1] / len(x_label)
@@ -427,5 +407,4 @@ class Gaussian_Naive_Bayes():
             pxy = pro * pre_prob
             if(pxy > argmax):
                 prediction = k1
-
         return prediction
