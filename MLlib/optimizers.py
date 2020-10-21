@@ -2,7 +2,6 @@ from MLlib.loss_func import MeanSquaredError
 import numpy as np
 import random
 
-
 class GradientDescent():
     """
     A classic gradient descent implementation.
@@ -27,7 +26,6 @@ class GradientDescent():
 
         loss_func: function
             Loss function to be implemented from loss_func.py
-
         """
         self.learning_rate = learning_rate
         self.loss_func = loss_func
@@ -52,7 +50,6 @@ class GradientDescent():
         W: ndarray(dtype=float)
             Optimized weights using suitable learning rate with Gradient
             Descent Algorithm
-
         """
         return W - self.learning_rate * self.loss_func.derivative(X, Y, W)
 
@@ -81,7 +78,6 @@ class StochasticGradientDescent():
 
         loss_func: function
             Loss function to be implemented from loss_func.py
-
         """
         self.learning_rate = learning_rate
         self.loss_func = loss_func
@@ -106,7 +102,6 @@ class StochasticGradientDescent():
         W: ndarray(dtype=float)
            Optimized weights using suitable learning rate with
            Stochastic Gradient Descent Algorithm
-
         """
         M, N = X.shape
         i = random.randint(0, M - 1)
@@ -124,7 +119,6 @@ class SGD(StochasticGradientDescent):
     """
 
     pass
-
 
 class MiniBatchGradientDescent():
     """
@@ -158,7 +152,6 @@ class MiniBatchGradientDescent():
         batch_size: dtype=int
             Size of batches into which training dataset
             is split for the algorithm
-
         """
         self.learning_rate = learning_rate
         self.loss_func = loss_func
@@ -184,7 +177,6 @@ class MiniBatchGradientDescent():
         W: ndarray(dtype=float)
             Optimized weights using suitable learning rate with
             MiniBatch Gradient Descent Algorithm
-
         """
         M, N = X.shape
         index = [random.randint(0, M - 1) for i in range(self.batch_size)]
@@ -205,7 +197,6 @@ class MiniBatchGD(MiniBatchGradientDescent):
 
     pass
 
-
 class MomentumGradientDescent():
     """
     A  momentum gradient descent implementation.
@@ -217,7 +208,6 @@ class MomentumGradientDescent():
     a: learning_rate
     dm: derivative of loss function wrt x
     W : Weights
-
     """
 
     def __init__(
@@ -246,7 +236,6 @@ class MomentumGradientDescent():
         gamma: dtype=float
             Part of past update vector (Vp) to be added
             in current update vector (Vc)
-
         """
         self.learning_rate = learning_rate
         self.loss_func = loss_func
@@ -275,7 +264,6 @@ class MomentumGradientDescent():
         W: ndarray(dtype=float)
            Optimized weights using suitable learning rate with
            Momentum Gradient Descent Algorithm
-
         """
         M, N = X.shape
         index = [random.randint(0, M - 1) for i in range(self.batch_size)]
@@ -283,16 +271,12 @@ class MomentumGradientDescent():
         y = Y[:, index]
         x.shape = (self.batch_size, N)
         y.shape = (1, self.batch_size)
-
         self.Vc = self.gamma * self.Vp + \
             self.learning_rate * self.loss_func.derivative(x, y, W)
 
         W = W - self.Vc
-
         self.Vp = self.Vc
-
         return W
-
 
 class MomentumGD(MomentumGradientDescent):
     """
@@ -303,7 +287,6 @@ class MomentumGD(MomentumGradientDescent):
     """
 
     pass
-
 
 class NesterovAcceleratedGradientDescent():
     """
@@ -316,7 +299,6 @@ class NesterovAcceleratedGradientDescent():
     a: learning_rate
     dm: derivative of loss function wrt x
     W : Weights
-
     """
 
     def __init__(
@@ -345,7 +327,6 @@ class NesterovAcceleratedGradientDescent():
         gamma: dtype=float
             Part of past update vector (Vp) to be added
             in current update vector (Vc)
-
         """
         self.learning_rate = learning_rate
         self.loss_func = loss_func
@@ -374,7 +355,6 @@ class NesterovAcceleratedGradientDescent():
         W: ndarray(dtype=float)
             Optimized weights using suitable learning rate with
             Nesterov Accelerated Gradient Descent Algorithm
-
         """
         M, N = X.shape
         index = [random.randint(0, M - 1) for i in range(self.batch_size)]
@@ -388,11 +368,8 @@ class NesterovAcceleratedGradientDescent():
             self.loss_func.derivative(x, y, W - self.gamma * self.Vp)
 
         W = W - self.Vc
-
         self.Vp = self.Vc
-
         return W
-
 
 class NesterovAccGD(NesterovAcceleratedGradientDescent):
     """
@@ -404,7 +381,6 @@ class NesterovAccGD(NesterovAcceleratedGradientDescent):
 
     pass
 
-
 class Adagrad():
     """
     An adagrad implementation.
@@ -412,7 +388,6 @@ class Adagrad():
     W = W - learning_rate / sqrt(S + epsilon) * derivative
 
     W: Weights
-
     """
 
     def __init__(
@@ -440,7 +415,6 @@ class Adagrad():
 
         epsilon: dtype=float
             smoothing term , avoids division by zero
-
         """
         self.learning_rate = learning_rate
         self.loss_func = loss_func
@@ -468,7 +442,6 @@ class Adagrad():
         W: ndarray(dtype=float)
             Optimized weights using suitable learning rate with
             Adagrad algorithm
-
         """
         M, N = X.shape
         index = [random.randint(0, M - 1) for i in range(self.batch_size)]
@@ -476,16 +449,11 @@ class Adagrad():
         y = Y[:, index]
         x.shape = (self.batch_size, N)
         y.shape = (1, self.batch_size)
-
         derivative = self.loss_func.derivative(x, y, W)
-
         self.S += derivative * derivative
-
         W = W - self.learning_rate / \
             np.sqrt(self.S + self.epsilon) * derivative
-
         return W
-
 
 class Adadelta():
     """
@@ -494,7 +462,6 @@ class Adadelta():
     W = W - learning_rate / sqrt(S + epsilon) * derivative
 
     W: Weights
-
     """
 
     def __init__(
@@ -523,7 +490,6 @@ class Adadelta():
 
         epsilon: dtype=float
             Smoothing term , avoids division by zero
-
         """
         self.learning_rate = learning_rate
         self.loss_func = loss_func
@@ -552,7 +518,6 @@ class Adadelta():
         W: ndarray(dtype=float)
             Optimized weights using suitable learning rate
             with Adadelta algorithm
-
         """
         M, N = X.shape
         index = [random.randint(0, M - 1) for i in range(self.batch_size)]
@@ -560,15 +525,11 @@ class Adadelta():
         y = Y[:, index]
         x.shape = (self.batch_size, N)
         y.shape = (1, self.batch_size)
-
         derivative = self.loss_func.derivative(x, y, W)
-
         self.S += self.gamma * self.S + \
             (1 - self.gamma) * derivative * derivative
-
         W = W - self.learning_rate / \
             np.sqrt(self.S + self.epsilon) * derivative
-
         return W
 
 
@@ -580,7 +541,6 @@ class Adam():
 
     Vc: current update vector
     W: Weights
-
     """
 
     def __init__(
@@ -613,7 +573,6 @@ class Adam():
 
         beta1,beta2: dtype=float
             Decay rates
-
         """
         self.learning_rate = learning_rate
         self.loss_func = loss_func
@@ -645,7 +604,6 @@ class Adam():
 
         W: ndarray(dtype=float)
             Optimized weights using suitable learning rate with Adam algorithm
-
         """
         M, N = X.shape
         index = [random.randint(0, M - 1) for i in range(self.batch_size)]
@@ -653,17 +611,13 @@ class Adam():
         y = Y[:, index]
         x.shape = (self.batch_size, N)
         y.shape = (1, self.batch_size)
-
         derivative = self.loss_func.derivative(x, y, W)
-
         self.V = self.beta1 * self.V + (1 - self.beta1) * derivative
         self.S = self.beta2 * self.S + \
             (1 - self.beta2) * derivative * derivative
 
         self.Vc = self.V / (1 - self.beta1)
         self.Sc = self.S / (1 - self.beta2)
-
         W = W - self.learning_rate / \
             (np.sqrt(self.Sc) + self.epsilon) * self.Vc
-
         return W
