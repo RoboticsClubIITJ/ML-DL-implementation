@@ -5,6 +5,8 @@ from MLlib.utils.decision_tree_utils import partition, find_best_split
 from MLlib.utils.decision_tree_utils import Leaf, Decision_Node
 from MLlib.utils .knn_utils import get_neighbours
 from MLlib.utils.naive_bayes_utils import make_likelihood_table
+from MLlib.utils.gaussian_naive_bayes_utils import get_mean_var, p_y_given_x
+from collections import Counter
 import numpy as np
 import pickle
 from datetime import datetime
@@ -205,3 +207,25 @@ class Naive_Bayes():
 
         prediction = max(pyx)
         return [prediction[1], prediction[2]]
+
+
+class Gaussian_Naive_Bayes():
+
+    # data is variable input given b user for which we predict the label.
+    # Here we predict the gender from given list of height, weight, foot_size
+
+    def predict(self, data,  x_label, y_class):
+
+        mean, var = get_mean_var(x_label, y_class)
+
+        argmax = 0
+        for (k1, v1), (k2, v2) in zip(mean.items(), var.items()):
+            pre_prob = Counter(x_label)[k1] / len(x_label)
+            pro = 1
+            for i in range(len(v1)):
+                pro *= p_y_given_x(data[i], v1[i], v2[i])
+            pxy = pro * pre_prob
+            if(pxy > argmax):
+                prediction = k1
+
+        return prediction
