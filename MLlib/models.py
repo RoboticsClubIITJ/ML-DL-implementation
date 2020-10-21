@@ -39,7 +39,7 @@ class LinearRegression():
     predict(X):
         Return the Predicted Value of
         Output associated with Input,
-        using the weights, which were 
+        using the weights, which were
         tuned by Training Linear Regression
         Model.
 
@@ -60,7 +60,7 @@ class LinearRegression():
         """
         Train the Linear Regression Model
         by fitting its associated weights,
-        according to Dataset's Inputs and 
+        according to Dataset's Inputs and
         their corresponding Output Values.
 
         PARAMETERS
@@ -73,13 +73,13 @@ class LinearRegression():
             1-D Array of Dataset's Output.
 
         optimizer: class
-            Class of one of the Optimizers like 
+            Class of one of the Optimizers like
             AdamProp,SGD,MBGD,RMSprop,AdamDelta,
-            Gradient Descent,etc.           
+            Gradient Descent,etc.
 
         epochs: int
             Number of times, the loop to calculate loss
-            and optimize weights, will going to take 
+            and optimize weights, will going to take
             place.
 
         zeros: boolean
@@ -88,13 +88,13 @@ class LinearRegression():
 
         save_best: boolean
             Condition to enable or disable the option
-            of saving the suitable Weight values for the 
-            model after reaching the region nearby the 
+            of saving the suitable Weight values for the
+            model after reaching the region nearby the
             minima of Loss-Function with respect to Weights.
 
         epoch_loss: float
-            The degree of how much the predicted value 
-            is diverted from actual values, given by 
+            The degree of how much the predicted value
+            is diverted from actual values, given by
             implementing one of choosen loss functions
             from loss_func.py .
 
@@ -139,7 +139,7 @@ class LinearRegression():
     def predict(self, X):
         """
         Predict the Output Value of
-        Input, in accordance with 
+        Input, in accordance with
         Linear Regression Model.
 
         PARAMETERS
@@ -159,7 +159,7 @@ class LinearRegression():
 
     def save(self, name):
         """
-        Save the Model in rob 
+        Save the Model in rob
         format for further usage.
 
         PARAMETERS
@@ -186,8 +186,8 @@ class LogisticRegression(LinearRegression):
     ==========
 
     LinearRegression: Class
-        Parent Class from where Output Prediction 
-        Value is expressed, after Linear Weighted 
+        Parent Class from where Output Prediction
+        Value is expressed, after Linear Weighted
         Combination of Input is calculated .
 
     METHODS
@@ -211,7 +211,7 @@ class LogisticRegression(LinearRegression):
     def predict(self, X):
         """
         Predict the Probabilistic Value of
-        Input, in accordance with 
+        Input, in accordance with
         Logistic Regression Model.
 
         PARAMETERS
@@ -230,7 +230,7 @@ class LogisticRegression(LinearRegression):
 
         ndarray(dtype=float,ndim=1)
             1-D Array of Probabilistic Values
-            of whether the particular Input 
+            of whether the particular Input
             belongs to class 0 or class 1.
         """
         prediction = np.dot(X, self.weights).T
@@ -249,7 +249,7 @@ class LogisticRegression(LinearRegression):
             1-D Array of Dataset's Input.
 
         prediction: ndarray(dtype=float,ndim=1)
-            1-D Array of Predicted Values 
+            1-D Array of Predicted Values
             corresponding to their Inputs.
 
         actual_predictions: ndarray(dtype=int,ndim=1)
@@ -263,7 +263,7 @@ class LogisticRegression(LinearRegression):
 
         ndarray
             1-D Array of Predicted classes
-            (either 0 or 1) corresponding 
+            (either 0 or 1) corresponding
             to their inputs.
 
         """
@@ -273,13 +273,13 @@ class LogisticRegression(LinearRegression):
         for i in range(prediction.shape[1]):
             if prediction[0][i] > 0.5:
                 actual_predictions[0][i] = 1
-                
+
         return actual_predictions
 
 class DecisionTreeClassifier():
 
     root = None
-    
+
     def fit(self, rows):
         """
         Build the tree.
@@ -349,7 +349,7 @@ class DecisionTreeClassifier():
         # to the example we're considering.
         if self.root.question.match(row):
             return self.classify(row, self.root.true_branch)
-        
+
         else:
             return self.classify(row, self.root.false_branch)
 
@@ -393,7 +393,7 @@ class Naive_Bayes():
                 if y_sum:
                     total += math.log(y_sum / len(y_class))
                     pyx.append([total, X[i], Y[j]])
-                    
+
         prediction = max(pyx)
         return [prediction[1], prediction[2]]
 
