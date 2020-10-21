@@ -317,8 +317,8 @@ class DecisionTreeClassifier():
         self.root = Decision_Node(question, true_branch, false_branch)
 
     def print_tree(self, spacing=""):
-        """ 
-        A tree printing function.   
+        """
+        A tree printing function.
         """
 
         # Base case: we've reached a leaf
@@ -338,8 +338,8 @@ class DecisionTreeClassifier():
         self.print_tree(self.root.false_branch, spacing + "  ")
 
     def classify(self, row):
-        """ 
-        Classify a bit of data  
+        """
+        Classify a bit of data
         """
 
         # Base case: we've reached a leaf
