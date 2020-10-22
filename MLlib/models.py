@@ -456,9 +456,9 @@ class Support_Vector_Machine:
             while not optimized:
                 for b in np.arange(
                                   -1*(self.max_feature_value*b_range_multiple),
-                                   self.max_feature_value*b_range_multiple,
-                                   step*b_multiple
-                                   ):
+                                  self.max_feature_value*b_range_multiple,
+                                  step*b_multiple
+                                  ):
                     for transformation in transforms:
                         w_t = w*transformation
                         found_option = True
