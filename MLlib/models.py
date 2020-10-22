@@ -440,7 +440,8 @@ class Support_Vector_Machine:
         self.min_feature_value = min(all_data)
         all_data = None
 
-        step_sizes = [self.max_feature_value * 0.1,
+        step_sizes = [
+                      self.max_feature_value * 0.1,
                       self.max_feature_value * 0.01,
                       self.max_feature_value * 0.001,
                      ]
@@ -454,7 +455,7 @@ class Support_Vector_Machine:
             optimized = False
             while not optimized:
                 for b in np.arange(
-                                   -1*(self.max_feature_value*b_range_multiple),
+                                  -1*(self.max_feature_value*b_range_multiple),
                                    self.max_feature_value*b_range_multiple,
                                    step*b_multiple
                                    ):
@@ -470,7 +471,7 @@ class Support_Vector_Machine:
 
                         if found_option:
                             opt_dict[np.linalg.norm(w_t)] = [w_t, b]
-                
+
                 if w[0] < 0:
                     optimized = True
                     print("optimized a step")
