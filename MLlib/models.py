@@ -443,7 +443,7 @@ class Support_Vector_Machine:
         step_sizes = [self.max_feature_value * 0.1,
                       self.max_feature_value * 0.01,
                       self.max_feature_value * 0.001,
-                    ]
+                     ]
 
         b_range_multiple = 5
         b_multiple = 5
@@ -453,9 +453,11 @@ class Support_Vector_Machine:
             w = np.array([latest_optimum, latest_optimum])
             optimized = False
             while not optimized:
-                for b in np.arange(-1*(self.max_feature_value*b_range_multiple),
-                                   self.max_feature_value*b_range_multiple, 
-                                   step*b_multiple):
+                for b in np.arange(
+                                   -1*(self.max_feature_value*b_range_multiple),
+                                   self.max_feature_value*b_range_multiple,
+                                   step*b_multiple
+                                   ):
                     for transformation in transforms:
                         w_t = w*transformation
                         found_option = True
@@ -482,8 +484,6 @@ class Support_Vector_Machine:
             self.b = opt_choice[1]
             latest_optimum = opt_choice[0][0] + step*2
 
-
     def predict(self, features):
         classification = np.sign(np.dot(np.array(features), self.w) + self.b)
-
         return classification
