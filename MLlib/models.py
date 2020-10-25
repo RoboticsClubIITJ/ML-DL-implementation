@@ -378,7 +378,7 @@ class KNN():
     def predict(self, train, test_row, num_neighbours=7, classify=True):
         """
         KNN Prediction Model, used for either Regression or
-        Classification , in respect to Test Point and 
+        Classification , in respect to Test Point and
         Dataset Type.
 
         PARAMETERS
@@ -395,12 +395,12 @@ class KNN():
             features.
 
         num_neighbours: int
-            Number of nearest neighbours, close 
+            Number of nearest neighbours, close
             to the test point, with respect to
             x1,x2 and y features.
 
         classify: Boolean
-            Type of Mode, K Nearest Neighbour 
+            Type of Mode, K Nearest Neighbour
             Model wants to be applied, according
             to Dataset and Application Field.
 
@@ -411,7 +411,7 @@ class KNN():
             from the Test point.
 
         ouput: list
-            List of Distances of n nearest 
+            List of Distances of n nearest
             neighbours, calculated with respect
             to the test point, using either
             Block or Euclidean Metric.
