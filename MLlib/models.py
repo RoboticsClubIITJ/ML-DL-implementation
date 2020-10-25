@@ -377,6 +377,10 @@ class KNN():
 
     def predict(self, train, test_row, num_neighbours=7, classify=True):
         """
+        KNN Prediction Model, used for either Regression or
+        Classification , in respect to Test Point and 
+        Dataset Type.
+
         PARAMETERS
         ==========
 
