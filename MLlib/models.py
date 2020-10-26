@@ -48,6 +48,7 @@ class LinearRegression():
         Model in rob format , in Local
         disk.
     """
+
     def fit(
             self,
             X,
@@ -359,8 +360,76 @@ class KNN():
     """
     A single Class that can act as both KNN classifier or regressor
     based on arguements given to the prediction function.
+
+    ATTRIBUTES
+    ==========
+
+    None
+
+    METHODS
+    =======
+
+    predict(train, test_row, num_neighbours=7, classify=True):
+        K Nearest Neighbour Model, used as Classifier, to
+        predict the class of test point , with respect to
+        its n nearest neighbours.
     """
+
     def predict(self, train, test_row, num_neighbours=7, classify=True):
+        """
+        KNN Prediction Model, used for either Regression or
+        Classification , in respect to Test Point and
+        Dataset Type.
+
+        PARAMETERS
+        ==========
+
+        train: ndarray
+            Array Representation of Collection
+            of Points, with their corresponding
+            x1,x2 and y features.
+
+        test_row: ndarray(dtype=int,ndim=1,axis=1)
+            Array representation of test point,
+            with its corresponding x1,x2 and y
+            features.
+
+        num_neighbours: int
+            Number of nearest neighbours, close
+            to the test point, with respect to
+            x1,x2 and y features.
+
+        classify: Boolean
+            Type of Mode, K Nearest Neighbour
+            Model wants to be applied, according
+            to Dataset and Application Field.
+
+        neighbours: list
+            List of n nearest neighbours, close
+            to the test point, with their
+            associated Point Array and distance
+            from the Test point.
+
+        ouput: list
+            List of Distances of n nearest
+            neighbours, calculated with respect
+            to the test point, using either
+            Block or Euclidean Metric.
+
+        key: int
+            Count of number of terms inside
+            ouput list.
+
+        RETURNS
+        =======
+
+        prediction: float/int
+            If used as a Classifier, gives
+            Class number as prediction. Else,
+            it will give the mean of Cluster
+            made by test point and its n
+            nearest neighbours.
+        """
 
         neigbours = get_neighbours(
             train, test_row, num_neighbours, distance_metrics="block")
@@ -379,6 +448,7 @@ class Naive_Bayes():
     numbers can make them very small
     As denominator P(X)=P(x1)*P(x2), is common we can ignore it.
     """
+
     def predict(self, x_label, y_class):
 
         pyx = []
