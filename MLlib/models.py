@@ -576,9 +576,6 @@ class KMeansClustering():
             centroid_array = new_array
         cluster_array = cluster_allot(M, centroid_array)
         for cluster in cluster_array:
-            print("==============================")
-            print()
+            print("==============================\n")
             print(cluster)
-            print()
-            print("==============================")
-            print()
+            print("\n==============================\n")
