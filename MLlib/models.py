@@ -6,6 +6,8 @@ from MLlib.utils.decision_tree_utils import Leaf, Decision_Node
 from MLlib.utils .knn_utils import get_neighbours
 from MLlib.utils.naive_bayes_utils import make_likelihood_table
 from MLlib.utils.gaussian_naive_bayes_utils import get_mean_var, p_y_given_x
+from MLlib.utils.k_means_clustering_utils import initi_centroid, cluster_allot
+from MLlib.utils.k_means_clustering_utils import new_centroid, xy_calc
 from collections import Counter
 import numpy as np
 import pickle
@@ -488,3 +490,92 @@ class Gaussian_Naive_Bayes():
             if(pxy > argmax):
                 prediction = k1
         return prediction
+
+
+class KMeansClustering():
+    """
+    One of the models used for Unsupervised
+    learning, by making finite number of clusters
+    from Dataset points.
+
+    ATTRIBUTES
+    ==========
+
+    None
+
+    METHODS
+    =======
+
+    work(M, num_cluster, epochs):
+        Give details about cluster arrangements
+        from Dataset's Points, after suitable
+        number of epoch steps.
+    """
+
+    def work(self, M, num_cluster, epochs):
+        """
+        Show the arrangement of clusters after
+        certain  number of epochs, provided with
+        number of clusters and Input Dataset
+        Matrix.
+
+        PARAMETERS
+        ==========
+
+        M: ndarray(dtype=int,ndim=2)
+            Dataset Matrix with finite number
+            of points, having their corresponding
+            x and y coordinates.
+
+        num_cluster: int
+            Number of Clusters to be made from
+            the provided Dataset's points.
+
+        epochs: int
+            Number of times, centroids' coordinates
+            will change, to obtain suitable clusters
+            with appropriate number of points.
+
+        centroid_array: list
+            List of randomly initialised centroids,
+            out of Dataset points, which will be
+            going to update with every epoch, in
+            order to obtain suitable clusters.
+
+        interm: ndarray(dtype=int,ndim=2)
+            Intermediate Matrix, consisting of
+            clusterwise sum of each coordinate,
+            with number of points in each cluster.
+
+        new_array: list
+            Updated list of new centroids, due to
+            changes in cluster points, with each
+            epoch.
+
+        cluster_array: list
+            List of Resultant Clusters, made after
+            updating centroids with each epoch.
+            It consist of Centroid and its
+            corresponding nearby points of each
+            Cluster.
+
+        cluster: list
+            List of Current cluster to be shown
+            on screen, with its corresponding
+            centroid and nearby points.
+
+        RETURNS
+        =======
+
+        None
+        """
+        centroid_array = initi_centroid(M, num_cluster)
+        for i in range(1, epochs+1):
+            interm = xy_calc(M, centroid_array)
+            new_array = new_centroid(interm)
+            centroid_array = new_array
+        cluster_array = cluster_allot(M, centroid_array)
+        for cluster in cluster_array:
+            print("==============================\n")
+            print(cluster)
+            print("\n==============================\n")
