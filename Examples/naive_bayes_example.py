@@ -1,7 +1,7 @@
 from MLlib.models import Naive_Bayes
 import numpy as np
 
-with open('MLlib/datasets/naive_bayes_dataset.txt', 'r') as f:
+with open('/datasets/naive_bayes_dataset.txt', 'r') as f:
     words = [[string.strip('\n')
               for string in line.split(',')] for line in f]
 
