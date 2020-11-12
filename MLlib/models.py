@@ -6,6 +6,8 @@ from MLlib.utils.decision_tree_utils import Leaf, Decision_Node
 from MLlib.utils .knn_utils import get_neighbours
 from MLlib.utils.naive_bayes_utils import make_likelihood_table
 from MLlib.utils.gaussian_naive_bayes_utils import get_mean_var, p_y_given_x
+from MLlib.utils.k_means_clustering_utils import initi_centroid, cluster_allot
+from MLlib.utils.k_means_clustering_utils import new_centroid, xy_calc
 from collections import Counter
 import numpy as np
 import pickle
@@ -48,6 +50,7 @@ class LinearRegression():
         Model in rob format , in Local
         disk.
     """
+
     def fit(
             self,
             X,
@@ -359,8 +362,76 @@ class KNN():
     """
     A single Class that can act as both KNN classifier or regressor
     based on arguements given to the prediction function.
+
+    ATTRIBUTES
+    ==========
+
+    None
+
+    METHODS
+    =======
+
+    predict(train, test_row, num_neighbours=7, classify=True):
+        K Nearest Neighbour Model, used as Classifier, to
+        predict the class of test point , with respect to
+        its n nearest neighbours.
     """
+
     def predict(self, train, test_row, num_neighbours=7, classify=True):
+        """
+        KNN Prediction Model, used for either Regression or
+        Classification , in respect to Test Point and
+        Dataset Type.
+
+        PARAMETERS
+        ==========
+
+        train: ndarray
+            Array Representation of Collection
+            of Points, with their corresponding
+            x1,x2 and y features.
+
+        test_row: ndarray(dtype=int,ndim=1,axis=1)
+            Array representation of test point,
+            with its corresponding x1,x2 and y
+            features.
+
+        num_neighbours: int
+            Number of nearest neighbours, close
+            to the test point, with respect to
+            x1,x2 and y features.
+
+        classify: Boolean
+            Type of Mode, K Nearest Neighbour
+            Model wants to be applied, according
+            to Dataset and Application Field.
+
+        neighbours: list
+            List of n nearest neighbours, close
+            to the test point, with their
+            associated Point Array and distance
+            from the Test point.
+
+        ouput: list
+            List of Distances of n nearest
+            neighbours, calculated with respect
+            to the test point, using either
+            Block or Euclidean Metric.
+
+        key: int
+            Count of number of terms inside
+            ouput list.
+
+        RETURNS
+        =======
+
+        prediction: float/int
+            If used as a Classifier, gives
+            Class number as prediction. Else,
+            it will give the mean of Cluster
+            made by test point and its n
+            nearest neighbours.
+        """
 
         neigbours = get_neighbours(
             train, test_row, num_neighbours, distance_metrics="block")
@@ -379,6 +450,7 @@ class Naive_Bayes():
     numbers can make them very small
     As denominator P(X)=P(x1)*P(x2), is common we can ignore it.
     """
+
     def predict(self, x_label, y_class):
 
         pyx = []
@@ -418,7 +490,6 @@ class Gaussian_Naive_Bayes():
             if(pxy > argmax):
                 prediction = k1
         return prediction
-
 
 class Support_Vector_Machine:
     def __init__(self):
@@ -488,3 +559,92 @@ class Support_Vector_Machine:
     def predict(self, features):
         classification = np.sign(np.dot(np.array(features), self.w) + self.b)
         return classification
+
+class KMeansClustering():
+    """
+    One of the models used for Unsupervised
+    learning, by making finite number of clusters
+    from Dataset points.
+
+    ATTRIBUTES
+    ==========
+
+    None
+
+    METHODS
+    =======
+
+    work(M, num_cluster, epochs):
+        Give details about cluster arrangements
+        from Dataset's Points, after suitable
+        number of epoch steps.
+    """
+
+    def work(self, M, num_cluster, epochs):
+        """
+        Show the arrangement of clusters after
+        certain  number of epochs, provided with
+        number of clusters and Input Dataset
+        Matrix.
+
+        PARAMETERS
+        ==========
+
+        M: ndarray(dtype=int,ndim=2)
+            Dataset Matrix with finite number
+            of points, having their corresponding
+            x and y coordinates.
+
+        num_cluster: int
+            Number of Clusters to be made from
+            the provided Dataset's points.
+
+        epochs: int
+            Number of times, centroids' coordinates
+            will change, to obtain suitable clusters
+            with appropriate number of points.
+
+        centroid_array: list
+            List of randomly initialised centroids,
+            out of Dataset points, which will be
+            going to update with every epoch, in
+            order to obtain suitable clusters.
+
+        interm: ndarray(dtype=int,ndim=2)
+            Intermediate Matrix, consisting of
+            clusterwise sum of each coordinate,
+            with number of points in each cluster.
+
+        new_array: list
+            Updated list of new centroids, due to
+            changes in cluster points, with each
+            epoch.
+
+        cluster_array: list
+            List of Resultant Clusters, made after
+            updating centroids with each epoch.
+            It consist of Centroid and its
+            corresponding nearby points of each
+            Cluster.
+
+        cluster: list
+            List of Current cluster to be shown
+            on screen, with its corresponding
+            centroid and nearby points.
+
+        RETURNS
+        =======
+
+        None
+        """
+        centroid_array = initi_centroid(M, num_cluster)
+        for i in range(1, epochs+1):
+            interm = xy_calc(M, centroid_array)
+            new_array = new_centroid(interm)
+            centroid_array = new_array
+        cluster_array = cluster_allot(M, centroid_array)
+        for cluster in cluster_array:
+            print("==============================\n")
+            print(cluster)
+            print("\n==============================\n")
+
