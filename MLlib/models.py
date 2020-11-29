@@ -445,13 +445,43 @@ class KNN():
 
 class Naive_Bayes():
     """
-    pyx: P(y/X) is proportional to p(x1/y)*p(x2/y)...*p(y)
-    using log and adding as multiplying for smaller
-    numbers can make them very small
-    As denominator P(X)=P(x1)*P(x2), is common we can ignore it.
+    A class which classifies and predicts based on simple
+    Naive Bayes algorithm.
+
+    ATTRIBUTES
+    ==========
+
+    None
+
+    METHODS
+    =======
+
+    predict(self, x_label, y_class):
+        Naive Bayes Model to predict the
+        class given the label.
     """
 
     def predict(self, x_label, y_class):
+        """
+        Naive Bayes Model to predict the
+        class given the label.
+
+        PARAMETERS
+        ==========
+
+        x_label: ndarray(dtype=int,ndim=1,axis=1)
+                   Array of labels.
+
+        y_class: ndarray(dtype=int,ndim=1,axis=1)
+                  Array of classes.
+
+        RETURNS
+        =======
+
+        Most probable output or prediction, as list
+        of the label and class name.
+
+        """
 
         pyx = []
         likelihood = make_likelihood_table(x_label, y_class)
@@ -474,11 +504,46 @@ class Naive_Bayes():
 
 
 class Gaussian_Naive_Bayes():
+    """
+    A class which classifies and predicts based on Gaussian
+    Naive Bayes algorithm.
 
-    # data is variable input given b user for which we predict the label.
+    ATTRIBUTES
+    ==========
+
+    None
+
+    METHODS
+    =======
+
+    predict(self, x_label, y_class):
+        Gaussian Naive Bayes Model to predict the
+        label for given class values.
+    """
+
+    # data is variable input given by user for which we predict the label.
     # Here we predict the gender from given list of height, weight, foot_size
     def predict(self, data,  x_label, y_class):
+        """
+        Gaussian Naive Bayes Model to predict the
+        label given the class values.
 
+        PARAMETERS
+        ==========
+
+        x_label: ndarray(dtype=int,ndim=1,axis=1)
+                   Array of labels.
+
+        y_class: ndarray(dtype=int,ndim=1,axis=1)
+                  Array of classes.
+
+        RETURNS
+        =======
+
+        Predicts the label, for given class values
+        by user.
+
+        """
         mean, var = get_mean_var(x_label, y_class)
         argmax = 0
         for (k1, v1), (k2, v2) in zip(mean.items(), var.items()):
@@ -570,7 +635,7 @@ class KMeansClustering():
         None
         """
         centroid_array = initi_centroid(M, num_cluster)
-        for i in range(1, epochs+1):
+        for i in range(1, epochs + 1):
             interm = xy_calc(M, centroid_array)
             new_array = new_centroid(interm)
             centroid_array = new_array
