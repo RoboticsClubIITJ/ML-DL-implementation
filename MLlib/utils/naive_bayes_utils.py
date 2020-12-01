@@ -5,6 +5,31 @@ def make_frequency_table(x, y, X, Y):
     """
     This function prepares a frequency table
     for every label in respective column.
+
+    PARAMETERS
+    ==========
+
+    x: ndarray(dtype=int,ndim=1,axis=1)
+        Array of labels.
+
+    y: ndarray(dtype=int,ndim=1,axis=1)
+        Array of classes.
+
+    X: ndarray(dtype=int,ndim=1,axis=1)
+        Array of unique labels.
+
+    Y: ndarray(dtype=int,ndim=1,axis=1)
+        Array of unique classes.
+
+
+    RETURNS
+    =======
+
+    freq: dict
+        Dictionary, with key points as
+        unique labels, and values as its
+        frequency of y.
+
     """
     freq = dict()
 
@@ -25,9 +50,37 @@ def make_frequency_table(x, y, X, Y):
 
 
 def make_likelihood_table(x, y):
+    """
+    This function prepares a likelihood
+    table for each item we divide frequency
+    by column sum.
 
-    # for each item divide by column sum
-    # an array for unique values
+    PARAMETERS
+    ==========
+
+    x: ndarray(dtype=int,ndim=1,axis=1)
+        Array of labels.
+
+    y: ndarray(dtype=int,ndim=1,axis=1)
+        Array of classes.
+
+    X: ndarray(dtype=int,ndim=1,axis=1)
+        Array of unique labels.
+
+    Y: ndarray(dtype=int,ndim=1,axis=1)
+        Array of unique classes.
+
+
+    RETURNS
+    =======
+
+    likelihood: dict
+        Dictionary, with key points as
+        unique labels, and values as ratio
+        of frequency and cumulative frequency
+        for that column(y_class).
+
+    """
 
     Y = np.unique(y)
     X = np.unique(x)
