@@ -108,6 +108,8 @@ def leakyRelu(X):
 
     X: ndarray(dtype=float, ndim=1)
         Array containing Input Values.
+    alpha: float
+        Slope for Values of X less than 0.
 
     RETURNS
     =======
