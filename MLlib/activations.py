@@ -99,7 +99,7 @@ def relu(X):
     return np.maximum(0, X)
 
 
-def leakyRelu(X):
+def leakyRelu(X, alpha=0.01):
     """
     Apply Leaky Rectified Linear Unit on X Vector.
 
@@ -117,7 +117,7 @@ def leakyRelu(X):
     ndarray(dtype=float,ndim=1)
         Output Vector after Vectorised Operation.
     """
-    return np.maximum(0.01*X, X)
+    return np.maximum(alpha*X, X)
 
 
 def elu(X, alpha=1.0):
