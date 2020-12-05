@@ -1,23 +1,44 @@
 import numpy as np
 
 
-def sigmoid(X):
-    """
-    Apply Sigmoid on X Vector.
+class Sigmoid():
+    def activation(X):
+        """
+        Apply Sigmoid on X Vector.
 
-    PARAMETERS
-    ==========
+        PARAMETERS
+        ==========
 
-    X: ndarray(dtype=float, ndim=1)
-        Array containing Input Values.
+        X: ndarray(dtype=float, ndim=1)
+            Array containing Input Values.
 
-    RETURNS
-    =======
+        RETURNS
+        =======
 
-    ndarray(dtype=float,ndim=1)
-        Output Vector after Vectorised Operation.
-    """
-    return 1/(1 + np.exp(-X))
+        ndarray(dtype=float,ndim=1)
+            Output Vector after Vectorised Operation.
+        """
+        return 1 / (1 + np.exp(-X))
+
+    def derivative(X):
+        """
+        Calculate derivative of Sigmoid on X Vector.
+
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=float, ndim=1)
+            Array containing Input Values.
+
+        RETURNS
+        =======
+
+        ndarray(dtype=float,ndim=1)
+            Outputs array of derivatives.
+        """
+        s = 1 / (1 + np.exp(-X))
+        ds = s * (1 - s)
+        return ds
 
 
 def tanh(X):
@@ -58,7 +79,7 @@ def softmax(X):
         Output Vector after Vectorised Operation.
     """
     Sum = np.sum(np.exp(X))
-    return np.exp(X)/Sum
+    return np.exp(X) / Sum
 
 
 def softsign(X):
@@ -77,7 +98,7 @@ def softsign(X):
     ndarray(dtype=float,ndim=1)
         Output Vector after Vectorised Operation.
     """
-    return X/(np.abs(X) + 1)
+    return X / (np.abs(X) + 1)
 
 
 def relu(X):
@@ -117,7 +138,9 @@ def leakyRelu(X, alpha=0.01):
     ndarray(dtype=float,ndim=1)
         Output Vector after Vectorised Operation.
     """
+
     return np.maximum(alpha*X, X)
+
 
 
 def elu(X, alpha=1.0):
@@ -138,5 +161,5 @@ def elu(X, alpha=1.0):
     ndarray(dtype=float,ndim=1)
         Output Vector after Vectorised Operation.
     """
-    assert(alpha > 0)
-    return np.maximum(0, X) + np.minimum(0, alpha*(np.exp(X) - 1))
+    assert (alpha > 0)
+    return np.maximum(0, X) + np.minimum(0, alpha * (np.exp(X) - 1))
