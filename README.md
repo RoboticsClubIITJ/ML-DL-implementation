@@ -1,8 +1,9 @@
 # ML-DL-implementation
+[![Build Status](https://travis-ci.org/RoboticsClubIITJ/ML-DL-implementation.svg?branch=master)](https://travis-ci.org/RoboticsClubIITJ/ML-DL-implementation)
+[![Gitter](https://badges.gitter.im/ML-DL-implementation/community.svg)](https://gitter.im/ML-DL-implementation/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/RoboticsClubIITJ/ML-DL-implementation)
 
-An implementation of ML and DL algorithms from scratch in python using nothing but numpy.
-
-Matplotlib might be used in some places for visualisation.
+Machine Learning and Deep Learning library in python using numpy and matplotlib.
 
 ## Why this repository?
 
@@ -11,6 +12,13 @@ the field of AI and ML a chance to understand the
 inner workings of popular learning algorithms by presenting them with a simple to analyze the implementation of ML and DL algorithms in pure python using only numpy as a backend for linear algebraic computations for the sake of efficiency.
 
 The goal of this repository is not to create the most efficient implementation but the most transparent one, so that anyone with little knowledge of the field can contribute and learn.
+
+## Installation
+Currently we are improving the library, shortly it would be released publically on pypi and anaconda. 
+
+As of now to install using git, first clone ML-DL-implimentation using `git`:
+
+    $ python setup.py install
 
 ## Contributing to the repository
 
@@ -99,3 +107,4 @@ Follow the following steps to get started with contributing to the repository.
 | Adagrad | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/optimizers.py#L391) |
 | Adadelta | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/optimizers.py#L466) |
 | Adam | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/optimizers.py#L544) |
+=======
