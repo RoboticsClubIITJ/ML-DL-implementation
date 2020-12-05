@@ -142,7 +142,6 @@ def leakyRelu(X, alpha=0.01):
     return np.maximum(alpha*X, X)
 
 
-
 def elu(X, alpha=1.0):
     """
     Apply Exponential Linear Unit on X Vector.
