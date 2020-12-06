@@ -44,7 +44,7 @@ class Sigmoid():
 class TanH():
     def activation(X):
         """
-        Apply Inverse of Tan on X Vector.
+        Apply hyperbolic tangent function on X Vector.
 
         PARAMETERS
         ==========
@@ -62,7 +62,7 @@ class TanH():
 
     def derivative(X):
         """
-        Calculate derivative of Inverse of Tan on X Vector.
+        Calculate derivative of hyperbolic tangent function on X Vector.
 
         PARAMETERS
         ==========
@@ -76,7 +76,6 @@ class TanH():
         ndarray(dtype=float,ndim=1)
             Outputs array of derivatives.
         """
-
         return 1.0 - np.tanh(X)**2
 
 
