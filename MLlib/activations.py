@@ -120,23 +120,42 @@ def softsign(X):
     return X / (np.abs(X) + 1)
 
 
-def relu(X):
-    """
-    Apply Rectified Linear Unit on X Vector.
+class Relu():
+    def activation(X):
+        """
+        Apply Rectified Linear Unit on X Vector.
 
-    PARAMETERS
-    ==========
+        PARAMETERS
+        ==========
 
-    X: ndarray(dtype=float, ndim=1)
-        Array containing Input Values.
+        X: ndarray(dtype=float, ndim=1)
+            Array containing Input Values.
 
-    RETURNS
-    =======
+        RETURNS
+        =======
 
-    ndarray(dtype=float,ndim=1)
-        Output Vector after Vectorised Operation.
-    """
-    return np.maximum(0, X)
+        ndarray(dtype=float,ndim=1)
+            Output Vector after Vectorised Operation.
+        """
+        return np.maximum(0, X)
+
+    def derivative(X):
+        """
+        Calculate derivative of Rectified Linear Unit on X Vector.
+
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=float, ndim=1)
+            Array containing Input Values.
+
+        RETURNS
+        =======
+
+        ndarray(dtype=float,ndim=1)
+            Outputs array of derivatives.
+        """
+        return np.greater(X, 0).astype(int)
 
 
 def leakyRelu(X, alpha=0.01):
