@@ -41,23 +41,42 @@ class Sigmoid():
         return ds
 
 
-def tanh(X):
-    """
-    Apply Inverse of Tan on X Vector.
+class TanH():
+    def activation(X):
+        """
+        Apply hyperbolic tangent function on X Vector.
 
-    PARAMETERS
-    ==========
+        PARAMETERS
+        ==========
 
-    X: ndarray(dtype=float, ndim=1)
-        Array containing Input Values.
+        X: ndarray(dtype=float, ndim=1)
+            Array containing Input Values.
 
-    RETURNS
-    =======
+        RETURNS
+        =======
 
-    ndarray(dtype=float,ndim=1)
-        Output Vector after Vectorised Operation.
-    """
-    return np.tanh(X)
+        ndarray(dtype=float,ndim=1)
+            Output Vector after Vectorised Operation.
+        """
+        return np.tanh(X)
+
+    def derivative(X):
+        """
+        Calculate derivative of hyperbolic tangent function on X Vector.
+
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=float, ndim=1)
+            Array containing Input Values.
+
+        RETURNS
+        =======
+
+        ndarray(dtype=float,ndim=1)
+            Outputs array of derivatives.
+        """
+        return 1.0 - np.tanh(X)**2
 
 
 def softmax(X):
