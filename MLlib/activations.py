@@ -200,3 +200,42 @@ def elu(X, alpha=1.0):
     """
     assert (alpha > 0)
     return np.maximum(0, X) + np.minimum(0, alpha * (np.exp(X) - 1))
+
+def binary_step(X):
+    """
+    Apply Binary Step Function on X Vector.
+
+    PARAMETERS
+    ==========
+
+    X: ndarray(dtype=float, ndim=1)
+        Array containing Input Values.
+
+    RETURNS
+    =======
+
+    ndarray(dtype=float,ndim=1)
+        Output Vector after Vectorised Operation.
+    """
+    if X < 0:
+        return 0
+    else:
+        return 1
+    
+def swish(X):
+    """
+    Apply Swish activation function on X Vector.
+
+    PARAMETERS
+    ==========
+
+    X: ndarray(dtype=float, ndim=1)
+        Array containing Input Values.
+
+    RETURNS
+    =======
+
+    ndarray(dtype=float,ndim=1)
+        Output Vector after Vectorised Operation.
+    """
+    return X / (1 + np.exp(-X))
