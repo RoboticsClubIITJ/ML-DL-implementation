@@ -201,7 +201,8 @@ def elu(X, alpha=1.0):
     assert (alpha > 0)
     return np.maximum(0, X) + np.minimum(0, alpha * (np.exp(X) - 1))
 
-def binary_step(X):
+
+def unit_step(X, t=0):
     """
     Apply Binary Step Function on X Vector.
 
@@ -210,6 +211,8 @@ def binary_step(X):
 
     X: ndarray(dtype=float, ndim=1)
         Array containing Input Values.
+    t: int
+        Threshold value for step function.
 
     RETURNS
     =======
@@ -217,12 +220,13 @@ def binary_step(X):
     ndarray(dtype=float,ndim=1)
         Output Vector after Vectorised Operation.
     """
-    if X < 0:
+    if X < t:
         return 0
     else:
         return 1
-    
-def swish(X):
+
+
+def swish(X, b=1.0):
     """
     Apply Swish activation function on X Vector.
 
@@ -231,6 +235,8 @@ def swish(X):
 
     X: ndarray(dtype=float, ndim=1)
         Array containing Input Values.
+    b: int or float
+        Either constant or trainable parameter according to the model.
 
     RETURNS
     =======
@@ -238,4 +244,4 @@ def swish(X):
     ndarray(dtype=float,ndim=1)
         Output Vector after Vectorised Operation.
     """
-    return X / (1 + np.exp(-X))
+    return X / (1 + np.exp(-(b*X)))
