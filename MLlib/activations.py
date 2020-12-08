@@ -158,26 +158,49 @@ class Relu():
         return np.greater(X, 0).astype(int)
 
 
-def leakyRelu(X, alpha=0.01):
-    """
-    Apply Leaky Rectified Linear Unit on X Vector.
+class LeakyRelu():
+    def activation(X, alpha=0.01):
+        """
+        Apply Leaky Rectified Linear Unit on X Vector.
 
-    PARAMETERS
-    ==========
+        PARAMETERS
+        ==========
 
-    X: ndarray(dtype=float, ndim=1)
-        Array containing Input Values.
-    alpha: float
-        Slope for Values of X less than 0.
+        X: ndarray(dtype=float, ndim=1)
+            Array containing Input Values.
+        alpha: float
+            Slope for Values of X less than 0.
 
-    RETURNS
-    =======
+        RETURNS
+        =======
 
-    ndarray(dtype=float,ndim=1)
-        Output Vector after Vectorised Operation.
-    """
+        ndarray(dtype=float,ndim=1)
+            Output Vector after Vectorised Operation.
+        """
 
-    return np.maximum(alpha*X, X)
+        return np.maximum(alpha*X, X)
+
+    def derivative(X, alpha=0.01):
+        """
+        Calculate derivative of Leaky Rectified Linear Unit on X Vector.
+
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=float, ndim=1)
+            Array containing Input Values.
+        alpha: float
+            Slope for Values of X less than 0.
+
+        RETURNS
+        =======
+
+        ndarray(dtype=float,ndim=1)
+            Outputs array of derivatives.
+        """
+        dx = np.ones_like(X)
+        dx[X < 0] = alpha
+        return dx
 
 
 def elu(X, alpha=1.0):
