@@ -1,3 +1,5 @@
 numpy>=1.18.0
 matplotlib>=3.0
 pytest>=5.3.0
+codecov
+pytest-cov
