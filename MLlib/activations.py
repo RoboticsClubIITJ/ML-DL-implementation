@@ -225,7 +225,7 @@ def elu(X, alpha=1.0):
     return np.maximum(0, X) + np.minimum(0, alpha * (np.exp(X) - 1))
 
 
-def unit_step(X, t=0):
+def unit_step(X):
     """
     Apply Binary Step Function on X Vector.
 
@@ -234,8 +234,7 @@ def unit_step(X, t=0):
 
     X: ndarray(dtype=float, ndim=1)
         Array containing Input Values.
-    t: int
-        Threshold value for step function.
+
 
     RETURNS
     =======
