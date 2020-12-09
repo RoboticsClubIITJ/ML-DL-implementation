@@ -243,10 +243,7 @@ def unit_step(X, t=0):
     ndarray(dtype=float,ndim=1)
         Output Vector after Vectorised Operation.
     """
-    if X < t:
-        return 0
-    else:
-        return 1
+    return np.heaviside(X, 1)
 
 
 def swish(X, b=1.0):
