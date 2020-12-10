@@ -1,5 +1,6 @@
 import numpy as np
 from MLlib.activations import Sigmoid, Relu
+from MLlib.activations import unit_step
 
 
 def test_Sigmoid():
@@ -22,3 +23,11 @@ def test_Relu():
     assert np.array_equal(
         np.greater(X, 0).astype(int),
         Relu.derivative(X)) is True
+
+
+def test_unit_step():
+    X = np.array([[1, -2, 3], [-1, 2, 1]])
+    assert np.array_equal(
+        np.heaviside(X, 1),
+        unit_step(X)
+        ) is True
