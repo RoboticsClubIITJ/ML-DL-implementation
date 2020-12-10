@@ -8,11 +8,13 @@ from MLlib.utils.naive_bayes_utils import make_likelihood_table
 from MLlib.utils.gaussian_naive_bayes_utils import get_mean_var, p_y_given_x
 from MLlib.utils.k_means_clustering_utils import initi_centroid, cluster_allot
 from MLlib.utils.k_means_clustering_utils import new_centroid, xy_calc
+from MLlib.utils.pca_utils import PCA_utils
 from collections import Counter
 import numpy as np
 import pickle
 from datetime import datetime
 import math
+from scipy.special import gammaln
 
 DATE_FORMAT = '%d-%m-%Y_%H-%M-%S'
 
@@ -644,3 +646,179 @@ class KMeansClustering():
             print("==============================\n")
             print(cluster)
             print("\n==============================\n")
+
+# -------------------------------------------- Principle Component Analysis ---------------------------------------------
+
+def assess_dimension(spectrum, rank, n_samples):
+    """
+    Compute the log-likelihood of a rank 'rank' dataset.
+    The dataset is assumed to be embedded in gaussian noise of shape(n,
+    dimf) having spectrum 'spectrum'.
+    
+    """
+
+    n_features = spectrum.shape[0]
+    if not 1 <= rank < n_features:
+        raise ValueError("The tested rank should be in [1, n_features - 1]")
+
+    eps = 1e-15
+
+    if spectrum[rank - 1] < eps:
+        return -np.inf
+
+    pu = -rank * math.log(2.)
+    for i in range(1, rank + 1):
+        pu += (gammaln((n_features - i + 1) / 2.) - math.log(np.pi) * (n_features - i + 1) / 2.)
+
+    pl = np.sum(np.log(spectrum[:rank]))
+    pl = -pl * n_samples / 2.
+
+    v = max(eps, np.sum(spectrum[rank:]) / (n_features - rank))
+    pv = -np.log(v) * n_samples * (n_features - rank) / 2.
+
+    m = n_features * rank - rank * (rank + 1.) / 2.
+    pp = math.log(2. * np.pi) * (m + rank) / 2.
+
+    pa = 0.
+    spectrum_ = spectrum.copy()
+    spectrum_[rank:n_features] = v
+    for i in range(rank):
+        for j in range(i + 1, len(spectrum)):
+            pa += math.log((spectrum[i] - spectrum[j]) * (1. / spectrum_[j] - 1. / spectrum_[i])) + math.log(n_samples)
+
+    ll = pu + pl + pv + pp - pa / 2. - rank * math.log(n_samples) / 2.
+
+    return ll
+
+def infer_dimension(spectrum, n_samples):
+    """
+    Infers the dimension of a dataset with a given spectrum.
+    The returned value will be in [1, n_features - 1].
+    
+    """
+    ll = np.empty_like(spectrum)
+    ll[0] = -np.inf  # we don't want the n_components to be 0
+    for rank in range(1, spectrum.shape[0]):
+        ll[rank] = assess_dimension(spectrum, rank, n_samples)
+    return ll.argmax()
+
+class PCA(PCA_utils):
+    """
+    Principal component analysis (PCA):
+    
+    Linear dimensionality reduction using Singular Value Decomposition of the
+    data to project it to a lower dimensional space. The input data is centered
+    but not scaled for each feature before applying the SVD.
+    
+    """
+    
+    def __init__(self, n_components=None, whiten=False, svd_solver='auto'):
+        self.n_components= n_components
+        self.whiten= whiten
+        self.svd_solver= svd_solver
+        self.components= None
+        self.mean= None
+        self.explained_variances= None
+        self.noise_variance= None
+        self.fitted= False
+    
+    
+    def fit(self,X, y=None):
+        # fit the model with the data X
+        self._fit(X)
+        return self
+    
+    def fit_transform(self, X, y=None):
+        """Fit the model with X and apply the dimensionality reduction on X."""
+        
+        U,S,Vh= self._fit(X)
+        U= U[:, :self.n_components]
+        
+        if self.whiten:
+            U*= math.sqrt(X.shape[0] - 1)
+        else:
+            U*= S[:self.n_components]
+        
+        return U
+    
+    
+    def _fit(self,X):
+        
+        # count the sparsity of the  ndarray
+        count= np.count_nonzero(X)
+        sparsity= 1.0 - (count/np.size(X))
+        if sparsity > 0.5:
+            raise TypeError('PCA does not support sparse input.')
+        
+        if self.n_components is None:
+            n_components = min(X.shape)
+        else:
+            n_components= self.n_components
+            
+        fit_svd_solver = self.svd_solver
+        if fit_svd_solver == 'auto':
+            # Small problem or n_components == 'mle', call full PCA
+            if max(X.shape) <= 500 or n_components == 'mle':
+                fit_svd_solver = 'full'
+            elif n_components >= 1 and n_components < .8 * min(X.shape):
+                fit_svd_solver = 'randomized'
+            # Case of n_components in (0,1)
+            else:
+                fit_svd_solver = 'full'
+
+        # Call different fits for either full or truncated SVD
+        if fit_svd_solver == 'full':
+            return self.fit_full(X, n_components)
+        else:
+            raise ValueError("Unrecognized svd_solver='{0}'".format(fit_svd_solver))
+    
+    
+    def fit_full(self, X, n_components):
+        """Fit the model by computing full SVD on X."""
+        n_samples, n_features = X.shape
+        if n_components == 'mle':
+            if n_samples < n_features:
+                raise ValueError("n_components='mle' is only supported if n_samples >= n_features")
+        
+        # mean of the dataset
+        self.mean= np.mean(X, axis=0)
+        std= np.std(X)
+        X= (X- self.mean) / std
+        
+        U, S, Vh= np.linalg.svd(X, full_matrices=False)
+        
+        # flip eigenvectors' sign to enforce deterministic output
+        # columns of U, rows of Vh
+        max_abs_cols = np.argmax(np.abs(U), axis=0)
+        signs = np.sign(U[max_abs_cols, range(U.shape[1])])
+        U *= signs
+        Vh *= signs[:, np.newaxis]
+        
+        components = Vh
+        
+        # explained variance by singular values
+        explained_variances = (S**2)/(n_samples-1)
+        explained_variance_ratio = explained_variances/ explained_variances.sum()
+        singular_value= S.copy()
+        
+        if n_components == 'mle':
+            n_components = infer_dimension(explained_variance, n_samples)
+            
+        elif 0 < n_components < 1.0:
+            ratio_cumsum = np.cumsum(explained_variance_ratio, axis=None, dtype=np.float64)
+            n_components = np.searchsorted(ratio_cumsum, n_components, side='right') + 1
+        
+        # Computing noise covariance using Probabilistic PCA model
+        if n_components < min(n_features, n_samples):
+            self.noise_variance = explained_variances[n_components:].mean()
+        else:
+            self.noise_variance = 1.0
+
+        # storing the first n_component values
+        self.components = components[:n_components]
+        self.n_components= self.n_components
+        self.explained_variances= explained_variances[:n_components]
+        self.explained_variance_ratio= explained_variance_ratio[:n_components]
+        self.singular_value= singular_value[:n_components]
+        self.fitted= True
+        return U, S, Vh
