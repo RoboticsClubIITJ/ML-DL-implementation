@@ -6,6 +6,7 @@
 Machine Learning and Deep Learning library in python using numpy and matplotlib.
 
 ## Why this repository?
+-----------------------
 
 This repository gives beginners and newcomers in
 the field of AI and ML a chance to understand the
@@ -13,12 +14,30 @@ inner workings of popular learning algorithms by presenting them with a simple t
 
 The goal of this repository is not to create the most efficient implementation but the most transparent one, so that anyone with little knowledge of the field can contribute and learn.
 
-## Installation
-Currently we are improving the library, shortly it would be released publically on pypi and anaconda. 
+Installation
+------------
 
-As of now to install using git, first clone ML-DL-implimentation using `git`:
+You can install the library by running the following command,
+
+```python
+python3 setup.py install
+```
+
+For development purposes, you can use the option `develop` as shown below,
+
+```python
+python3 setup.py develop
 
     $ python setup.py install
+   
+Testing
+-------
+
+For testing your patch locally follow the steps given below,
+
+1. Install [pytest-cov](https://pypi.org/project/pytest-cov/). Skip this step if you are already having the package.
+2. Run, `python3 -m pytest --doctest-modules --cov=./ --cov-report=html`. Look for, `htmlcov/index.html` and open it in your browser, which will show the coverage report. Try to ensure that the coverage is not decreasing by more than 1% for your patch.
+
 
 ## Contributing to the repository
 
