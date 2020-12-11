@@ -27,8 +27,7 @@ For development purposes, you can use the option `develop` as shown below,
 
 ```python
 python3 setup.py develop
-
-    $ python setup.py install
+```
    
 Testing
 -------
