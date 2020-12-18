@@ -644,39 +644,30 @@ class KMeansClustering():
             print("==============================\n")
             print(cluster)
             print("\n==============================\n")
-class PolynomialRegression():
 
-    def __init__(self,degree,learning_rate=0.01,iterations=100):
-        self.degree=degree
-        self.learning_rate=learning_rate
-        self.iterations=iterations
+
+class PolynomialRegression():
+    def init(self, degree, learning_rate=0.01, iterations=100):
+        self.degree = degree
+        self.learning_rate = learning_rate
+        self.iterations = iterations
 
     def transform(self, X):
 
         X_transform = np.ones((self.m, 1))
-
-
         j = 0
-
         for j in range(self.degree + 1):
-
             if j != 0:
                 x_pow = np.power(X, j)
-
-                # append x_pow to X_transform
-
-                X_transform = np.append(X_transform, x_pow.reshape(-1, 1), axis=1)
+                X_transform = np.append(X_transform, x_pow.reshape(-1, 1), axis=1)   # noqa
 
         return X_transform
 
-        # normalize X_tranform for better accurcy on gradient descent
-
     def normalize(self, X):
-
-        X[:, 1:] = (X[:, 1:] - np.mean(X[:, 1:], axis=0)) / np.std(X[:, 1:], axis=0)
-
+        X[:, 1:] = (X[:, 1:] - np.mean(X[:, 1:], axis=0)) / np.std(X[:, 1:], axis=0)  # noqa
         return X
-    def fit(self,X,Y):
+
+    def fit(self, X, Y):
         self.X = X
 
         self.Y = Y
@@ -687,13 +678,11 @@ class PolynomialRegression():
 
         self.W = np.zeros(self.degree + 1)
 
-
-
         X_transform = self.transform(self.X)
 
         # normalize X_transform
 
-        X_normalize = self.normalize(X_transform)
+        x_normalize = self.normalize(X_transform)
 
         # gradient descent learning
 
@@ -704,35 +693,30 @@ class PolynomialRegression():
 
             # update weights
 
-            self.W = self.W - self.learning_rate * (1 / self.m) * np.dot(X_normalize.T, error)
-
+            self.W = self.W - self.learning_rate * (1 / self.m) * np.dot(x_normalize.T, error)  # noqa
         return self
 
-
-
-
     def predict(self, X):
-        # tranform X for polynomial  h( x ) = w0 * x^0 + w1 * x^1 + w2 * x^2 + ........+ wn * x^n
+   # tranform X for polynomial h( x ) = w0 * x^0+ w1 * x^1 + w2 * x^2 + ........+ wn * x^   # noqa
 
         X_transform = self.transform(X)
 
-        X_normalize = self.normalize(X_transform)
-
         return np.dot(X_transform, self.W)
 
-    def accuracy(self,y_pred,y):
-        y_mean=sum(y)/len(y)
+    def accuracy(self, y_pred, y):
+        y_mean = sum(y) / len(y)
         y_pred_mean = sum(y_pred) / len(y)
-        sumsquaredregression=0
-        totalsumofsquares=0
+        sumsquaredregression = 0
+        totalsumofsquares = 0
         for i in range(len(y)):
-            sumsquaredregression+=(y_pred[i]-y_pred_mean)**2
-            totalsumofsquares+=(y[i]-y_mean)**2
-        accuracy=((sumsquaredregression)/totalsumofsquares)
-        return accuracy*100
+            sumsquaredregression += (y_pred[i] - y_pred_mean) ** 2
+            totalsumofsquares += (y[i] - y_mean) ** 2
+        accuracy = ((sumsquaredregression) / totalsumofsquares)
+        return accuracy * 100
 
-    def rmse(self,y_pred,y):
-        ans=0
+    def rmse(self, y_pred, y):
+        ans = 0
         for i in range(len(y_pred)):
-            ans+=(y_pred[i]-y[i])**2
-        return (ans/len(y))**0.5
+            ans += (y_pred[i] - y[i]) ** 2
+        return (ans / len(y)) ** 0.5
+# The above code generates a polunomial regression class in models.py file
