@@ -14,9 +14,9 @@ Below you will find the process and workflow used to review and merge your chang
 ## Step 1 : Fork the Project  
 - Fork this Repository. This will create a Local Copy of this Repository on your Github Profile. Keep a reference to the original project in `upstream` remote.  
 ```  
-$ git clone https://github.com/<your-username>/<repo-name>  
-$ cd <repo-name>  
-$ git remote add upstream https://github.com/<upstream-owner>/<repo-name>  
+$ git clone https://github.com/NJACKWinterOfCode/ML-DL-implementation.git
+$ cd ML-DL-implementation 
+$ git remote add upstream https://github.com/NJACKWinterOfCode/ML-DL-implementation.git
 ```  
 
   
