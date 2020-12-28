@@ -60,7 +60,6 @@ $ git commit -m "message"
 # To push your work to your remote repository  
 $ git push -u origin Branch_Name  
 ```  
-- Here is how your branch will look.  
 
   
 ## Step 6 : Pull Request  
