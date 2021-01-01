@@ -125,7 +125,7 @@ class Softmax():
         return X_der
 
 
-class Softsign(): 
+class Softsign():
     def activation(X):
         """
         Apply Softsign on X Vector.
@@ -161,6 +161,7 @@ class Softsign():
             Output Vector after Vectorised Operation.
         """
         return 1 / (np.abs(X) + 1)**2
+
 
 class Relu():
     def activation(X):
