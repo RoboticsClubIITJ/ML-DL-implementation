@@ -100,7 +100,7 @@ class Softmax():
         """
         Sum = np.sum(np.exp(X))
         return np.exp(X) / Sum
-    
+
     def derivative(X):
         """
         Calculate derivative of Softmax on X Vector.
@@ -119,10 +119,10 @@ class Softmax():
         ndarray(dtype=float,ndim=1)
             Output Vector after Vectorised Operation.
         """
-        X_vector = X.reshape(X.shape[0],1)
-        X_matrix = np.tile(X_vector,X.shape[0])
-        X_der = np.diag(X) - (X_matrix * np.transpose(X_matrix))
-        return X_der
+        x_vector = X.reshape(X.shape[0], 1)
+        x_matrix = np.tile(x_vector, X.shape[0])
+        x_der = np.diag(X) - (x_matrix * np.transpose(x_matrix))
+        return x_der
 
 
 class Softsign():
@@ -143,7 +143,7 @@ class Softsign():
             Output Vector after Vectorised Operation.
         """
         return X / (np.abs(X) + 1)
-    
+
     def derivative(X):
         """
         Calculate derivative of Softsign on X Vector.
@@ -246,7 +246,7 @@ class LeakyRelu():
         return dx
 
 
-class Elu():   
+class Elu():
     def activation(X, alpha=1.0):
         """
         Apply Exponential Linear Unit on X Vector.
@@ -286,7 +286,7 @@ class Elu():
         ndarray(dtype=float,ndim=1)
             Output Vector after Vectorised Operation.
         """
-        return np.where(x > 0, np.ones_like(x), alpha * np.exp(x))
+        return np.where(X > 0, np.ones_like(X), alpha * np.exp(X))
 
 
 def unit_step(X):
