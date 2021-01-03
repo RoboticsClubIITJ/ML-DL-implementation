@@ -9,11 +9,11 @@ def test_Sigmoid():
         (1 / (1 + np.exp(-X))),
         Sigmoid.activation(X)
         ) is not True:
-        raise AssertionError
+            raise AssertionError
     if np.array_equal(
         (1 / (1 + np.exp(-X)))*(1-(1 / (1 + np.exp(-X)))),
         Sigmoid.derivative(X)) is not True:
-        raise AssertionError
+            raise AssertionError
 
 
 def test_Relu():
@@ -22,11 +22,11 @@ def test_Relu():
         np.maximum(0, X),
         Relu.activation(X)
         ) is not True:
-        raise AssertionError
+            raise AssertionError
     if np.array_equal(
         np.greater(X, 0).astype(int),
         Relu.derivative(X)) is not True:
-        raise AssertionError
+            raise AssertionError
 
 
 def test_unit_step():
@@ -35,4 +35,4 @@ def test_unit_step():
         np.heaviside(X, 1),
         unit_step(X)
         ) is not True:
-        raise AssertionError
+            raise AssertionError
