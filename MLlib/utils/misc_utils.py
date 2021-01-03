@@ -112,7 +112,7 @@ class OneHotEncoder():
         for i in range(m):
             ls = np.unique(X[:, i])
             n_unique = len(ls)
-            dic = dict()
+            dic = {}
 
             if n_unique/n > thresh:
                 self.encode.append(0)

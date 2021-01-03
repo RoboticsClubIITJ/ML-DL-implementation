@@ -31,7 +31,7 @@ def make_frequency_table(x, y, X, Y):
         frequency of y.
 
     """
-    freq = dict()
+    freq = {}
 
     for i in range(len(X)):
         freq[X[i]] = [0, 0]
