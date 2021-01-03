@@ -60,8 +60,7 @@ def generate_weights(rows, cols, zeros=False):
     """
     if zeros:
         return np.zeros((rows, cols))
-    else:
-        return np.random.rand(rows, cols)
+    return np.random.rand(rows, cols)
 
 
 def load_model(name):
