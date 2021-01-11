@@ -353,9 +353,7 @@ class DecisionTreeClassifier():
         # to the example we're considering.
         if self.root.question.match(row):
             return self.classify(row, self.root.true_branch)
-
-        else:
-            return self.classify(row, self.root.false_branch)
+        return self.classify(row, self.root.false_branch)
 
 
 class KNN():

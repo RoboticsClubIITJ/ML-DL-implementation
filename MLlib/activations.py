@@ -221,7 +221,8 @@ def elu(X, alpha=1.0):
     ndarray(dtype=float,ndim=1)
         Output Vector after Vectorised Operation.
     """
-    assert (alpha > 0)
+    if (alpha <= 0):
+        raise AssertionError
     return np.maximum(0, X) + np.minimum(0, alpha * (np.exp(X) - 1))
 
 
