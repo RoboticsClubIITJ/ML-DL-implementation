@@ -24,6 +24,10 @@ class Tensor:
         self.grad = None
         self.is_parameter = is_parameter
 
+    def __getitem__(self, *args):
+        # return a numpy array to make life simpler
+        return self.data.__getitem__(*args)
+
     # ----------------------
     # for printing tensors
     # ----------------------
