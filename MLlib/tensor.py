@@ -17,7 +17,7 @@ class Tensor:
 
         if not (isinstance(data, np.ndarray)):
             data = np.array(data)
-        self.data = np.array(data)
+        self.data = data
         self.requires_grad = requires_grad
         self.is_leaf = is_leaf
         self.grad_fn = None  # Set during forward pass
