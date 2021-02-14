@@ -10,7 +10,7 @@ class ContextManager:
     def __init__(self):
         self.saved_tensors = []
 
-    def save_for_forward(self, *args):
+    def save_for_backward(self, *args):
         for obj in args:
             if type(obj).__name__ != 'Tensor':
                 raise Exception('Expected a Tensor but got {}. \n \
@@ -44,7 +44,7 @@ class Function:
 
         backward_function = BackwardFunction(cls)
 
-        output_tensor = cls.forward(backward_function.cts, *args, **kwargs)
+        output_tensor = cls.forward(backward_function.ctx, *args, **kwargs)
 
         # TODO:  add parental nodes
         #       store current node in output
