@@ -5,16 +5,33 @@ import MLlib.functional as F
 class Tensor:
     """
     Tensor object which acts as a wrapper around a NumPy array.
-
-    Args:
-        data: the actual data of the tensor
-        requires_grad (boolean): If true, accumulate gradient in `.grad`
-        is_leaf (boolean): If true, this is a leaf tensor; see writeup.
-        is_parameter (boolean): If true, data contains trainable params
     """
 
     def __init__(self, data, requires_grad=False, is_leaf=True,
                  is_parameter=False, dtype='float32'):
+
+        """
+        PARAMETERS
+        ==========
+
+        data: list, tuple or np.array
+                The actual data of the tensor
+
+        requires_grad: boolean
+                        If true, accumulate gradient in `.grad`
+
+        is_leaf: boolean
+                    If true, this is a leaf tensor.
+
+        is_parameter: boolean
+                    If true, data contains trainable params.
+
+
+        RETURNS
+        =======
+
+        None
+        """
 
         if not (isinstance(data, np.ndarray)):
             data = np.array(data, dtype)
@@ -66,22 +83,95 @@ class Tensor:
     # ----------------------------------------------------------------
     @staticmethod
     def ones(*shape, **kwargs):
+        """
+        Similar to np.ones(...)
+
+        PARAMETERS
+        ==========
+        shape: int or tuple of ints
+                Used for defining shape of the Tensor
+
+        **kwargs
+
+        RETURNS
+        =======
+        a Tensor filled with ones of given `shape`
+        """
         return Tensor(np.ones(shape), **kwargs)
 
     @staticmethod
     def zeros(*shape, **kwargs):
+        """
+        Similar to np.zeros(...)
+
+        PARAMETERS
+        ==========
+        shape: int or tuple of ints
+                Used for defining shape of the Tensor
+
+        **kwargs
+
+        RETURNS
+        =======
+        a Tensor filled with zeros of given `shape`
+        """
         return Tensor(np.zeros(shape), **kwargs)
 
     @staticmethod
     def randn(*shape, **kwargs):
+        """
+        Similar to np.random.randn(...)
+        Generates a Tensor filled with ones.
+
+        PARAMETERS
+        ==========
+        shape: int or tuple of ints
+                Used for defining shape of the Tensor
+
+        **kwargs
+
+        RETURNS
+        =======
+        a Tensor of `shape` sampled from Gaussian Distribution with
+        mu=0 and sigma=1
+        """
         return Tensor(np.random.randn(shape), **kwargs)
 
     @staticmethod
     def arange(*interval, **kwargs):
+        """
+        Similar to np.arange(...)
+
+        PARAMETERS
+        ==========
+        interval: int or tuple of ints
+                Used to define interval for values inside Tensor
+
+        **kwargs
+
+        RETURNS
+        =======
+        a Tensor with values from `interval`
+        """
         return Tensor(np.arange(*interval), **kwargs)
 
     @staticmethod
     def empty(*shape, **kwargs):
+        """
+        Similar to np.empty(...)
+        Generates a Tensor filled with ones.
+
+        PARAMETERS
+        ==========
+        shape: int or tuple of ints
+                Used for defining shape of the Tensor
+
+        **kwargs
+
+        RETURNS
+        =======
+        an uninitialized Tensor with given shape and properties
+        """
         return Tensor(np.empty(shape), **kwargs)
 
     # ---------------------------------
@@ -102,9 +192,12 @@ class Tensor:
         return F.Reshape.apply(self, shape)
 
     def __add__(self, other):
-        # simple as `return self.data + other.data` right?
+        # handles Tensor + other
+
+        # simple as `return Tensor(self.data + other.data)` right?
         # NO. we need to link this to our computational graph too
 
+        # Done to support operations with int and float data
         if type(other) == int:
             other = float(other)
 
@@ -114,9 +207,12 @@ class Tensor:
         return F.Add.apply(self, other)
 
     def __radd__(self, other):
+        # handles other + Tensor
         return self.__add__(other)
 
     def __sub__(self, other):
+    
+        # Done to support operations with int and float data
         if type(other) == int:
             other = float(other)
 
@@ -135,6 +231,8 @@ class Tensor:
         return self.__matmul__(other)
 
     def __truediv__(self, other):
+
+        # Done to support operations with int and float data
         if type(other) == int:
             other = float(other)
 
@@ -147,6 +245,8 @@ class Tensor:
         return self.__truediv__(other)
 
     def __mul__(self, other):
+
+        # Done to support operations with int and float data
         if type(other) == int:
             other = float(other)
 
@@ -159,6 +259,8 @@ class Tensor:
         return self.__mul__(other)
 
     def __pow__(self, other):
+
+        # Done to support operations with int and float data
         if type(other) == int:
             other = float(other)
 
@@ -168,6 +270,8 @@ class Tensor:
         return F.Pow.apply(self, other)
 
     def __rpow__(self, other):
+
+        # Done to support operations with int and float data
         if type(other) == int:
             other = float(other)
 
