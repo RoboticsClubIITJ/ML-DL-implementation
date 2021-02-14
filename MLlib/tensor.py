@@ -1,4 +1,5 @@
 import numpy as np
+import MLlib.functional as F
 
 
 class Tensor:
@@ -13,10 +14,10 @@ class Tensor:
     """
 
     def __init__(self, data, requires_grad=False, is_leaf=True,
-                 is_parameter=False):
+                 is_parameter=False, dtype='float32'):
 
         if not (isinstance(data, np.ndarray)):
-            data = np.array(data)
+            data = np.array(data, dtype)
         self.data = data
         self.requires_grad = requires_grad
         self.is_leaf = is_leaf
@@ -97,16 +98,59 @@ class Tensor:
     def __add__(self, other):
         # simple as `return self.data + other.data` right?
         # NO. we need to link this to our computational graph too
-        pass
+
+        if type(other) == int:
+            other = float(other)
+
+        if type(other) == float:
+            other = Tensor(other)
+
+        return F.Add.apply(self, other)
+
+    def __radd__(self, other):
+        return self.__add__(other)
 
     def __sub__(self, other):
-        pass
+        if type(other) == int:
+            other = float(other)
+
+        if type(other) == float:
+            other = Tensor(other)
+
+        return F.Sub.apply(self, other)
+
+    def __rsub__(self, other):
+        return self.__sub__(other)
 
     def __matmul__(self, other):
-        pass
+        return F.MatMul.apply(self, other)
+
+    def __rmatmul__(self, other):
+        return self.__matmul__(other)
 
     def __truediv__(self, other):
-        pass
+        if type(other) == int:
+            other = float(other)
+
+        if type(other) == float:
+            other = Tensor(other)
+
+        return F.Div.apply(self, other)
+
+    def __rtruediv__(self, other):
+        return self.__truediv__(other)
 
     def __mul__(self, other):
-        pass
+        if type(other) == int:
+            other = float(other)
+
+        if type(other) == float:
+            other = Tensor(other)
+
+        return F.Mul.apply(self, other)
+
+    def __rmul__(self, other):
+        return self.__mul__(other)
+
+    def dot(self, other):
+        return F.Dot.apply(self, other)
