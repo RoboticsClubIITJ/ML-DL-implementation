@@ -78,6 +78,12 @@ class Tensor:
         """
         return Tensor(self.data, **kwargs)
 
+    def numpy(self):
+        """
+        Returns the data stored in Tensor as np.array
+        """
+        return self.data
+
     # ----------------------------------------------------------------
     # Tensor creation methods, can be used WITHOUT creating a tensor
     # ----------------------------------------------------------------
@@ -159,7 +165,7 @@ class Tensor:
     def empty(*shape, **kwargs):
         """
         Similar to np.empty(...)
-        Generates a Tensor filled with ones.
+        Generates a Tensor with uninitialized data.
 
         PARAMETERS
         ==========
@@ -170,7 +176,7 @@ class Tensor:
 
         RETURNS
         =======
-        an uninitialized Tensor with given shape and properties
+        a Tensor containing uninitialized with given shape and properties
         """
         return Tensor(np.empty(shape), **kwargs)
 
