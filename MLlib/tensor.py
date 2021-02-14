@@ -211,7 +211,7 @@ class Tensor:
         return self.__add__(other)
 
     def __sub__(self, other):
-    
+
         # Done to support operations with int and float data
         if type(other) == int:
             other = float(other)
