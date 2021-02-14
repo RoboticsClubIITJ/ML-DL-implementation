@@ -20,7 +20,27 @@ class Transpose(autograd.Function):
 
         b = MLlib.Tensor(a.data.T, requires_grad=requires_grad,
                          is_leaf=not requires_grad)
+
         return b
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        # TODO
+        pass
+
+
+class Reshape(autograd.Function):
+
+    @staticmethod
+    def forward(ctx, a, shape):
+        if not type(a).__name__ == 'Tensor':
+            raise Exception("Arg for Reshape must be tensor, got\
+                         {}".format(type(a).__name__))
+        ctx.shape = a.shape
+        requires_grad = a.requires_grad
+        c = MLlib.Tensor(a.data.reshape(shape), requires_grad=requires_grad,
+                         is_leaf=not requires_grad)
+        return c
 
     @staticmethod
     def backward(ctx, grad_output):
@@ -188,6 +208,35 @@ class Dot(autograd.Function):
         c = MLlib.Tensor(np.dot(a.data, b.data), requires_grad=requires_grad,
                          is_leaf=not requires_grad)
 
+        return c
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        # TODO
+        pass
+
+
+class Sum(autograd.Function):
+
+    @staticmethod
+    def forward(ctx, a, axis, keepdims):
+        if not type(a).__name__ == 'Tensor':
+            raise Exception("Only sum of tensor is supported")
+
+        ctx.axis = axis
+        ctx.shape = a.shape
+
+        if axis is not None:
+            ctx.len = a.shape[axis]
+
+        ctx.keepdims = keepdims
+
+        requires_grad = a.requires_grad
+
+        c = MLlib.Tensor(a.data.sum(axis=axis, keepdims=keepdims),
+                         requires_grad=requires_grad,
+                         is_leaf=not requires_grad)
+        # print(a.shape, c.shape)
         return c
 
     @staticmethod

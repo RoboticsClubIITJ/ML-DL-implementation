@@ -95,6 +95,12 @@ class Tensor:
     # Tensor operations that get reflected on the computation graph
     # --------------------------------------------------------------
 
+    def T(self):
+        return F.Transpose.apply(self)
+
+    def reshape(self, *shape):
+        return F.Reshape.apply(self, shape)
+
     def __add__(self, other):
         # simple as `return self.data + other.data` right?
         # NO. we need to link this to our computational graph too
@@ -172,3 +178,6 @@ class Tensor:
 
     def dot(self, other):
         return F.Dot.apply(self, other)
+
+    def sum(self, axis=None, keepdims=False):
+        return F.Sum.apply(self, axis, keepdims)
