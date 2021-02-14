@@ -5,6 +5,7 @@ class ContextManager:
     Passed as arguement ctx to functions
 
     1. To store tensors: simply use ctx.save_for_backward(tensor1, tensor2,...)
+    2. To store any other data: save as new attribute
     """
 
     def __init__(self):
