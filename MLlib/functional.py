@@ -7,6 +7,11 @@ class Transpose(autograd.Function):
 
     @staticmethod
     def forward(ctx, a):
+
+        if not (type(a).__name__ == 'Tensor'):
+            raise Exception("The arg must be Tensors, got \
+                {} instead".format(type(a).__name__))
+
         if not len(a.shape) == 2:
             raise Exception("Arg for Transpose must be 2D tensor, \
                 got {}".format(a.shape))
@@ -27,7 +32,10 @@ class Add(autograd.Function):
 
     @staticmethod
     def forward(ctx, a, b):
-        # a, b are tensors: must be checked in Tensor.__add__()
+
+        if not (type(a).__name__ == 'Tensor' and type(b).__name__ == 'Tensor'):
+            raise Exception("Both args must be Tensors, got \
+                {}, {} instead".format(type(a).__name__, type(b).__name__))
 
         ctx.save_for_backward(a, b)
 
@@ -48,7 +56,10 @@ class Sub(autograd.Function):
 
     @staticmethod
     def forward(ctx, a, b):
-        # a, b are tensors: must be checked in Tensor.__sub__()
+
+        if not (type(a).__name__ == 'Tensor' and type(b).__name__ == 'Tensor'):
+            raise Exception("Both args must be Tensors, got \
+                {}, {} instead".format(type(a).__name__, type(b).__name__))
 
         ctx.save_for_backward(a, b)
 
@@ -69,7 +80,10 @@ class Mul(autograd.Function):
 
     @staticmethod
     def forward(ctx, a, b):
-        # a, b are tensors: must be checked in Tensor.__mul__()
+
+        if not (type(a).__name__ == 'Tensor' and type(b).__name__ == 'Tensor'):
+            raise Exception("Both args must be Tensors, got \
+                {}, {} instead".format(type(a).__name__, type(b).__name__))
 
         ctx.save_for_backward(a, b)
 
@@ -91,11 +105,16 @@ class MatMul(autograd.Function):
     @staticmethod
     def forward(ctx, a, b):
 
+        if not (type(a).__name__ == 'Tensor' and type(b).__name__ == 'Tensor'):
+            raise Exception("Both args must be Tensors, got \
+                {}, {} instead".format(type(a).__name__, type(b).__name__))
+
         ctx.save_for_backward(a, b)
 
         requires_grad = a.requires_grad or b.requires_grad
 
-        c = MLlib.Tensor(np.matmul(a, b), requires_grad=requires_grad,
+        c = MLlib.Tensor(np.matmul(a.data, b.data),
+                         requires_grad=requires_grad,
                          is_leaf=not requires_grad)
 
         return c
@@ -111,11 +130,15 @@ class Dot(autograd.Function):
     @staticmethod
     def forward(ctx, a, b):
 
+        if not (type(a).__name__ == 'Tensor' and type(b).__name__ == 'Tensor'):
+            raise Exception("Both args must be Tensors, got \
+                {}, {} instead".format(type(a).__name__, type(b).__name__))
+
         ctx.save_for_backward(a, b)
 
         requires_grad = a.requires_grad or b.requires_grad
 
-        c = MLlib.Tensor(np.dot(a, b), requires_grad=requires_grad,
+        c = MLlib.Tensor(np.dot(a.data, b.data), requires_grad=requires_grad,
                          is_leaf=not requires_grad)
 
         return c
