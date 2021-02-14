@@ -148,6 +148,30 @@ class MatMul(autograd.Function):
         pass
 
 
+class Pow(autograd.Function):
+
+    @staticmethod
+    def forward(ctx, a, b):
+
+        if not (type(a).__name__ == 'Tensor' and type(b).__name__ == 'Tensor'):
+            raise Exception("Both args must be Tensors, got \
+                {}, {} instead".format(type(a).__name__, type(b).__name__))
+
+        ctx.save_for_backward(a, b)
+
+        requires_grad = a.requires_grad or b.requires_grad
+
+        c = MLlib.Tensor(np.power(a.data, b.data), requires_grad=requires_grad,
+                         is_leaf=not requires_grad)
+
+        return c
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        # TODO
+        pass
+
+
 class Dot(autograd.Function):
 
     @staticmethod

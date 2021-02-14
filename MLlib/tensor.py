@@ -152,5 +152,23 @@ class Tensor:
     def __rmul__(self, other):
         return self.__mul__(other)
 
+    def __pow__(self, other):
+        if type(other) == int:
+            other = float(other)
+
+        if type(other) == float:
+            other = Tensor(other)
+
+        return F.Pow.apply(self, other)
+
+    def __rpow__(self, other):
+        if type(other) == int:
+            other = float(other)
+
+        if type(other) == float:
+            other = Tensor(other)
+
+        return F.Pow.apply(other, self)
+
     def dot(self, other):
         return F.Dot.apply(self, other)
