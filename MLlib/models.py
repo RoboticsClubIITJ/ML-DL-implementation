@@ -8,6 +8,7 @@ from MLlib.utils.naive_bayes_utils import make_likelihood_table
 from MLlib.utils.gaussian_naive_bayes_utils import get_mean_var, p_y_given_x
 from MLlib.utils.k_means_clustering_utils import initi_centroid, cluster_allot
 from MLlib.utils.k_means_clustering_utils import new_centroid, xy_calc
+from MLlib.utils.pca_utils import PCA_utils, infer_dimension
 from collections import Counter
 import numpy as np
 import pickle
@@ -642,3 +643,111 @@ class KMeansClustering():
             print("==============================\n")
             print(cluster)
             print("\n==============================\n")
+
+# ---------------------- Principle Component Analysis ------------------------
+
+
+class PCA(PCA_utils):
+    """
+    Principal component analysis (PCA):
+    Linear dimensionality reduction using Singular Value Decomposition of the
+    data to project it to a lower dimensional space. The input data is centered
+    but not scaled for each feature before applying the SVD.
+    """
+    def __init__(self, n_components=None, whiten=False, svd_solver='auto'):
+        self.n_components = n_components
+        self.whiten = whiten
+        self.svd_solver = svd_solver
+        self.components = None
+        self.mean = None
+        self.explained_variances = None
+        self.noise_variance = None
+        self.fitted = False
+
+    def fit(self, X, y=None):
+        # fit the model with the data X
+        self._fit(X)
+        return self
+
+    def fit_transform(self, X, y=None):
+        """Fit the model with X and apply the dimensionality reduction on X."""
+        U, S, Vh = self._fit(X)
+        U = U[:, :self.n_components]
+        if self.whiten:
+            U *= math.sqrt(X.shape[0] - 1)
+        else:
+            U *= S[:self.n_components]
+        return U
+
+    def _fit(self, X):
+        '''Fitting function for the model'''
+        # count the sparsity of the  ndarray
+        count = np.count_nonzero(X)
+        sparsity = 1.0 - (count/np.size(X))
+        if sparsity > 0.5:
+            raise TypeError('PCA does not support sparse input.')
+        if self.n_components is None:
+            n_components = min(X.shape)
+        else:
+            n_components = self.n_components
+        fit_svd_solver = self.svd_solver
+        if fit_svd_solver == 'auto':
+            # Small problem or n_components == 'mle', call full PCA
+            if max(X.shape) <= 500 or n_components == 'mle':
+                fit_svd_solver = 'full'
+            elif n_components >= 1 and n_components < .8 * min(X.shape):
+                fit_svd_solver = 'randomized'
+            # Case of n_components in (0,1)
+            else:
+                fit_svd_solver = 'full'
+        # Call different fits for either full or truncated SVD
+        if fit_svd_solver == 'full':
+            return self.fit_full(X, n_components)
+        else:
+            raise ValueError("Unrecognized svd_solver="
+                             "'{0}'".format(fit_svd_solver))
+
+    def fit_full(self, X, n_components):
+        """Fit the model by computing full SVD on X."""
+        n_samples, n_features = X.shape
+        if n_components == 'mle':
+            if n_samples < n_features:
+                raise ValueError("n_components='mle' is only "
+                                 "supported if n_samples >= n_features")
+        # mean of the dataset
+        self.mean = np.mean(X, axis=0)
+        std = np.std(X)
+        X = (X - self.mean) / std
+        U, S, Vh = np.linalg.svd(X, full_matrices=False)
+        # flip eigenvectors' sign to enforce deterministic output
+        # columns of U, rows of Vh
+        max_abs_cols = np.argmax(np.abs(U), axis=0)
+        signs = np.sign(U[max_abs_cols, range(U.shape[1])])
+        U *= signs
+        Vh *= signs[:, np.newaxis]
+        components = Vh
+        # explained variance by singular values
+        explained_variances = (S**2)/(n_samples-1)
+        explained_variance_ratio = (explained_variances /
+                                    explained_variances.sum())
+        singular_value = S.copy()
+        if n_components == 'mle':
+            n_components = infer_dimension(explained_variances, n_samples)
+        elif 0 < n_components < 1.0:
+            ratio_cumsum = np.cumsum(explained_variance_ratio, axis=None,
+                                     dtype=np.float64)
+            n_components = np.searchsorted(ratio_cumsum, n_components,
+                                           side='right') + 1
+        # Computing noise covariance using Probabilistic PCA model
+        if n_components < min(n_features, n_samples):
+            self.noise_variance = explained_variances[n_components:].mean()
+        else:
+            self.noise_variance = 1.0
+        # storing the first n_component values
+        self.components = components[:n_components]
+        self.n_components = self.n_components
+        self.explained_variances = explained_variances[:n_components]
+        self.explained_variance_ratio = explained_variance_ratio[:n_components]
+        self.singular_value = singular_value[:n_components]
+        self.fitted = True
+        return U, S, Vh
