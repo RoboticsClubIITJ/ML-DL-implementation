@@ -1,5 +1,5 @@
 from MLlib.optimizers import GradientDescent
-from MLlib.activations import sigmoid
+from MLlib.activations import Sigmoid
 from MLlib.utils.misc_utils import generate_weights
 from MLlib.utils.decision_tree_utils import partition, find_best_split
 from MLlib.utils.decision_tree_utils import Leaf, Decision_Node
@@ -238,7 +238,8 @@ class LogisticRegression(LinearRegression):
             belongs to class 0 or class 1.
         """
         prediction = np.dot(X, self.weights).T
-        return sigmoid(prediction)
+        sigmoid = Sigmoid()
+        return sigmoid.activation(prediction)
 
     def classify(self, X):
         """
@@ -272,7 +273,8 @@ class LogisticRegression(LinearRegression):
 
         """
         prediction = np.dot(X, self.weights).T
-        prediction = sigmoid(prediction)
+        sigmoid = Sigmoid()
+        prediction = sigmoid.activation(prediction)
         actual_predictions = np.zeros((1, X.shape[0]))
         for i in range(prediction.shape[1]):
             if prediction[0][i] > 0.5:

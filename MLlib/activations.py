@@ -2,6 +2,7 @@ import numpy as np
 
 
 class Sigmoid():
+    @staticmethod
     def activation(X):
         """
         Apply Sigmoid on X Vector.
@@ -20,6 +21,7 @@ class Sigmoid():
         """
         return 1 / (1 + np.exp(-X))
 
+    @staticmethod
     def derivative(X):
         """
         Calculate derivative of Sigmoid on X Vector.

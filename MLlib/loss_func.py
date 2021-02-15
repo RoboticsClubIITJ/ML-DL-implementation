@@ -1,5 +1,5 @@
 import numpy as np
-from MLlib.activations import sigmoid
+from MLlib.activations import Sigmoid
 
 
 class MeanSquaredError():
@@ -80,7 +80,8 @@ class LogarithmicError():
          array of logarithmic losses
         """
         M = X.shape[0]
-        H = sigmoid(np.dot(X, W).T)
+        sigmoid = Sigmoid()
+        H = sigmoid.activation(np.dot(X, W).T)
         return (1/M)*(np.sum((-Y)*np.log(H)-(1-Y)*np.log(1-H)))
 
     @staticmethod
@@ -104,7 +105,8 @@ class LogarithmicError():
          array of derivates
         """
         M = X.shape[0]
-        H = sigmoid(np.dot(X, W).T)
+        sigmoid = Sigmoid()
+        H = sigmoid.activation(np.dot(X, W).T)
         return (1/M)*(np.dot(X.T, (H-Y).T))
 
 
