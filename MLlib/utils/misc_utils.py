@@ -70,6 +70,18 @@ def load_model(name):
     return model
 
 
+def unbroadcast(grad, shape, to_keep=0):
+    """
+    Used in autograd to ubroadcast gradients back to their original shape.
+    """
+    while len(grad.shape) != len(shape):
+        grad = grad.sum(axis=0)
+    for i in range(len(shape) - to_keep):
+        if grad.shape[i] != shape[i]:
+            grad = grad.sum(axis=i, keepdims=True)
+    return grad
+
+
 class OneHotEncoder():
     """
     FUNCTIONS
