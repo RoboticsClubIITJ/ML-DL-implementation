@@ -1,3 +1,5 @@
+from MLlib import Tensor
+
 
 class ContextManager:
     """
@@ -71,3 +73,31 @@ class BackwardFunction:
 
         return self._forward_cls.backward(self.ctx, args)
         # this ctx was already supplied to the forward function in .apply()
+
+
+class AccumulateGrad:
+    """
+    Represents a node where gradient must be accumulated.
+    """
+    def __init__(self, tensor):
+        self.variable = tensor
+
+        self.next_functions = []  # nodes of current node's parents (empty)
+        # exists just to be consistent in format
+        #  with BackwardFunction
+
+        self.function_name = "AccumulateGrad"  # just for convenience
+
+    def apply(self, arg):
+        """Accumulates the provided gradient.
+        """
+        # if no grad stored yet, initialize. otherwise +=
+        if self.variable.grad is None:
+            self.variable.grad = Tensor(arg.data)
+        else:
+            self.variable.grad.data += arg.data
+
+        # Some tests to make sure valid grads were stored.
+        shape = self.variable.shape
+        grad_shape = self.variable.grad.shape
+        assert shape == grad_shape, (shape, grad_shape)
