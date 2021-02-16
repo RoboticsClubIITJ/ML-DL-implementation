@@ -1,8 +1,7 @@
 from MLlib.models import BernoulliNB
 import numpy as np
 
-
-with open('MLlib/datasets/bernoulli_dataset.txt', 'r') as f:
+with open('/datasets/bernoulli_naive_bayes_dataset.txt', 'r') as f:
     words = [[string.strip('\n')
               for string in line.split(',')] for line in f]
 for i in range(len(words)):
