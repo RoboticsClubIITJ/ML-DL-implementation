@@ -141,7 +141,7 @@ class Tensor:
         a Tensor of `shape` sampled from Gaussian Distribution with
         mu=0 and sigma=1
         """
-        return Tensor(np.random.randn(shape), **kwargs)
+        return Tensor(np.random.randn(*shape), **kwargs)
 
     @staticmethod
     def arange(*interval, **kwargs):
@@ -176,7 +176,7 @@ class Tensor:
 
         RETURNS
         =======
-        a Tensor containing uninitialized with given shape and properties
+        a Tensor containing uninitialized data with given shape and properties
         """
         return Tensor(np.empty(shape), **kwargs)
 
@@ -228,13 +228,21 @@ class Tensor:
         return F.Sub.apply(self, other)
 
     def __rsub__(self, other):
-        return self.__sub__(other)
+
+        # Done to support operations with int and float data
+        if type(other) == int:
+            other = float(other)
+
+        if type(other) == float:
+            other = Tensor(other)
+
+        return F.Sub.apply(other, self)
+
+    def __neg__(self):
+        return (-1)*self
 
     def __matmul__(self, other):
         return F.MatMul.apply(self, other)
-
-    def __rmatmul__(self, other):
-        return self.__matmul__(other)
 
     def __truediv__(self, other):
 
@@ -248,7 +256,15 @@ class Tensor:
         return F.Div.apply(self, other)
 
     def __rtruediv__(self, other):
-        return self.__truediv__(other)
+
+        # Done to support operations with int and float data
+        if type(other) == int:
+            other = float(other)
+
+        if type(other) == float:
+            other = Tensor(other)
+
+        return F.Div.apply(other, self)
 
     def __mul__(self, other):
 
