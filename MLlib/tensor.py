@@ -186,11 +186,15 @@ class Tensor:
     # ----------------------------------
     def backward(self, grad_of_output=None):
         if grad_of_output is None:
-            grad_of_output = Tensor.ones(self.shape)
+            grad_of_output = Tensor.ones(*self.shape)
 
         if grad_of_output.shape != self.shape:
             # this block will be executed only when graient is supplied
             raise Exception('The shape of gradient and variable must match')
+
+        if self.grad_fn is None:
+            raise Exception('backward should not be called on tensors without'
+                            + 'without grad_fn')
 
         return autograd.backward(self.grad_fn, grad_of_output)
 

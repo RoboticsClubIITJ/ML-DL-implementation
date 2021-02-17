@@ -1,4 +1,4 @@
-from MLlib import Tensor
+from MLlib import tensor
 
 
 def backward(grad_fn, grad_of_outputs):
@@ -47,15 +47,24 @@ class Function:
     def apply(cls, *args, **kwargs):
         """
         Runs .forward() of subclass and links node to the comp graph.
-        #TODO: linking node to the comp graph.
         """
 
         backward_function = BackwardFunction(cls)
 
         output_tensor = cls.forward(backward_function.ctx, *args, **kwargs)
 
-        # TODO:  add parental nodes
-        #       store current node in output
+        # grad_fn contains the node object
+        # adding parental nodes to the comp graph
+        for obj in args:
+            if type(obj).__name__ == 'Tensor':
+                # parent should only be conected if it requires_grad
+                if obj.requires_grad:
+                    if obj.grad_fn is None:
+                        obj.grad_fn = AccumulateGrad(obj)
+                    backward_function.next_functions.append(obj.grad_fn)
+
+        # store the none on current tensor inside grad_fn
+        output_tensor.grad_fn = backward_function
 
         return output_tensor
 
@@ -98,7 +107,7 @@ class AccumulateGrad:
         """
         # if no grad stored yet, initialize. otherwise +=
         if self.variable.grad is None:
-            self.variable.grad = Tensor(arg.data)
+            self.variable.grad = tensor.Tensor(arg.data)
         else:
             self.variable.grad.data += arg.data
 
