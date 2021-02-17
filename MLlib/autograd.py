@@ -1,9 +1,32 @@
 from MLlib import tensor
 
 
-def backward(grad_fn, grad_of_outputs):
-    # TODO
-    pass
+def backward(grad_fn, grad_of_output):
+    """
+    Recursive DFS that traverses the computation graph backward.
+
+    PARAMETERS
+    ==========
+    grad_fn: node of the current Tensor.
+
+    grad_of_output: gradient of final output with respect to the current
+                    Tensor.
+    """
+
+    # obtain gradients to be passed
+    out_grads = grad_fn.apply(grad_of_output)
+
+    if out_grads is not None:
+        out_grads = [tnsr for tnsr in out_grads]
+
+    # pass them
+    parent_nodes = grad_fn.next_functions
+
+    if len(parent_nodes) > 0:
+        for i in range(len(parent_nodes)):
+            if parent_nodes[i] is not None:
+                # print('now calling ', parent_nodes[i]) for debugging
+                backward(parent_nodes[i], out_grads[i])
 
 
 class ContextManager:
@@ -56,12 +79,12 @@ class Function:
         # grad_fn contains the node object
         # adding parental nodes to the comp graph
         for obj in args:
-            if type(obj).__name__ == 'Tensor':
-                # parent should only be conected if it requires_grad
-                if obj.requires_grad:
+            if type(obj).__name__ == 'Tensor':      # parent tensor
+                if obj.requires_grad and obj.is_leaf:
+                    # if True,gradients must be stored in nodes during backprop
                     if obj.grad_fn is None:
                         obj.grad_fn = AccumulateGrad(obj)
-                    backward_function.next_functions.append(obj.grad_fn)
+                backward_function.next_functions.append(obj.grad_fn)
 
         # store the none on current tensor inside grad_fn
         output_tensor.grad_fn = backward_function
@@ -85,7 +108,7 @@ class BackwardFunction:
 
     def apply(self, *args, **kwagrs):
 
-        return self._forward_cls.backward(self.ctx, args)
+        return self._forward_cls.backward(self.ctx, *args)
         # this ctx was already supplied to the forward function in .apply()
 
 
@@ -100,10 +123,11 @@ class AccumulateGrad:
         # exists just to be consistent in format
         #  with BackwardFunction
 
-        self.function_name = "AccumulateGrad"  # just for convenience
+        self.function_name = 'AccumulateGrad'  # just for convenience
 
     def apply(self, arg):
-        """Accumulates the provided gradient.
+        """
+        Accumulates the provided gradient.
         """
         # if no grad stored yet, initialize. otherwise +=
         if self.variable.grad is None:
