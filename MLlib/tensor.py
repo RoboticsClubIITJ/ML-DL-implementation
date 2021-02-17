@@ -193,7 +193,7 @@ class Tensor:
             raise Exception('The shape of gradient and variable must match')
 
         if self.grad_fn is None:
-            raise Exception('backward should not be called on tensors without'
+            raise Exception('backward should not be called on tensors '
                             + 'without grad_fn')
 
         return autograd.backward(self.grad_fn, grad_of_output)
