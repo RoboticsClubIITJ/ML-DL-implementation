@@ -558,6 +558,30 @@ class Gaussian_Naive_Bayes():
         return prediction
 
 
+class BernoulliNB(object):
+    def __init__(self, alpha=1):
+        self.alpha = alpha
+
+    def fit(self, x, y):
+
+        separate = [[i for i, t in zip(x, y) if t == c] for c in np.unique(y)]
+        count_for_sample = x.shape[0]
+        self.class_log = [np.log(len(i)/count_for_sample) for i in separate]
+        count = self.alpha + np.array([np.array(i).sum(axis=0) for i in
+                                      separate])
+        smoothing = 2 * self.alpha
+        doc = np.array([smoothing + len(i) for i in separate])
+        self.log_prob = count / doc[np.newaxis].T
+        return self
+
+    def predict_log(self, x):
+        return [(np.log(self.log_prob) * i + np.log(1 - self.log_prob) *
+                np.abs(i - 1)).sum(axis=1) + self.class_log for i in x]
+
+    def predict(self, x):
+        return np.argmax(self.predict_log(x), axis=1)
+
+
 class KMeansClustering():
     """
     One of the models used for Unsupervised
