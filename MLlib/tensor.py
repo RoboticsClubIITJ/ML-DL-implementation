@@ -1,5 +1,6 @@
 import numpy as np
 import MLlib.functional as F
+import MLlib.autograd as autograd
 
 
 class Tensor:
@@ -8,7 +9,7 @@ class Tensor:
     """
 
     def __init__(self, data, requires_grad=False, is_leaf=True,
-                 is_parameter=False, dtype='float32'):
+                 is_parameter=False, dtype=None):
 
         """
         PARAMETERS
@@ -183,9 +184,15 @@ class Tensor:
     # ---------------------------------
     # Autograd backward initialization
     # ----------------------------------
-    def backward(self):
-        # TODO
-        pass
+    def backward(self, grad_of_output=None):
+        if grad_of_output is None:
+            grad_of_output = Tensor.ones(self.shape)
+
+        if grad_of_output.shape != self.shape:
+            # this block will be executed only when graient is supplied
+            raise Exception('The shape of gradient and variable must match')
+
+        return autograd.backward(self.grad_fn, grad_of_output)
 
     # --------------------------------------------------------------
     # Tensor operations that get reflected on the computation graph

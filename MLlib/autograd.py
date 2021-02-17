@@ -1,6 +1,11 @@
 from MLlib import Tensor
 
 
+def backward(grad_fn, grad_of_outputs):
+    # TODO
+    pass
+
+
 class ContextManager:
     """
     Used to pass variables between function's .forward() and .backward()
