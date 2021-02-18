@@ -89,7 +89,7 @@ class Tensor:
     # Tensor creation methods, can be used WITHOUT creating a tensor
     # ----------------------------------------------------------------
     @staticmethod
-    def ones(*shape, **kwargs):
+    def ones(shape, **kwargs):
         """
         Similar to np.ones(...)
 
@@ -186,7 +186,7 @@ class Tensor:
     # ----------------------------------
     def backward(self, grad_of_output=None):
         if grad_of_output is None:
-            grad_of_output = Tensor.ones(*self.shape)
+            grad_of_output = Tensor.ones(self.shape)
 
         if grad_of_output.shape != self.shape:
             # this block will be executed only when graient is supplied

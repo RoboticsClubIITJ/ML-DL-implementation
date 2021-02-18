@@ -16,17 +16,21 @@ def backward(grad_fn, grad_of_output):
     # obtain gradients to be passed
     out_grads = grad_fn.apply(grad_of_output)
 
-    if out_grads is not None:
-        out_grads = [tnsr for tnsr in out_grads]
+    if out_grads is not None and type(out_grads).__name__ != 'Tensor':
+        out_grads = list(out_grads)
 
     # pass them
     parent_nodes = grad_fn.next_functions
 
-    if len(parent_nodes) > 0:
+    if len(parent_nodes) > 1:
         for i in range(len(parent_nodes)):
             if parent_nodes[i] is not None:
                 # print('now calling ', parent_nodes[i]) for debugging
                 backward(parent_nodes[i], out_grads[i])
+
+    if len(parent_nodes) == 1:
+        if parent_nodes[0] is not None:
+            backward(parent_nodes[0], out_grads)
 
 
 class ContextManager:

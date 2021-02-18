@@ -240,15 +240,12 @@ class Pow(autograd.Function):
     @staticmethod
     def backward(ctx, grad_output):
         a, b, output = ctx.saved_tensors
-        grad_a = grad_b = None
 
-        if a.requires_grad:
-            grad_a = b.data * np.power(a.data, b.data-1) * grad_output.data
-            grad_a = MLlib.Tensor(unbroadcast(grad_a, a.shape))
+        grad_a = b.data * np.power(a.data, b.data-1) * grad_output.data
+        grad_a = MLlib.Tensor(unbroadcast(grad_a, a.shape))
 
-        if b.requires_grad:
-            grad_b = output.data * np.log(a.data) * grad_output.data
-            grad_b = MLlib.Tensor(unbroadcast(grad_b, b.shape))
+        grad_b = output.data * np.log(a.data) * grad_output.data
+        grad_b = MLlib.Tensor(unbroadcast(grad_b, b.shape))
 
         return grad_a, grad_b
 
