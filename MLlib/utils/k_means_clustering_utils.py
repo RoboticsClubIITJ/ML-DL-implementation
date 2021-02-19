@@ -84,7 +84,7 @@ def initi_centroid(M, num_cluster):
 
     """
     indexes = np.random.choice(M.shape[0], num_cluster, replace=False)
-    np.sort(indexes)
+    indexes.sort()
     centroid = []
     for indice in indexes:
         centroid.append(M[indice])
@@ -191,6 +191,7 @@ def xy_calc(M, centroid):
         lis[indice][0] += point[0]
         lis[indice][1] += point[1]
         lis[indice][2] += 1
+  
     return lis
 
 
