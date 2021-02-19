@@ -81,45 +81,88 @@ class TanH():
         return 1.0 - np.tanh(X)**2
 
 
-def softmax(X):
-    """
-    Apply Softmax on X Vector.
+class Softmax():
+    def activation(X):
+        """
+        Apply Softmax on X Vector.
 
-    PARAMETERS
-    ==========
+        PARAMETERS
+        ==========
 
-    X: ndarray(dtype=float, ndim=1)
-        Array containing Input Values.
-    Sum: float
-        Sum of values of Input Array.
+        X: ndarray(dtype=float, ndim=1)
+            Array containing Input Values.
+        Sum: float
+            Sum of values of Input Array.
 
-    RETURNS
-    =======
+        RETURNS
+        =======
 
-    ndarray(dtype=float,ndim=1)
-        Output Vector after Vectorised Operation.
-    """
-    Sum = np.sum(np.exp(X))
-    return np.exp(X) / Sum
+        ndarray(dtype=float,ndim=1)
+            Output Vector after Vectorised Operation.
+        """
+        Sum = np.sum(np.exp(X))
+        return np.exp(X) / Sum
+
+    def derivative(X):
+        """
+        Calculate derivative of Softmax on X Vector.
+
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=float, ndim=1)
+            Array containing Input Values.
+        Sum: float
+            Sum of values of Input Array.
+
+        RETURNS
+        =======
+
+        ndarray(dtype=float,ndim=1)
+            Output Vector after Vectorised Operation.
+        """
+        x_vector = X.reshape(X.shape[0], 1)
+        x_matrix = np.tile(x_vector, X.shape[0])
+        x_der = np.diag(X) - (x_matrix * np.transpose(x_matrix))
+        return x_der
 
 
-def softsign(X):
-    """
-    Apply Softsign on X Vector.
+class Softsign():
+    def activation(X):
+        """
+        Apply Softsign on X Vector.
 
-    PARAMETERS
-    ==========
+        PARAMETERS
+        ==========
 
-    X: ndarray(dtype=float, ndim=1)
-        Array containing Input Values.
+        X: ndarray(dtype=float, ndim=1)
+            Array containing Input Values.
 
-    RETURNS
-    =======
+        RETURNS
+        =======
 
-    ndarray(dtype=float,ndim=1)
-        Output Vector after Vectorised Operation.
-    """
-    return X / (np.abs(X) + 1)
+        ndarray(dtype=float,ndim=1)
+            Output Vector after Vectorised Operation.
+        """
+        return X / (np.abs(X) + 1)
+
+    def derivative(X):
+        """
+        Calculate derivative of Softsign on X Vector.
+
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=float, ndim=1)
+            Array containing Input Values.
+
+        RETURNS
+        =======
+
+        ndarray(dtype=float,ndim=1)
+            Output Vector after Vectorised Operation.
+        """
+        return 1 / (np.abs(X) + 1)**2
 
 
 class Relu():
@@ -205,21 +248,21 @@ class LeakyRelu():
         return dx
 
 
-def elu(X, alpha=1.0):
-    """
-    Apply Exponential Linear Unit on X Vector.
+class Elu():
+    def activation(X, alpha=1.0):
+        """
+        Apply Exponential Linear Unit on X Vector.
 
-    PARAMETERS
-    ==========
+        PARAMETERS
+        ==========
 
-    X: ndarray(dtype=float, ndim=1)
-        Array containing Input Values.
-    alpha: float
-        Curve Constant for Values of X less than 0.
+        X: ndarray(dtype=float, ndim=1)
+            Array containing Input Values.
+        alpha: float
+            Curve Constant for Values of X less than 0.
 
-    RETURNS
-    =======
-
+        RETURNS
+        =======
     ndarray(dtype=float,ndim=1)
         Output Vector after Vectorised Operation.
     """
@@ -248,22 +291,46 @@ def unit_step(X):
     return np.heaviside(X, 1)
 
 
-def swish(X, b=1.0):
-    """
-    Apply Swish activation function on X Vector.
+class Swish():
+    def activation(X, alpha=1.0):
+        """
+        Apply Swish activation function on X Vector.
 
-    PARAMETERS
-    ==========
+        PARAMETERS
+        ==========
 
-    X: ndarray(dtype=float, ndim=1)
-        Array containing Input Values.
-    b: int or float
-        Either constant or trainable parameter according to the model.
+        X: ndarray(dtype=float, ndim=1)
+            Array containing Input Values.
+        b: int or float
+            Either constant or trainable parameter according to the model.
 
-    RETURNS
-    =======
+        RETURNS
+        =======
 
-    ndarray(dtype=float,ndim=1)
-        Output Vector after Vectorised Operation.
-    """
-    return X / (1 + np.exp(-(b*X)))
+        ndarray(dtype=float,ndim=1)
+            Output Vector after Vectorised Operation.
+        """
+        return X / (1 + np.exp(-(alpha*X)))
+
+    def derivative(X, alpha=1.0):
+        """
+        Calculate derivative of Swish activation function on X Vector.
+
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=float, ndim=1)
+            Array containing Input Values.
+        b: int or float
+            Either constant or trainable parameter according to the model.
+
+        RETURNS
+        =======
+
+        ndarray(dtype=float,ndim=1)
+            Output Vector after Vectorised Operation.
+        """
+        s = 1 / (1 + np.exp(-X))
+        f = X / (1 + np.exp(-(alpha*X)))
+        df = f + (s * (1 - f))
+        return df
