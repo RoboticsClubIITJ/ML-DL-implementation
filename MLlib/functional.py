@@ -1,6 +1,7 @@
 import numpy as np
 import MLlib
 import MLlib.autograd as autograd
+from MLlib.utils.misc_utils import unbroadcast
 
 
 class Transpose(autograd.Function):
@@ -25,8 +26,7 @@ class Transpose(autograd.Function):
 
     @staticmethod
     def backward(ctx, grad_output):
-        # TODO
-        pass
+        return MLlib.Tensor(grad_output.data.T)
 
 
 class Reshape(autograd.Function):
@@ -50,8 +50,7 @@ class Reshape(autograd.Function):
 
     @staticmethod
     def backward(ctx, grad_output):
-        # TODO
-        pass
+        return MLlib.Tensor(grad_output.data.reshape(ctx.shape))
 
 
 class Add(autograd.Function):
@@ -66,7 +65,8 @@ class Add(autograd.Function):
         requires_grad = a.requires_grad or b.requires_grad
 
         if requires_grad:
-            ctx.save_for_backward(a, b)
+            ctx.shape_a = a.shape
+            ctx.shape_b = b.shape
 
         c = MLlib.Tensor(a.data + b.data, requires_grad=requires_grad,
                          is_leaf=not requires_grad)
@@ -75,8 +75,16 @@ class Add(autograd.Function):
 
     @staticmethod
     def backward(ctx, grad_output):
-        # TODO
-        pass
+        shape_a, shape_b = ctx.shape_a, ctx.shape_b
+
+        # dL/da = (dout/da)*dL/dout
+        grad_a = np.ones(shape_a) * grad_output.data
+        grad_b = np.ones(shape_b) * grad_output.data
+
+        grad_a = MLlib.Tensor(unbroadcast(grad_a, shape_a))
+        grad_b = MLlib.Tensor(unbroadcast(grad_b, shape_b))
+
+        return grad_a, grad_b
 
 
 class Sub(autograd.Function):
@@ -91,7 +99,8 @@ class Sub(autograd.Function):
         requires_grad = a.requires_grad or b.requires_grad
 
         if requires_grad:
-            ctx.save_for_backward(a, b)
+            ctx.shape_a = a.shape
+            ctx.shape_b = b.shape
 
         c = MLlib.Tensor(a.data - b.data, requires_grad=requires_grad,
                          is_leaf=not requires_grad)
@@ -100,8 +109,15 @@ class Sub(autograd.Function):
 
     @staticmethod
     def backward(ctx, grad_output):
-        # TODO
-        pass
+        shape_a, shape_b = ctx.shape_a, ctx.shape_b
+
+        grad_a = np.ones(shape_a) * grad_output.data
+        grad_b = np.ones(shape_b) * grad_output.data * (-1)
+
+        grad_a = MLlib.Tensor(unbroadcast(grad_a, shape_a))
+        grad_b = MLlib.Tensor(unbroadcast(grad_b, shape_b))
+
+        return grad_a, grad_b
 
 
 class Mul(autograd.Function):
@@ -125,8 +141,15 @@ class Mul(autograd.Function):
 
     @staticmethod
     def backward(ctx, grad_output):
-        # TODO
-        pass
+        a, b = ctx.saved_tensors
+
+        grad_a = b.data * grad_output.data
+        grad_b = a.data * grad_output.data
+
+        grad_a = MLlib.Tensor(unbroadcast(grad_a, a.shape))
+        grad_b = MLlib.Tensor(unbroadcast(grad_b, b.shape))
+
+        return grad_a, grad_b
 
 
 class Div(autograd.Function):
@@ -149,8 +172,15 @@ class Div(autograd.Function):
 
     @staticmethod
     def backward(ctx, grad_output):
-        # TODO
-        pass
+        a, b = ctx.saved_tensors
+
+        grad_a = grad_output.data / b.data
+        grad_b = (-1)*a.data * grad_output.data / (b.data**2)
+
+        grad_a = MLlib.Tensor(unbroadcast(grad_a, a.shape))
+        grad_b = MLlib.Tensor(unbroadcast(grad_b, b.shape))
+
+        return grad_a, grad_b
 
 
 class MatMul(autograd.Function):
@@ -175,8 +205,17 @@ class MatMul(autograd.Function):
 
     @staticmethod
     def backward(ctx, grad_output):
-        # TODO
-        pass
+
+        grad_output = grad_output.data
+        a, b = ctx.saved_tensors
+
+        grad_a = (grad_output) @ (b.data.T)
+        grad_b = (a.data.T) @ (grad_output)
+
+        grad_a = MLlib.Tensor(unbroadcast(grad_a, a.shape))
+        grad_b = MLlib.Tensor(unbroadcast(grad_b, b.shape))
+
+        return grad_a, grad_b
 
 
 class Pow(autograd.Function):
@@ -190,18 +229,31 @@ class Pow(autograd.Function):
 
         requires_grad = a.requires_grad or b.requires_grad
 
-        if requires_grad:
-            ctx.save_for_backward(a, b)
-
         c = MLlib.Tensor(np.power(a.data, b.data), requires_grad=requires_grad,
                          is_leaf=not requires_grad)
+
+        if requires_grad:
+            ctx.save_for_backward(a, b, c)
+            ctx.a_req_grad = a.requires_grad
+            ctx.b_req_grad = b.requires_grad
 
         return c
 
     @staticmethod
     def backward(ctx, grad_output):
-        # TODO
-        pass
+        a, b, output = ctx.saved_tensors
+
+        grad_a = grad_b = None
+
+        if ctx.a_req_grad:
+            grad_a = b.data * np.power(a.data, b.data-1) * grad_output.data
+            grad_a = MLlib.Tensor(unbroadcast(grad_a, a.shape))
+
+        if ctx.b_req_grad:
+            grad_b = output.data * np.log(a.data) * grad_output.data
+            grad_b = MLlib.Tensor(unbroadcast(grad_b, b.shape))
+
+        return grad_a, grad_b
 
 
 class Dot(autograd.Function):
@@ -225,8 +277,24 @@ class Dot(autograd.Function):
 
     @staticmethod
     def backward(ctx, grad_output):
-        # TODO
-        pass
+        grad_output = grad_output.data
+        a, b = ctx.saved_tensors
+
+        if len(grad_output.shape) > 0:
+            grad_a = (grad_output).dot(b.data.T)
+            grad_b = (a.data.T).dot(grad_output)
+
+            grad_a = MLlib.Tensor(unbroadcast(grad_a, a.shape))
+            grad_b = MLlib.Tensor(unbroadcast(grad_b, b.shape))
+
+        else:
+            grad_a = (grad_output) * (b.data.T)
+            grad_b = (a.data.T) * (grad_output)
+
+            grad_a = MLlib.Tensor(unbroadcast(grad_a, a.shape))
+            grad_b = MLlib.Tensor(unbroadcast(grad_b, b.shape))
+
+        return grad_a, grad_b
 
 
 class Sum(autograd.Function):
@@ -255,5 +323,38 @@ class Sum(autograd.Function):
 
     @staticmethod
     def backward(ctx, grad_output):
-        # TODO
-        pass
+        grad_out = grad_output.data
+
+        if (ctx.axis is not None) and (not ctx.keepdims):
+            grad_out = np.expand_dims(grad_output.data, axis=ctx.axis)
+        else:
+            grad_out = grad_output.data.copy()
+
+        grad = np.ones(ctx.shape) * grad_out
+
+        assert grad.shape == ctx.shape
+
+        return MLlib.Tensor(grad)
+
+
+class Log(autograd.Function):
+    @staticmethod
+    def forward(ctx, a):
+        if not type(a).__name__ == 'Tensor':
+            raise Exception("Arg for Log must be tensor, got\
+                            {}".format(type(a).__name__))
+
+        ctx.save_for_backward(a)
+
+        requires_grad = a.requires_grad
+
+        c = MLlib.Tensor(np.log(a.data), requires_grad=requires_grad,
+                         is_leaf=not requires_grad)
+
+        return c
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        a = ctx.saved_tensors[0]
+
+        return MLlib.Tensor(grad_output.data / a.data)

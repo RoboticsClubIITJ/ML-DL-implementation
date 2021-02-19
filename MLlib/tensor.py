@@ -1,5 +1,6 @@
 import numpy as np
 import MLlib.functional as F
+import MLlib.autograd as autograd
 
 
 class Tensor:
@@ -8,7 +9,7 @@ class Tensor:
     """
 
     def __init__(self, data, requires_grad=False, is_leaf=True,
-                 is_parameter=False, dtype='float32'):
+                 is_parameter=False, dtype=None):
 
         """
         PARAMETERS
@@ -88,7 +89,7 @@ class Tensor:
     # Tensor creation methods, can be used WITHOUT creating a tensor
     # ----------------------------------------------------------------
     @staticmethod
-    def ones(*shape, **kwargs):
+    def ones(shape, **kwargs):
         """
         Similar to np.ones(...)
 
@@ -183,9 +184,19 @@ class Tensor:
     # ---------------------------------
     # Autograd backward initialization
     # ----------------------------------
-    def backward(self):
-        # TODO
-        pass
+    def backward(self, grad_of_output=None):
+        if grad_of_output is None:
+            grad_of_output = Tensor.ones(self.shape)
+
+        if grad_of_output.shape != self.shape:
+            # this block will be executed only when graient is supplied
+            raise Exception('The shape of gradient and variable must match')
+
+        if self.grad_fn is None:
+            raise Exception('backward should not be called on tensors '
+                            + 'without grad_fn')
+
+        return autograd.backward(self.grad_fn, grad_of_output)
 
     # --------------------------------------------------------------
     # Tensor operations that get reflected on the computation graph
@@ -307,3 +318,6 @@ class Tensor:
 
     def sum(self, axis=None, keepdims=False):
         return F.Sum.apply(self, axis, keepdims)
+
+    def log(self):
+        return F.Log.apply(self)
