@@ -582,6 +582,28 @@ class BernoulliNB(object):
         return np.argmax(self.predict_log(x), axis=1)
 
 
+class MultinomialNB(object):
+
+    def __init__(self, alpha=1):
+        self.alpha = alpha
+
+    def fit(self, x, y):
+
+        separate = [[i for i, t in zip(x, y) if t == c] for c in np.unique(y)]
+        count_for_sample = x.shape[0]
+        self.class_log = [np.log(len(i)/count_for_sample) for i in separate]
+        count = self.alpha + np.array([np.array(i).sum(axis=0) for i in
+                                       separate])
+        self.log_prob = np.log(count / count.sum(axis=1)[np.newaxis].T)
+        return self
+
+    def predict_log(self, x):
+        return [(self.log_prob * i).sum(axis=1) + self.class_log for i in x]
+
+    def predict(self, x):
+        return np.argmax(self.predict_log(x), axis=1)
+
+
 class KMeansClustering():
     """
     One of the models used for Unsupervised
