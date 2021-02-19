@@ -2,7 +2,7 @@ from MLlib.models import MultinomialNB
 import numpy as np
 
 
-with open('/datasets/multinomial_naive_bayes_dataset.txt', 'r') as f:
+with open('datasets/multinomial_naive_bayes_dataset.txt', 'r') as f:
     words = [[string.strip('\n')
               for string in line.split(',')] for line in f]
 for i in range(len(words)):
