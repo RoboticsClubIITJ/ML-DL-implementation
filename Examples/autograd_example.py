@@ -5,8 +5,8 @@ class Linear: a linear layer of the neural network
 class NN: our tiny toy neural network with no activation functions.
 
 Why no activation functions are being used?
-The purpose is of this example not to produce a standard Neural Network but to
-demonstrate the ability of autograd.
+The purpose is of this example is not to produce a standard Neural Network but
+to demonstrate the working and ability of autograd.
 """
 
 from MLlib import Tensor
