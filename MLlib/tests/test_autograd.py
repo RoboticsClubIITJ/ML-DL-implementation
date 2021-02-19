@@ -25,8 +25,8 @@ def gen_tT(*args):
     return tuple(tnsrs)
 
 
-def close(a, b):
-    return np.allclose(a, b, equal_nan=True)
+def not_close(a, b):
+    return not (np.allclose(a, b, equal_nan=True))
 
 
 # ------
@@ -47,10 +47,10 @@ def test_Power():
     tk = ta**tb
     tk.backward(torch.ones(tk.shape))
 
-    if close(mb.grad.data, tb.grad.numpy()) is not True:
+    if not_close(mb.grad.data, tb.grad.numpy()):
         raise AssertionError
 
-    if close(ma.grad.data, ta.grad.numpy()) is not True:
+    if not_close(ma.grad.data, ta.grad.numpy()):
         raise AssertionError
 
 
@@ -67,10 +67,10 @@ def test_Log():
     mo.backward()
     to.backward(torch.ones(to.shape))
 
-    if close(mb.grad.data, tb.grad.numpy()) is not True:
+    if not_close(mb.grad.data, tb.grad.numpy()):
         raise AssertionError
 
-    if close(ma.grad.data, ta.grad.numpy()) is not True:
+    if not_close(ma.grad.data, ta.grad.numpy()):
         raise AssertionError
 
 
@@ -87,10 +87,10 @@ def test_MulSum():
     mo.backward()
     to.backward()
 
-    if close(mb.grad.data, tb.grad.numpy()) is not True:
+    if not_close(mb.grad.data, tb.grad.numpy()):
         raise AssertionError
 
-    if close(ma.grad.data, ta.grad.numpy()) is not True:
+    if not_close(ma.grad.data, ta.grad.numpy()):
         raise AssertionError
 
 
@@ -107,10 +107,10 @@ def test_MatmulTranspose():
     mo.backward()
     to.backward(torch.ones(to.shape))
 
-    if close(mb.grad.data, tb.grad.numpy()) is not True:
+    if not_close(mb.grad.data, tb.grad.numpy()):
         raise AssertionError
 
-    if close(ma.grad.data, ta.grad.numpy()) is not True:
+    if not_close(ma.grad.data, ta.grad.numpy()):
         raise AssertionError
 
 
@@ -127,10 +127,10 @@ def test_DivSum():
     mo.backward()
     to.backward()
 
-    if close(mb.grad.data, tb.grad.numpy()) is not True:
+    if not_close(mb.grad.data, tb.grad.numpy()):
         raise AssertionError
 
-    if close(ma.grad.data, ta.grad.numpy()) is not True:
+    if not_close(ma.grad.data, ta.grad.numpy()):
         raise AssertionError
 
 
@@ -150,10 +150,10 @@ def test_ReshapeSub():
     mo.backward()
     to.backward()
 
-    if close(mb.grad.data, tb.grad.numpy()) is not True:
+    if not_close(mb.grad.data, tb.grad.numpy()):
         raise AssertionError
 
-    if close(ma.grad.data, ta.grad.numpy()) is not True:
+    if not_close(ma.grad.data, ta.grad.numpy()):
         raise AssertionError
 
 
@@ -170,8 +170,8 @@ def test_Dot():
     mo.backward()
     to.backward(torch.ones(to.shape))
 
-    if close(mb.grad.data, tb.grad.numpy()) is not True:
+    if not_close(mb.grad.data, tb.grad.numpy()):
         raise AssertionError
 
-    if close(ma.grad.data, ta.grad.numpy()) is not True:
+    if not_close(ma.grad.data, ta.grad.numpy()):
         raise AssertionError
