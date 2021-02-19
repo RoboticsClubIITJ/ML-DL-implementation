@@ -91,7 +91,7 @@ class Function:
                         obj.grad_fn = AccumulateGrad(obj)
                 backward_function.next_functions.append(obj.grad_fn)
 
-        # store the none on current tensor inside grad_fn
+        # store the node on current tensor inside grad_fn
         output_tensor.grad_fn = backward_function
 
         return output_tensor
