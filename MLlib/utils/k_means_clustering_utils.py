@@ -191,7 +191,6 @@ def xy_calc(M, centroid):
         lis[indice][0] += point[0]
         lis[indice][1] += point[1]
         lis[indice][2] += 1
-  
     return lis
 
 
