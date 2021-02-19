@@ -280,11 +280,19 @@ class Dot(autograd.Function):
         grad_output = grad_output.data
         a, b = ctx.saved_tensors
 
-        grad_a = grad_output.dot(b.data.T)
-        grad_b = (b.data.T).dot(grad_output)
+        if len(grad_output.shape) > 0:
+            grad_a = (grad_output).dot(b.data.T)
+            grad_b = (a.data.T).dot(grad_output)
 
-        grad_a = MLlib.Tensor(unbroadcast(grad_a, a.shape))
-        grad_b = MLlib.Tensor(unbroadcast(grad_b, b.shape))
+            grad_a = MLlib.Tensor(unbroadcast(grad_a, a.shape))
+            grad_b = MLlib.Tensor(unbroadcast(grad_b, b.shape))
+
+        else:
+            grad_a = (grad_output) * (b.data.T)
+            grad_b = (a.data.T) * (grad_output)
+
+            grad_a = MLlib.Tensor(unbroadcast(grad_a, a.shape))
+            grad_b = MLlib.Tensor(unbroadcast(grad_b, b.shape))
 
         return grad_a, grad_b
 
