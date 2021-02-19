@@ -318,3 +318,6 @@ class Tensor:
 
     def sum(self, axis=None, keepdims=False):
         return F.Sum.apply(self, axis, keepdims)
+
+    def log(self):
+        return F.Log.apply(self)

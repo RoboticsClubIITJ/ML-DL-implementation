@@ -234,6 +234,8 @@ class Pow(autograd.Function):
 
         if requires_grad:
             ctx.save_for_backward(a, b, c)
+            ctx.a_req_grad = a.requires_grad
+            ctx.b_req_grad = b.requires_grad
 
         return c
 
@@ -241,11 +243,15 @@ class Pow(autograd.Function):
     def backward(ctx, grad_output):
         a, b, output = ctx.saved_tensors
 
-        grad_a = b.data * np.power(a.data, b.data-1) * grad_output.data
-        grad_a = MLlib.Tensor(unbroadcast(grad_a, a.shape))
+        grad_a = grad_b = None
 
-        grad_b = output.data * np.log(a.data) * grad_output.data
-        grad_b = MLlib.Tensor(unbroadcast(grad_b, b.shape))
+        if ctx.a_req_grad:
+            grad_a = b.data * np.power(a.data, b.data-1) * grad_output.data
+            grad_a = MLlib.Tensor(unbroadcast(grad_a, a.shape))
+
+        if ctx.b_req_grad:
+            grad_b = output.data * np.log(a.data) * grad_output.data
+            grad_b = MLlib.Tensor(unbroadcast(grad_b, b.shape))
 
         return grad_a, grad_b
 
@@ -321,3 +327,26 @@ class Sum(autograd.Function):
         assert grad.shape == ctx.shape
 
         return MLlib.Tensor(grad)
+
+
+class Log(autograd.Function):
+    @staticmethod
+    def forward(ctx, a):
+        if not type(a).__name__ == 'Tensor':
+            raise Exception("Arg for Log must be tensor, got\
+                            {}".format(type(a).__name__))
+
+        ctx.save_for_backward(a)
+
+        requires_grad = a.requires_grad
+
+        c = MLlib.Tensor(np.log(a.data), requires_grad=requires_grad,
+                         is_leaf=not requires_grad)
+
+        return c
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        a = ctx.saved_tensors[0]
+
+        return MLlib.Tensor(grad_output.data / a.data)

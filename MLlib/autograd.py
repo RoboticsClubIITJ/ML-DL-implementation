@@ -24,7 +24,8 @@ def backward(grad_fn, grad_of_output):
 
     if len(parent_nodes) > 1:
         for i in range(len(parent_nodes)):
-            if parent_nodes[i] is not None:
+            if (parent_nodes[i] is not None and
+                    type(out_grads[i]).__name__ == 'Tensor'):
                 # print('now calling ', parent_nodes[i]) for debugging
                 backward(parent_nodes[i], out_grads[i])
 
