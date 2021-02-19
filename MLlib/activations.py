@@ -2,6 +2,7 @@ import numpy as np
 
 
 class Sigmoid():
+    @staticmethod
     def activation(X):
         """
         Apply Sigmoid on X Vector.
@@ -20,6 +21,7 @@ class Sigmoid():
         """
         return 1 / (1 + np.exp(-X))
 
+    @staticmethod
     def derivative(X):
         """
         Calculate derivative of Sigmoid on X Vector.
@@ -261,32 +263,12 @@ class Elu():
 
         RETURNS
         =======
-
-        ndarray(dtype=float,ndim=1)
-            Output Vector after Vectorised Operation.
-        """
-        assert (alpha > 0)
-        return np.maximum(0, X) + np.minimum(0, alpha * (np.exp(X) - 1))
-
-    def derivative(X, alpha=1.0):
-        """
-        Calculate derivative of Exponential Linear Unit on X Vector.
-
-        PARAMETERS
-        ==========
-
-        X: ndarray(dtype=float, ndim=1)
-            Array containing Input Values.
-        alpha: float
-            Curve Constant for Values of X less than 0.
-
-        RETURNS
-        =======
-
-        ndarray(dtype=float,ndim=1)
-            Output Vector after Vectorised Operation.
-        """
-        return np.where(X > 0, np.ones_like(X), alpha * np.exp(X))
+    ndarray(dtype=float,ndim=1)
+        Output Vector after Vectorised Operation.
+    """
+    if (alpha <= 0):
+        raise AssertionError
+    return np.maximum(0, X) + np.minimum(0, alpha * (np.exp(X) - 1))
 
 
 def unit_step(X):

@@ -60,8 +60,7 @@ def generate_weights(rows, cols, zeros=False):
     """
     if zeros:
         return np.zeros((rows, cols))
-    else:
-        return np.random.rand(rows, cols)
+    return np.random.rand(rows, cols)
 
 
 def load_model(name):
@@ -69,6 +68,18 @@ def load_model(name):
         model = pickle.load(robfile)
 
     return model
+
+
+def unbroadcast(grad, shape, to_keep=0):
+    """
+    Used in autograd to ubroadcast gradients back to their original shape.
+    """
+    while len(grad.shape) != len(shape):
+        grad = grad.sum(axis=0)
+    for i in range(len(shape) - to_keep):
+        if grad.shape[i] != shape[i]:
+            grad = grad.sum(axis=i, keepdims=True)
+    return grad
 
 
 class OneHotEncoder():
@@ -113,7 +124,7 @@ class OneHotEncoder():
         for i in range(m):
             ls = np.unique(X[:, i])
             n_unique = len(ls)
-            dic = dict()
+            dic = {}
 
             if n_unique/n > thresh:
                 self.encode.append(0)

@@ -46,8 +46,7 @@ class Question:
         val = example[self.column]
         if is_numeric(val):
             return val >= self.value
-        else:
-            return val == self.value
+        return val == self.value
 
     def __repr__(self):
         # This is just a helper method to print
