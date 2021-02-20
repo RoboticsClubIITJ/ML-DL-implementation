@@ -180,6 +180,8 @@ class LinearRegression():
         """
         with open(name + '.rob', 'wb') as robfile:
             pickle.dump(self, robfile)
+
+
 class PolynomialRegression():
     """
     Implement Polynomial Regression Model.
@@ -222,7 +224,7 @@ class PolynomialRegression():
             epochs=60,
             zeros=False,
             save_best=False
-    ):
+            ):
         """
         Train the Polynomial Regression Model
         by fitting its associated weights,
@@ -235,6 +237,8 @@ class PolynomialRegression():
         X: ndarray(dtype=float,ndim=1)
             1-D Array of Dataset's Input.
 
+            Update X with X**2, X**3, X**4 terms
+
         Y: ndarray(dtype=float,ndim=1)
             1-D Array of Dataset's Output.
 
@@ -245,7 +249,7 @@ class PolynomialRegression():
 
         epochs: int
             Number of times, the loop to calculate loss
-            and optimize weights, will going to take
+            and optimize weights, is going to take
             place.
 
         zeros: boolean
@@ -274,12 +278,12 @@ class PolynomialRegression():
 
         None
         """
-        M,N=X.shape
+        M, N = X.shape
         X = np.hstack((
             X,
-            ((X[:, 0] ** 2).reshape(M,1)),
-            ((X[:, 0] ** 3).reshape(M,1)),
-            ((X[:, 0] ** 4).reshape(M,1))
+            ((X[:, 0] ** 2).reshape(M, 1)),
+            ((X[:, 0] ** 3).reshape(M, 1)),
+            ((X[:, 0] ** 4).reshape(M, 1))
             ))
         self.weights = generate_weights(X.shape[1], 1, zeros=zeros)
         self.best_weights = {"weights": None, "loss": float('inf')}
@@ -323,16 +327,16 @@ class PolynomialRegression():
         RETURNS
         =======
 
-        ndarray(dtype=float,ndim=1)
+        ndarray(dtype=float, ndim=1)
             Predicted Values corresponding to
             each Input of Dataset.
         """
-        M,N=X.shape
+        M, N = X.shape
         X = np.hstack((
             X,
-            ((X[:, 0] ** 2).reshape(M,1)),
-            ((X[:, 0] ** 3).reshape(M,1)),
-            ((X[:, 0] ** 4).reshape(M,1))
+            ((X[:, 0] ** 2).reshape(M, 1)),
+            ((X[:, 0] ** 3).reshape(M, 1)),
+            ((X[:, 0] ** 4).reshape(M, 1))
             ))
         return np.dot(X, self.weights)
 
@@ -355,6 +359,7 @@ class PolynomialRegression():
         """
         with open(name + '.rob', 'wb') as robfile:
             pickle.dump(self, robfile)
+
 
 class LogisticRegression(LinearRegression):
     """
