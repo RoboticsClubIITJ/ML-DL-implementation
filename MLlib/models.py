@@ -182,6 +182,185 @@ class LinearRegression():
             pickle.dump(self, robfile)
 
 
+class PolynomialRegression():
+    """
+    Implement Polynomial Regression Model.
+
+    ATTRIBUTES
+    ==========
+
+    None
+
+    METHODS
+    =======
+
+    fit(X,Y,optimizer=GradientDescent,epochs=60, \
+    zeros=False,save_best=False):
+        Implement the Training of
+        Polynomial Regression Model with
+        suitable optimizer, inititalised
+        random weights and Dataset's
+        Input-Output, upto certain number
+        of epochs.
+
+    predict(X):
+        Return the Predicted Value of
+        Output associated with Input,
+        using the weights, which were
+        tuned by Training Polynomial Regression
+        Model.
+
+    save(name):
+        Save the Trained Polynomial Regression
+        Model in rob format , in Local
+        disk.
+    """
+
+    def fit(
+            self,
+            X,
+            Y,
+            optimizer=GradientDescent,
+            epochs=60,
+            zeros=False,
+            save_best=False
+            ):
+        """
+        Train the Polynomial Regression Model
+        by fitting its associated weights,
+        according to Dataset's Inputs and
+        their corresponding Output Values.
+
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=float,ndim=1)
+            1-D Array of Dataset's Input.
+
+            Update X with X**2, X**3, X**4 terms
+
+        Y: ndarray(dtype=float,ndim=1)
+            1-D Array of Dataset's Output.
+
+        optimizer: class
+            Class of one of the Optimizers like
+            AdamProp,SGD,MBGD,RMSprop,AdamDelta,
+            Gradient Descent,etc.
+
+        epochs: int
+            Number of times, the loop to calculate loss
+            and optimize weights, is going to take
+            place.
+
+        zeros: boolean
+            Condition to initialize Weights as either
+            zeroes or some random decimal values.
+
+        save_best: boolean
+            Condition to enable or disable the option
+            of saving the suitable Weight values for the
+            model after reaching the region nearby the
+            minima of Loss-Function with respect to Weights.
+
+        epoch_loss: float
+            The degree of how much the predicted value
+            is diverted from actual values, given by
+            implementing one of choosen loss functions
+            from loss_func.py .
+
+        version: str
+            Descriptive update of Model's Version at each
+            step of Training Loop, along with Time description
+            according to DATA_FORMAT.
+
+        RETURNS
+        =======
+
+        None
+        """
+        M, N = X.shape
+        X = np.hstack((
+            X,
+            ((X[:, 0] ** 2).reshape(M, 1)),
+            ((X[:, 0] ** 3).reshape(M, 1)),
+            ((X[:, 0] ** 4).reshape(M, 1))
+            ))
+        self.weights = generate_weights(X.shape[1], 1, zeros=zeros)
+        self.best_weights = {"weights": None, "loss": float('inf')}
+        print("Starting training with loss:",
+              optimizer.loss_func.loss(X, Y, self.weights))
+        for epoch in range(1, epochs + 1):
+            print("======================================")
+            print("epoch:", epoch)
+            self.weights = optimizer.iterate(X, Y, self.weights)
+            epoch_loss = optimizer.loss_func.loss(X, Y, self.weights)
+            if save_best and epoch_loss < self.best_weights["loss"]:
+                print("updating best weights (loss: {})".format(epoch_loss))
+                self.best_weights['weights'] = self.weights
+                self.best_weights['loss'] = epoch_loss
+                version = "model_best_" + datetime.now().strftime(DATE_FORMAT)
+                print("Saving best model version: ", version)
+                self.save(version)
+            print("Loss in this step: ", epoch_loss)
+
+        version = "model_final_" + datetime.now().strftime(DATE_FORMAT)
+        print("Saving final model version: ", version)
+        self.save(version)
+
+        print("======================================\n")
+        print("Finished training with final loss:",
+              optimizer.loss_func.loss(X, Y, self.weights))
+        print("=====================================================\n")
+
+    def predict(self, X):
+        """
+        Predict the Output Value of
+        Input, in accordance with
+        Polynomial Regression Model.
+
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=float,ndim=1)
+            1-D Array of Dataset's Input.
+
+        RETURNS
+        =======
+
+        ndarray(dtype=float, ndim=1)
+            Predicted Values corresponding to
+            each Input of Dataset.
+        """
+        M, N = X.shape
+        X = np.hstack((
+            X,
+            ((X[:, 0] ** 2).reshape(M, 1)),
+            ((X[:, 0] ** 3).reshape(M, 1)),
+            ((X[:, 0] ** 4).reshape(M, 1))
+            ))
+        return np.dot(X, self.weights)
+
+    def save(self, name):
+        """
+        Save the Model in rob
+        format for further usage.
+
+        PARAMETERS
+        ==========
+
+        name: str
+            Title of the Model's file
+            to be saved in rob format.
+
+        RETURNS
+        =======
+
+        None
+        """
+        with open(name + '.rob', 'wb') as robfile:
+            pickle.dump(self, robfile)
+
+
 class LogisticRegression(LinearRegression):
     """
     Implements Logistic Regression Model.
