@@ -8,6 +8,9 @@ class Tensor:
     Tensor object which acts as a wrapper around a NumPy array.
     """
 
+    __slots__ = ('data', 'requires_grad', 'is_leaf', 'grad_fn', 'grad',
+                 'is_parameter')
+
     def __init__(self, data, requires_grad=False, is_leaf=True,
                  is_parameter=False, dtype=None):
 

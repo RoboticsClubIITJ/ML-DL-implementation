@@ -6,6 +6,8 @@ from MLlib.utils.misc_utils import unbroadcast
 
 class Transpose(autograd.Function):
 
+    __slots__ = ()
+
     @staticmethod
     def forward(ctx, a):
 
@@ -31,6 +33,8 @@ class Transpose(autograd.Function):
 
 class Reshape(autograd.Function):
 
+    __slots__ = ()
+
     @staticmethod
     def forward(ctx, a, shape):
 
@@ -54,6 +58,8 @@ class Reshape(autograd.Function):
 
 
 class Add(autograd.Function):
+
+    __slots__ = ()
 
     @staticmethod
     def forward(ctx, a, b):
@@ -89,6 +95,8 @@ class Add(autograd.Function):
 
 class Sub(autograd.Function):
 
+    __slots__ = ()
+
     @staticmethod
     def forward(ctx, a, b):
 
@@ -122,6 +130,8 @@ class Sub(autograd.Function):
 
 class Mul(autograd.Function):
 
+    __slots__ = ()
+
     @staticmethod
     def forward(ctx, a, b):
 
@@ -153,6 +163,9 @@ class Mul(autograd.Function):
 
 
 class Div(autograd.Function):
+
+    __slots__ = ()
+
     @staticmethod
     def forward(ctx, a, b):
 
@@ -184,6 +197,8 @@ class Div(autograd.Function):
 
 
 class MatMul(autograd.Function):
+
+    __slots__ = ()
 
     @staticmethod
     def forward(ctx, a, b):
@@ -219,6 +234,8 @@ class MatMul(autograd.Function):
 
 
 class Pow(autograd.Function):
+
+    __slots__ = ()
 
     @staticmethod
     def forward(ctx, a, b):
@@ -257,6 +274,8 @@ class Pow(autograd.Function):
 
 
 class Dot(autograd.Function):
+
+    __slots__ = ()
 
     @staticmethod
     def forward(ctx, a, b):
@@ -299,6 +318,8 @@ class Dot(autograd.Function):
 
 class Sum(autograd.Function):
 
+    __slots__ = ()
+
     @staticmethod
     def forward(ctx, a, axis, keepdims):
         if not type(a).__name__ == 'Tensor':
@@ -338,6 +359,9 @@ class Sum(autograd.Function):
 
 
 class Log(autograd.Function):
+
+    __slots__ = ()
+
     @staticmethod
     def forward(ctx, a):
         if not type(a).__name__ == 'Tensor':

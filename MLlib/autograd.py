@@ -20,7 +20,14 @@ def backward(grad_fn, grad_of_output):
         out_grads = list(out_grads)
 
     # pass them
-    parent_nodes = grad_fn.next_functions
+
+    # next_functions in AccumulateGrad would consume memory for no reason..
+    # beacuse that node would have no parental nodes (that's why it
+    # accumulates gradients). So it is better to handle that here
+    if grad_fn.function_name != 'AccumulateGrad':
+        parent_nodes = grad_fn.next_functions
+    else:
+        parent_nodes = []
 
     if len(parent_nodes) > 1:
         for i in range(len(parent_nodes)):
@@ -43,6 +50,8 @@ class ContextManager:
     2. To store any other data: save as new attribute
     """
 
+    __slots__ = ('saved_tensors', '__dict__')
+
     def __init__(self):
         self.saved_tensors = []
 
@@ -62,6 +71,8 @@ class Function:
     All functions which have to do with computational graph must inherit from \
         this class
     """
+
+    __slots__ = ()
 
     @staticmethod
     def forward(ctx, *args, **kwargs):
@@ -102,6 +113,8 @@ class BackwardFunction:
     Represents an intermediate node in the comp graph
     """
 
+    __slots__ = ('ctx', '_forward_cls', 'next_functions', 'function_name')
+
     def __init__(self, cls):
         self.ctx = ContextManager()
         self._forward_cls = cls
@@ -121,12 +134,11 @@ class AccumulateGrad:
     """
     Represents a node where gradient must be accumulated.
     """
+
+    __slots__ = ('variable', 'function_name')
+
     def __init__(self, tensor):
         self.variable = tensor
-
-        self.next_functions = []  # nodes of current node's parents (empty)
-        # exists just to be consistent in format
-        #  with BackwardFunction
 
         self.function_name = 'AccumulateGrad'  # just for convenience
 
