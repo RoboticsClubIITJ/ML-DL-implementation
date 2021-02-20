@@ -44,6 +44,7 @@ class Sigmoid():
 
 
 class TanH():
+    @staticmethod
     def activation(X):
         """
         Apply hyperbolic tangent function on X Vector.
@@ -62,6 +63,7 @@ class TanH():
         """
         return np.tanh(X)
 
+    @staticmethod
     def derivative(X):
         """
         Calculate derivative of hyperbolic tangent function on X Vector.
@@ -82,6 +84,7 @@ class TanH():
 
 
 class Softmax():
+    @staticmethod
     def activation(X):
         """
         Apply Softmax on X Vector.
@@ -103,6 +106,7 @@ class Softmax():
         Sum = np.sum(np.exp(X))
         return np.exp(X) / Sum
 
+    @staticmethod
     def derivative(X):
         """
         Calculate derivative of Softmax on X Vector.
@@ -128,6 +132,7 @@ class Softmax():
 
 
 class Softsign():
+    @staticmethod
     def activation(X):
         """
         Apply Softsign on X Vector.
@@ -146,6 +151,7 @@ class Softsign():
         """
         return X / (np.abs(X) + 1)
 
+    @staticmethod
     def derivative(X):
         """
         Calculate derivative of Softsign on X Vector.
@@ -166,6 +172,7 @@ class Softsign():
 
 
 class Relu():
+    @staticmethod
     def activation(X):
         """
         Apply Rectified Linear Unit on X Vector.
@@ -184,6 +191,7 @@ class Relu():
         """
         return np.maximum(0, X)
 
+    @staticmethod
     def derivative(X):
         """
         Calculate derivative of Rectified Linear Unit on X Vector.
@@ -204,6 +212,7 @@ class Relu():
 
 
 class LeakyRelu():
+    @staticmethod
     def activation(X, alpha=0.01):
         """
         Apply Leaky Rectified Linear Unit on X Vector.
@@ -225,6 +234,7 @@ class LeakyRelu():
 
         return np.maximum(alpha*X, X)
 
+    @staticmethod
     def derivative(X, alpha=0.01):
         """
         Calculate derivative of Leaky Rectified Linear Unit on X Vector.
@@ -249,6 +259,7 @@ class LeakyRelu():
 
 
 class Elu():
+    @staticmethod
     def activation(X, alpha=1.0):
         """
         Apply Exponential Linear Unit on X Vector.
@@ -263,12 +274,12 @@ class Elu():
 
         RETURNS
         =======
-    ndarray(dtype=float,ndim=1)
+        ndarray(dtype=float,ndim=1)
         Output Vector after Vectorised Operation.
-    """
-    if (alpha <= 0):
-        raise AssertionError
-    return np.maximum(0, X) + np.minimum(0, alpha * (np.exp(X) - 1))
+        """
+        if (alpha <= 0):
+            raise AssertionError
+        return np.maximum(0, X) + np.minimum(0, alpha * (np.exp(X) - 1))
 
 
 def unit_step(X):
@@ -292,6 +303,7 @@ def unit_step(X):
 
 
 class Swish():
+    @staticmethod
     def activation(X, alpha=1.0):
         """
         Apply Swish activation function on X Vector.
@@ -312,6 +324,7 @@ class Swish():
         """
         return X / (1 + np.exp(-(alpha*X)))
 
+    @staticmethod
     def derivative(X, alpha=1.0):
         """
         Calculate derivative of Swish activation function on X Vector.
