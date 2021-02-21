@@ -13,32 +13,25 @@ def backward(grad_fn, grad_of_output):
                     Tensor.
     """
 
-    # obtain gradients to be passed
+    # obtain gradients to be passed:
+    #   - the return of None object by grad_fn.apply() implies that the current
+    #     Tensor is a leaf and has `grad_fn` as AccumulateGrad, this means
+    #     it has no parent nodes and hence we don't need to pass gradients
+    #     any further.
+    #   - grad_fn.apply() might return a single Tensor object whcih, we know,
+    #     corresponds to backward() method of some UNARY operation.
     out_grads = grad_fn.apply(grad_of_output)
 
-    if out_grads is not None and type(out_grads).__name__ != 'Tensor':
-        out_grads = list(out_grads)
+    if out_grads is not None:
+        out_grads = (out_grads,) if isinstance(out_grads, tensor.Tensor)\
+            else tuple(out_grads)
 
-    # pass them
-
-    # next_functions in AccumulateGrad would consume memory for no reason..
-    # beacuse that node would have no parental nodes (that's why it
-    # accumulates gradients). So it is better to handle that here
-    if grad_fn.function_name != 'AccumulateGrad':
+        # pass them
         parent_nodes = grad_fn.next_functions
-    else:
-        parent_nodes = []
 
-    if len(parent_nodes) > 1:
         for i in range(len(parent_nodes)):
-            if (parent_nodes[i] is not None and
-                    type(out_grads[i]).__name__ == 'Tensor'):
-                # print('now calling ', parent_nodes[i]) for debugging
+            if (parent_nodes[i] is not None):
                 backward(parent_nodes[i], out_grads[i])
-
-    if len(parent_nodes) == 1:
-        if parent_nodes[0] is not None:
-            backward(parent_nodes[0], out_grads)
 
 
 class ContextManager:
@@ -93,6 +86,7 @@ class Function:
         output_tensor = cls.forward(backward_function.ctx, *args, **kwargs)
 
         # grad_fn contains the node object
+
         # adding parental nodes to the comp graph
         for obj in args:
             if type(obj).__name__ == 'Tensor':      # parent tensor
@@ -122,7 +116,8 @@ class BackwardFunction:
         # nodes of parents, should be populated by Function.apply()
         self.next_functions = []
 
-        self.function_name = cls.__name__   # name of the function
+        # name of the function, for debugging purposes
+        self.function_name = cls.__name__
 
     def apply(self, *args, **kwagrs):
 
@@ -135,12 +130,10 @@ class AccumulateGrad:
     Represents a node where gradient must be accumulated.
     """
 
-    __slots__ = ('variable', 'function_name')
+    __slots__ = ('variable')
 
     def __init__(self, tensor):
         self.variable = tensor
-
-        self.function_name = 'AccumulateGrad'  # just for convenience
 
     def apply(self, arg):
         """
