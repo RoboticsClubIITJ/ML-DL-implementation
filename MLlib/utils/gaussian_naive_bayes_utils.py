@@ -39,20 +39,20 @@ def get_mean_var(x, y):
     for i in range(len(x)):
         M.append([x[i], y[i][0], y[i][1], y[i][2]])
 
-    dataset = dict()
+    dataset = {}
 
     for j in range(len(M)):
         if M[j][0] not in dataset:
-            dataset[M[j][0]] = list()
+            dataset[M[j][0]] = []
         dataset[M[j][0]].append(M[j][1:])
 
-    mean = dict()
+    mean = {}
 
     for key, value in dataset.items():
         v = np.array(value)
         mean[key] = v.mean(axis=0)
 
-    var = dict()
+    var = {}
 
     for key, value in dataset.items():
         v = np.array(value)

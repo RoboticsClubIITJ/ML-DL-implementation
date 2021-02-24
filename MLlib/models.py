@@ -1,5 +1,5 @@
 from MLlib.optimizers import GradientDescent
-from MLlib.activations import sigmoid
+from MLlib.activations import Sigmoid
 from MLlib.utils.misc_utils import generate_weights
 from MLlib.utils.decision_tree_utils import partition, find_best_split
 from MLlib.utils.decision_tree_utils import Leaf, Decision_Node
@@ -8,6 +8,7 @@ from MLlib.utils.naive_bayes_utils import make_likelihood_table
 from MLlib.utils.gaussian_naive_bayes_utils import get_mean_var, p_y_given_x
 from MLlib.utils.k_means_clustering_utils import initi_centroid, cluster_allot
 from MLlib.utils.k_means_clustering_utils import new_centroid, xy_calc
+from MLlib.utils.pca_utils import PCA_utils, infer_dimension
 from collections import Counter
 import numpy as np
 import pickle
@@ -181,6 +182,185 @@ class LinearRegression():
             pickle.dump(self, robfile)
 
 
+class PolynomialRegression():
+    """
+    Implement Polynomial Regression Model.
+
+    ATTRIBUTES
+    ==========
+
+    None
+
+    METHODS
+    =======
+
+    fit(X,Y,optimizer=GradientDescent,epochs=60, \
+    zeros=False,save_best=False):
+        Implement the Training of
+        Polynomial Regression Model with
+        suitable optimizer, inititalised
+        random weights and Dataset's
+        Input-Output, upto certain number
+        of epochs.
+
+    predict(X):
+        Return the Predicted Value of
+        Output associated with Input,
+        using the weights, which were
+        tuned by Training Polynomial Regression
+        Model.
+
+    save(name):
+        Save the Trained Polynomial Regression
+        Model in rob format , in Local
+        disk.
+    """
+
+    def fit(
+            self,
+            X,
+            Y,
+            optimizer=GradientDescent,
+            epochs=60,
+            zeros=False,
+            save_best=False
+            ):
+        """
+        Train the Polynomial Regression Model
+        by fitting its associated weights,
+        according to Dataset's Inputs and
+        their corresponding Output Values.
+
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=float,ndim=1)
+            1-D Array of Dataset's Input.
+
+            Update X with X**2, X**3, X**4 terms
+
+        Y: ndarray(dtype=float,ndim=1)
+            1-D Array of Dataset's Output.
+
+        optimizer: class
+            Class of one of the Optimizers like
+            AdamProp,SGD,MBGD,RMSprop,AdamDelta,
+            Gradient Descent,etc.
+
+        epochs: int
+            Number of times, the loop to calculate loss
+            and optimize weights, is going to take
+            place.
+
+        zeros: boolean
+            Condition to initialize Weights as either
+            zeroes or some random decimal values.
+
+        save_best: boolean
+            Condition to enable or disable the option
+            of saving the suitable Weight values for the
+            model after reaching the region nearby the
+            minima of Loss-Function with respect to Weights.
+
+        epoch_loss: float
+            The degree of how much the predicted value
+            is diverted from actual values, given by
+            implementing one of choosen loss functions
+            from loss_func.py .
+
+        version: str
+            Descriptive update of Model's Version at each
+            step of Training Loop, along with Time description
+            according to DATA_FORMAT.
+
+        RETURNS
+        =======
+
+        None
+        """
+        M, N = X.shape
+        X = np.hstack((
+            X,
+            ((X[:, 0] ** 2).reshape(M, 1)),
+            ((X[:, 0] ** 3).reshape(M, 1)),
+            ((X[:, 0] ** 4).reshape(M, 1))
+            ))
+        self.weights = generate_weights(X.shape[1], 1, zeros=zeros)
+        self.best_weights = {"weights": None, "loss": float('inf')}
+        print("Starting training with loss:",
+              optimizer.loss_func.loss(X, Y, self.weights))
+        for epoch in range(1, epochs + 1):
+            print("======================================")
+            print("epoch:", epoch)
+            self.weights = optimizer.iterate(X, Y, self.weights)
+            epoch_loss = optimizer.loss_func.loss(X, Y, self.weights)
+            if save_best and epoch_loss < self.best_weights["loss"]:
+                print("updating best weights (loss: {})".format(epoch_loss))
+                self.best_weights['weights'] = self.weights
+                self.best_weights['loss'] = epoch_loss
+                version = "model_best_" + datetime.now().strftime(DATE_FORMAT)
+                print("Saving best model version: ", version)
+                self.save(version)
+            print("Loss in this step: ", epoch_loss)
+
+        version = "model_final_" + datetime.now().strftime(DATE_FORMAT)
+        print("Saving final model version: ", version)
+        self.save(version)
+
+        print("======================================\n")
+        print("Finished training with final loss:",
+              optimizer.loss_func.loss(X, Y, self.weights))
+        print("=====================================================\n")
+
+    def predict(self, X):
+        """
+        Predict the Output Value of
+        Input, in accordance with
+        Polynomial Regression Model.
+
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=float,ndim=1)
+            1-D Array of Dataset's Input.
+
+        RETURNS
+        =======
+
+        ndarray(dtype=float, ndim=1)
+            Predicted Values corresponding to
+            each Input of Dataset.
+        """
+        M, N = X.shape
+        X = np.hstack((
+            X,
+            ((X[:, 0] ** 2).reshape(M, 1)),
+            ((X[:, 0] ** 3).reshape(M, 1)),
+            ((X[:, 0] ** 4).reshape(M, 1))
+            ))
+        return np.dot(X, self.weights)
+
+    def save(self, name):
+        """
+        Save the Model in rob
+        format for further usage.
+
+        PARAMETERS
+        ==========
+
+        name: str
+            Title of the Model's file
+            to be saved in rob format.
+
+        RETURNS
+        =======
+
+        None
+        """
+        with open(name + '.rob', 'wb') as robfile:
+            pickle.dump(self, robfile)
+
+
 class LogisticRegression(LinearRegression):
     """
     Implements Logistic Regression Model.
@@ -237,7 +417,8 @@ class LogisticRegression(LinearRegression):
             belongs to class 0 or class 1.
         """
         prediction = np.dot(X, self.weights).T
-        return sigmoid(prediction)
+        sigmoid = Sigmoid()
+        return sigmoid.activation(prediction)
 
     def classify(self, X):
         """
@@ -271,7 +452,8 @@ class LogisticRegression(LinearRegression):
 
         """
         prediction = np.dot(X, self.weights).T
-        prediction = sigmoid(prediction)
+        sigmoid = Sigmoid()
+        prediction = sigmoid.activation(prediction)
         actual_predictions = np.zeros((1, X.shape[0]))
         for i in range(prediction.shape[1]):
             if prediction[0][i] > 0.5:
@@ -353,9 +535,7 @@ class DecisionTreeClassifier():
         # to the example we're considering.
         if self.root.question.match(row):
             return self.classify(row, self.root.true_branch)
-
-        else:
-            return self.classify(row, self.root.false_branch)
+        return self.classify(row, self.root.false_branch)
 
 
 class KNN():
@@ -557,6 +737,52 @@ class Gaussian_Naive_Bayes():
         return prediction
 
 
+class BernoulliNB(object):
+    def __init__(self, alpha=1):
+        self.alpha = alpha
+
+    def fit(self, x, y):
+
+        separate = [[i for i, t in zip(x, y) if t == c] for c in np.unique(y)]
+        count_for_sample = x.shape[0]
+        self.class_log = [np.log(len(i)/count_for_sample) for i in separate]
+        count = self.alpha + np.array([np.array(i).sum(axis=0) for i in
+                                      separate])
+        smoothing = 2 * self.alpha
+        doc = np.array([smoothing + len(i) for i in separate])
+        self.log_prob = count / doc[np.newaxis].T
+        return self
+
+    def predict_log(self, x):
+        return [(np.log(self.log_prob) * i + np.log(1 - self.log_prob) *
+                np.abs(i - 1)).sum(axis=1) + self.class_log for i in x]
+
+    def predict(self, x):
+        return np.argmax(self.predict_log(x), axis=1)
+
+
+class MultinomialNB(object):
+
+    def __init__(self, alpha=1):
+        self.alpha = alpha
+
+    def fit(self, x, y):
+
+        separate = [[i for i, t in zip(x, y) if t == c] for c in np.unique(y)]
+        count_for_sample = x.shape[0]
+        self.class_log = [np.log(len(i)/count_for_sample) for i in separate]
+        count = self.alpha + np.array([np.array(i).sum(axis=0) for i in
+                                       separate])
+        self.log_prob = np.log(count / count.sum(axis=1)[np.newaxis].T)
+        return self
+
+    def predict_log(self, x):
+        return [(self.log_prob * i).sum(axis=1) + self.class_log for i in x]
+
+    def predict(self, x):
+        return np.argmax(self.predict_log(x), axis=1)
+
+
 class KMeansClustering():
     """
     One of the models used for Unsupervised
@@ -644,3 +870,111 @@ class KMeansClustering():
             print("==============================\n")
             print(cluster)
             print("\n==============================\n")
+
+# ---------------------- Principle Component Analysis ------------------------
+
+
+class PCA(PCA_utils):
+    """
+    Principal component analysis (PCA):
+    Linear dimensionality reduction using Singular Value Decomposition of the
+    data to project it to a lower dimensional space. The input data is centered
+    but not scaled for each feature before applying the SVD.
+    """
+    def __init__(self, n_components=None, whiten=False, svd_solver='auto'):
+        self.n_components = n_components
+        self.whiten = whiten
+        self.svd_solver = svd_solver
+        self.components = None
+        self.mean = None
+        self.explained_variances = None
+        self.noise_variance = None
+        self.fitted = False
+
+    def fit(self, X, y=None):
+        # fit the model with the data X
+        self._fit(X)
+        return self
+
+    def fit_transform(self, X, y=None):
+        """Fit the model with X and apply the dimensionality reduction on X."""
+        U, S, Vh = self._fit(X)
+        U = U[:, :self.n_components]
+        if self.whiten:
+            U *= math.sqrt(X.shape[0] - 1)
+        else:
+            U *= S[:self.n_components]
+        return U
+
+    def _fit(self, X):
+        '''Fitting function for the model'''
+        # count the sparsity of the  ndarray
+        count = np.count_nonzero(X)
+        sparsity = 1.0 - (count/np.size(X))
+        if sparsity > 0.5:
+            raise TypeError('PCA does not support sparse input.')
+        if self.n_components is None:
+            n_components = min(X.shape)
+        else:
+            n_components = self.n_components
+        fit_svd_solver = self.svd_solver
+        if fit_svd_solver == 'auto':
+            # Small problem or n_components == 'mle', call full PCA
+            if max(X.shape) <= 500 or n_components == 'mle':
+                fit_svd_solver = 'full'
+            elif n_components >= 1 and n_components < .8 * min(X.shape):
+                fit_svd_solver = 'randomized'
+            # Case of n_components in (0,1)
+            else:
+                fit_svd_solver = 'full'
+        # Call different fits for either full or truncated SVD
+        if fit_svd_solver == 'full':
+            return self.fit_full(X, n_components)
+        else:
+            raise ValueError("Unrecognized svd_solver="
+                             "'{0}'".format(fit_svd_solver))
+
+    def fit_full(self, X, n_components):
+        """Fit the model by computing full SVD on X."""
+        n_samples, n_features = X.shape
+        if n_components == 'mle':
+            if n_samples < n_features:
+                raise ValueError("n_components='mle' is only "
+                                 "supported if n_samples >= n_features")
+        # mean of the dataset
+        self.mean = np.mean(X, axis=0)
+        std = np.std(X)
+        X = (X - self.mean) / std
+        U, S, Vh = np.linalg.svd(X, full_matrices=False)
+        # flip eigenvectors' sign to enforce deterministic output
+        # columns of U, rows of Vh
+        max_abs_cols = np.argmax(np.abs(U), axis=0)
+        signs = np.sign(U[max_abs_cols, range(U.shape[1])])
+        U *= signs
+        Vh *= signs[:, np.newaxis]
+        components = Vh
+        # explained variance by singular values
+        explained_variances = (S**2)/(n_samples-1)
+        explained_variance_ratio = (explained_variances /
+                                    explained_variances.sum())
+        singular_value = S.copy()
+        if n_components == 'mle':
+            n_components = infer_dimension(explained_variances, n_samples)
+        elif 0 < n_components < 1.0:
+            ratio_cumsum = np.cumsum(explained_variance_ratio, axis=None,
+                                     dtype=np.float64)
+            n_components = np.searchsorted(ratio_cumsum, n_components,
+                                           side='right') + 1
+        # Computing noise covariance using Probabilistic PCA model
+        if n_components < min(n_features, n_samples):
+            self.noise_variance = explained_variances[n_components:].mean()
+        else:
+            self.noise_variance = 1.0
+        # storing the first n_component values
+        self.components = components[:n_components]
+        self.n_components = self.n_components
+        self.explained_variances = explained_variances[:n_components]
+        self.explained_variance_ratio = explained_variance_ratio[:n_components]
+        self.singular_value = singular_value[:n_components]
+        self.fitted = True
+        return U, S, Vh

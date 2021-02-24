@@ -6,6 +6,7 @@
 Machine Learning and Deep Learning library in python using numpy and matplotlib.
 
 ## Why this repository?
+-----------------------
 
 This repository gives beginners and newcomers in
 the field of AI and ML a chance to understand the
@@ -13,12 +14,29 @@ inner workings of popular learning algorithms by presenting them with a simple t
 
 The goal of this repository is not to create the most efficient implementation but the most transparent one, so that anyone with little knowledge of the field can contribute and learn.
 
-## Installation
-Currently we are improving the library, shortly it would be released publically on pypi and anaconda. 
+Installation
+------------
 
-As of now to install using git, first clone ML-DL-implimentation using `git`:
+You can install the library by running the following command,
 
-    $ python setup.py install
+```python
+python3 setup.py install
+```
+
+For development purposes, you can use the option `develop` as shown below,
+
+```python
+python3 setup.py develop
+```
+   
+Testing
+-------
+
+For testing your patch locally follow the steps given below,
+
+1. Install [pytest-cov](https://pypi.org/project/pytest-cov/). Skip this step if you are already having the package.
+2. Run, `python3 -m pytest --doctest-modules --cov=./ --cov-report=html`. Look for, `htmlcov/index.html` and open it in your browser, which will show the coverage report. Try to ensure that the coverage is not decreasing by more than 1% for your patch.
+
 
 ## Contributing to the repository
 
@@ -43,35 +61,23 @@ Follow the following steps to get started with contributing to the repository.
 
 # Algorithms Implemented
 
+| Algorithm | Location |  Algorithm | Location | Algorithm | Location |
+| :------------ | ------------: | :------------ | ------------: | :------------ | ------------: |
+| **ACTIVATION FUNCTIONS**| |**OPTIMIZERS**|| **MODELS** | |
+| Sigmoid |   [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/activations.py#L4) | Gradient Descent | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/optimizers.py#L6) | Linear Regression | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/models.py#L20) 
+| Tanh | [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/activations.py#L23) | StochasticGradientDescent | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/optimizers.py#L58) | Logistic Regression| [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/models.py#L184) |
+| Softmax | [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/activations.py#L42) | Mini Batch Gradient Descent | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/optimizers.py#L125) | Decision Tree Classifier| [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/models.py#L283)|
+| Softsign | [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/activations.py#L64) | Momentum Gradient Descent | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/optimizers.py#L203) | KNN Classifier/Regessor| [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/models.py#L361) |
+| Relu | [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/activations.py#L102) | Nesterov Accelerated Descent | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/optimizers.py#L296) | Naive Bayes | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/models.py#L446)|
+| Leaky Relu | [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/activations.py#L102) | Adagrad | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/optimizers.py#L391) | Gaussian Naive Bayes| [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/models.py#L506) |
+| Elu | [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/activations.py#L121) | Adadelta | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/optimizers.py#L466) |  K Means Clustering| [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/models.py#L560) |
+| | | Adam | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/optimizers.py#L544) | 
+
 | Algorithm | Location |
 | :------------ | ------------: |
-| **ACTIVATION FUNCTIONS**| |
-| Sigmoid |   [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/activations.py#L4)
-| Tanh | [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/activations.py#L23)
-| Softmax | [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/activations.py#L42)
-| Softsign | [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/activations.py#L64)
-| Relu | [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/activations.py#L102)
-| Leaky Relu | [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/activations.py#L102)
-| Elu | [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/activations.py#L121)
 |**LOSS FUNCTIONS**| |
 | Mean Squared Error | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/loss_func.py#L5)
 |Log Error | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/loss_func.py#L57)
 | Absolute Error | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/loss_func.py#L111)
-| **MODELS**| |
-| Linear Regression | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/models.py#L20)
-|Logistic Regression| [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/models.py#L184) |
-| Decision Tree Classifier| [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/models.py#L283)|
-| KNN Classifier/Regessor| [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/models.py#L361) |
-| Naive Bayes | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/models.py#L446)|
-| Gaussian Naive Bayes| [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/models.py#L506) |
-| K Means Clustering| [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/models.py#L560) |
-|**OPTIMIZERS**||
-| Gradient Descent | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/optimizers.py#L6)|
-| StochasticGradientDescent | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/optimizers.py#L58) |
-| Mini Batch Gradient Descent | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/optimizers.py#L125) |
-| Momentum Gradient Descent | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/optimizers.py#L203) |
-| Nesterov Accelerated Descent | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/optimizers.py#L296) |
-| Adagrad | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/optimizers.py#L391) |
-| Adadelta | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/optimizers.py#L466) |
-| Adam | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/14d0afd4521e16b37c4011d02fd2aca8e6fdbd0e/MLlib/optimizers.py#L544) |
+
 

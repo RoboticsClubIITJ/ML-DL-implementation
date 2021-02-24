@@ -84,7 +84,7 @@ def initi_centroid(M, num_cluster):
 
     """
     indexes = np.random.choice(M.shape[0], num_cluster, replace=False)
-    np.sort(indexes)
+    indexes.sort()
     centroid = []
     for indice in indexes:
         centroid.append(M[indice])
