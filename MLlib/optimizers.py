@@ -5,7 +5,7 @@ import random
 
 class GradientDescent():
     """
-    
+
     A classic gradient descent implementation.
 
     W = W - a * dm
