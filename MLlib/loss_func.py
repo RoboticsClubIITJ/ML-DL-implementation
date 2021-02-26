@@ -197,7 +197,7 @@ class CosineSimilarity():
          """
         sigmoid = Sigmoid()
         H = sigmoid.activation(np.dot(X, W).T)
-        dot_product = np.sum(np.dot(H, Y))
-        similarity = dot_product/((np.sum(np.square(H))**(0.5))*(np.sum(np.square(Y))**(0.5)))
-        dissimilarity = 1-similarity
+        DP = np.sum(np.dot(H, Y))
+        S = DP/((np.sum(np.square(H))**(0.5))*(np.sum(np.square(Y))**(0.5)))
+        dissimilarity = 1-S
         return dissimilarity*(np.sum(np.square(Y))**(0.5))
