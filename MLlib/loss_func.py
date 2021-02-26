@@ -179,10 +179,10 @@ class CosineSimilarity():
     def loss(X, Y, W):
         """
         Calculate error by cosine similarity method
-        
+
         PARAMETERS
         ==========
-        
+
         X:ndarray(dtype=float,ndim=1)
           input vector
         Y:ndarray(dtype=float)
@@ -197,7 +197,7 @@ class CosineSimilarity():
          """
         sigmoid = Sigmoid()
         H = sigmoid.activation(np.dot(X, W).T)
-        dot_product = np.sum(np.dot(H,Y))
+        dot_product = np.sum(np.dot(H, Y))
         similarity = dot_product/((np.sum(np.square(H))**(0.5))*(np.sum(np.square(Y))**(0.5)))
         dissimilarity = 1-similarity
         return dissimilarity*(np.sum(np.square(Y))**(0.5))
