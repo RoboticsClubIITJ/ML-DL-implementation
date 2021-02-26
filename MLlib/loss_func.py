@@ -168,3 +168,36 @@ class AbsoluteError():
                 where=(np.absolute(AbsError)) != 0),
             X
         ).T/M
+
+
+class CosineSimilarity():
+    """
+    Calculate Similarity between actual value and similarity value.
+    """
+
+    @staticmethod
+    def loss(X, Y, W):
+        """
+        Calculate error by cosine similarity method
+        
+        PARAMETERS
+        ==========
+        
+        X:ndarray(dtype=float,ndim=1)
+          input vector
+        Y:ndarray(dtype=float)
+          output vector
+        W:ndarray(dtype=float)
+          Weights
+
+         RETURNS
+         =======
+
+         Percentage of error in the actural value and predicted value
+         """
+        sigmoid = Sigmoid()
+        H = sigmoid.activation(np.dot(X, W).T)
+        dot_product = np.sum(np.dot(H,Y))
+        similarity = dot_product/((np.sum(np.square(H))**(0.5))*(np.sum(np.square(Y))**(0.5)))
+        dissimilarity = 1-similarity
+        return dissimilarity*(np.sum(np.square(Y))**(0.5))
