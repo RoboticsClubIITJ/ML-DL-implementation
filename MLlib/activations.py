@@ -253,8 +253,8 @@ class LeakyRelu():
         ndarray(dtype=float,ndim=1)
             Outputs array of derivatives.
         """
-        dx = np.ones_like(X)
-        dx[X < 0] = alpha
+        dx = np.greater(X,0).astype(float)
+        dx[X < 0] = -alpha
         return dx
 
 
