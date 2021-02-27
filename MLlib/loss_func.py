@@ -201,3 +201,54 @@ class CosineSimilarity():
         S = DP/((np.sum(np.square(H))**(0.5))*(np.sum(np.square(Y))**(0.5)))
         dissimilarity = 1-S
         return dissimilarity*(np.sum(np.square(Y))**(0.5))
+
+
+
+class log_cosh:
+    
+    # logcosh_loss function
+    
+    @staticmethod
+    def logcosh_loss(X,Y):
+    
+        """ logcosh_loss FUNCTION
+            calculate error by log cosh method
+
+            PARAMETERS
+            ==========
+        X: ndarray(dtype=float,ndim=1)
+            Actual values 
+        Y: ndarray (dtpye=float,ndim=1)
+           Predicted values
+
+        RETURNS
+        =======
+        Logarithm of the hyperbolic cosine of the prediction error
+        """    
+        p=np.cosh(Y - X)
+        loss = np.log(p)
+        error = np.sum(loss)
+        return error
+
+    # derivative of logcosh_loss 
+
+    @staticmethod
+    def derivative_logcosh(X,Y):
+        """ derivative_logcosh FUNCTION
+           calculate the derivative of  logcosh_loss method
+
+           PARAMETERS
+           ==========
+        X: ndarray(dtype=float,ndim=1)
+           Actual values 
+        Y: ndarray (dtpye=float,ndim=1)
+           Predicted values
+
+           RETURNS
+           =======
+          derivative of Logarithm of the hyperbolic cosine of the prediction error
+        """    
+
+        t=np.tanh(Y-X)
+        derivative=np.sum(t)
+        return derivative
