@@ -204,24 +204,23 @@ class CosineSimilarity():
 
 
 class log_cosh:
-    
-    # logcosh_loss function
-    
+
     @staticmethod
     def logcosh_loss(X,Y):
-    
-        """ logcosh_loss FUNCTION
-            calculate error by log cosh method
+        """
+        Calculate Error by log cosh method
 
-            PARAMETERS
-            ==========
+        PARAMETERS
+        ==========
+
         X: ndarray(dtype=float,ndim=1)
-            Actual values 
+           Actual values 
         Y: ndarray (dtpye=float,ndim=1)
            Predicted values
 
         RETURNS
         =======
+
         Logarithm of the hyperbolic cosine of the prediction error
         """    
         p=np.cosh(Y - X)
@@ -229,15 +228,14 @@ class log_cosh:
         error = np.sum(loss)
         return error
 
-    # derivative of logcosh_loss 
-
     @staticmethod
     def derivative_logcosh(X,Y):
-        """ derivative_logcosh FUNCTION
-           calculate the derivative of  logcosh_loss method
+        """
+        Calculate the derivative of "log cosh" loss method
 
-           PARAMETERS
-           ==========
+        PARAMETERS
+        ==========
+
         X: ndarray(dtype=float,ndim=1)
            Actual values 
         Y: ndarray (dtpye=float,ndim=1)
@@ -245,11 +243,9 @@ class log_cosh:
 
            RETURNS
            =======
-          derivative of Logarithm of the hyperbolic cosine of the prediction error
-        """    
 
+           Derivative of Logarithm of the hyperbolic cosine of the prediction error
+           """    
         t=np.tanh(Y-X)
         derivative=np.sum(t)
         return derivative
-
-
