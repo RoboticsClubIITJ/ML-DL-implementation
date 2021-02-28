@@ -981,7 +981,8 @@ class PCA(PCA_utils):
 
 #-------------------------------Numerical Outliers Method--------------------------------
 
-class Numerical_outliers: 
+class Numerical_outliers(): 
+    
     def get_percentile(c,percentile_rank): 
         """
            get_percentile Function 
