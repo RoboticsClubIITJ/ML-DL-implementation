@@ -3,7 +3,8 @@ from MLlib import tensor
 
 def backward(grad_fn, grad_of_output):
     """
-    Recursive DFS that traverses the computation graph backward.
+    Recursive DFS that traverses the computation graph backward passing and
+    accumulating the gradients along the way.
 
     PARAMETERS
     ==========
@@ -11,6 +12,13 @@ def backward(grad_fn, grad_of_output):
 
     grad_of_output: gradient of final output with respect to the current
                     Tensor.
+
+    The `grad_fn` might be an instance of the `MLlib.autograd.BackwardFunction`
+    class or that of the `MLlib.autograd.AccumulateGrad` class (why? see
+    MLlib.autograd.Function class) and we have defined the method `.apply()`
+    for both of them, so we have to just keep calling `grad_fn.apply(...)`
+    recursively with correct parameters until we pass the gradients through/to
+    all the nodes of the computation graph which have `requires_grad=True`.
     """
 
     # obtain gradients to be passed:
@@ -60,25 +68,60 @@ class ContextManager:
 
 class Function:
     """
-    Superclass that links all the nodes to computational graph.
+    Superclass that links all the nodes to the computation graph.
     All functions which have to do with computational graph must inherit from \
-        this class
+    this class
     """
 
     __slots__ = ()
 
     @staticmethod
     def forward(ctx, *args, **kwargs):
+        """
+        This method performs the required operation(s) on the Tensor(s) and is
+        called by `.apply()` method.
+        """
         raise NotImplementedError
 
     @staticmethod
     def backward(ctx, *args):
+        """
+        This method takes the gradient of the root of computation
+        graph with respect to the output of the operation as
+        input and returns the gradient of root of the computation
+        graph with repect to the operands of the operation.
+        """
         raise NotImplementedError
 
     @classmethod
     def apply(cls, *args, **kwargs):
         """
         Runs .forward() of subclass and links node to the comp graph.
+        The node is stored on the Tensor as `grad_fn` attribute.
+
+
+        FLOW:
+
+        -Create an empty node by creating an instance of the `BackwardFunction`
+        class and store it into `backward_function` (temporarily variable).
+
+        -Obtain the output Tensor by calling `.forward(...)` method which will
+        perform the requires operation(s) on the Tensor(s)
+
+        -We store the `grad_fn` (node object) of every 'Parent Tensor' which
+        is passed to this function to perform the desired operation(s) into the
+        node obeject of the output Tensor: we store the parental node objects
+        into `backward_function.next_functions` variable. The parent Tensors
+        might not already have a node stored into them.
+        If such parent Tensors are leaf Tensors (have `is_leaf=True`) and
+        require gradient to be passed to them (have `requires_grad=True`),
+        we create a node and store it into the Tensor: this node is an
+        instance of `MLlib.autograd.AccumulateGrad` class which is used to
+        accumulate the gradients. Else None (their `grad_fn` by default) gets
+        stored.
+
+        -We store the `backward_function` as the output Tensor's node
+        (grad_fn)
         """
 
         backward_function = BackwardFunction(cls)
