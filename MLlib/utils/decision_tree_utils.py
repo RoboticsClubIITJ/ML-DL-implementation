@@ -1,28 +1,49 @@
-def unique_vals(rows, label):
-    """
-    Find the unique labels for the dataset.
-    """
-    return set([row[label] for row in rows])
-
-
 def class_counts(rows, label):
     """
     find the frequency of items for each class in a dataset.
+
+    PARAMETERS
+    ==========
+
+    rows: list
+        A list of lists to store the rows whose
+        predictions is to be determined.
+
+    label: integer
+        The index of the last column
+
+    RETURNS
+    =======
+
+    counts
+        A dictionary of predictions
     """
     counts = {}  # a dictionary of label -> count.
     for row in rows:
         # in our dataset format, the label is always the last column
-        label = row[label]
-        if label not in counts:
-            counts[label] = 0
-        counts[label] += 1
+        lbl = row[label]
+        if lbl not in counts:
+            counts[lbl] = 0
+        counts[lbl] += 1
     return counts
 
 
 def is_numeric(value):
     """
     Test if a value is numeric.
+
+    PARAMETERS
+    ==========
+
+    value
+        The value whose datatype is to be determined.
+
+    RETURNS
+    =======
+
+    Boolean true if the value is numeric, else boolean false.
     """
+
     return isinstance(value, int) or isinstance(value, float)
 
 
@@ -34,36 +55,91 @@ class Question:
     'column value'. The 'match' method is used to compare
     the feature value in an example to the feature value stored in the
     question. See the demo below.
+
+    ATTRIBUTES
+    ==========
+
+    val: None
+        Initially None type, stores the value
+        of the row corresponding to 'self.column'
+        column.
+
+    CONSTRUCTOR
+    ===========
+
+    __init__ :
+        initialize column, value and head.
+
+    METHODS
+    =======
+
+    match(example):
+        To compare the feature value in the example
+        to the feature value in the question.
+
+    __repr__ :
+        Helper method to print the question in
+        a readable format.
     """
 
-    def __init__(self, column, value):
+    val = None
+
+    def __init__(self, column, value, head):
         self.column = column
         self.value = value
+        self.head = head
 
     def match(self, example):
         # Compare the feature value in an example to the
         # feature value in this question.
-        val = example[self.column]
-        if is_numeric(val):
-            return val >= self.value
-        return val == self.value
+        self.val = example[self.column]
+        if is_numeric(self.val):
+            return self.val >= self.value
+        return self.val == self.head[self.column]
 
     def __repr__(self):
         # This is just a helper method to print
         # the question in a readable format.
         condition = "=="
-        if is_numeric(self.value):
+        if is_numeric(self.val):
             condition = ">="
+            return "Is %s %s %s?" % (
+                self.val, condition, self.value)
         return "Is %s %s %s?" % (
-            self.column, condition, str(self.value))
+                self.val, condition, self.head[self.column])
 
 
 def partition(rows, question):
     """
     Partitions a dataset.
 
-    For each row in the dataset, check if it matches the question. If
-    so, add it to 'true rows', otherwise, add it to 'false rows'.
+    For each row in the dataset,
+    check if it matches the question.
+    If so, add it to 'true rows',
+    otherwise, add it to 'false rows'.
+
+    PARAMETERS
+    ==========
+
+    rows: list
+        A list of lists to store the rows
+        of the dataset to be partitioned.
+
+    question: object
+        Object of the class Question.
+
+    RETURNS
+    =======
+
+    true_rows
+        A list of lists that stores the rows
+        for which the split question evaluates
+        to true.
+
+    false_rows
+        A list of lists that stores the rows
+        for which the split question evaluates
+        to false.
     """
     true_rows, false_rows = [], []
     for row in rows:
@@ -74,46 +150,83 @@ def partition(rows, question):
     return true_rows, false_rows
 
 
-def gini(rows):
+def gini(rows, length):
     """
     Calculate the Gini Impurity for a list of rows.
+
+    PARAMETERS
+    ==========
+
+    rows: list
+        A list of lists to store the rows of the
+        dataset.
+
+    length: integer
+        To store the number of rows in the dataset
+        to calculate the probability.
+
+    RETURNS
+    =======
+
+    impurity
+        The gini impurity value for the corresponding
+        set of rows.
     """
-    counts = class_counts(rows)
+
+    label = len(rows[0])-1
+
+    # Get the dictionary of the predictions
+    counts = class_counts(rows, label)
     impurity = 1
     for lbl in counts:
-        prob_of_lbl = counts[lbl] / float(len(rows))
+        # Store the probability of the predictions
+        prob_of_lbl = counts[lbl] / float(length)
+
+        # Update the gini impurity
         impurity -= prob_of_lbl**2
     return impurity
 
 
-def info_gain(left, right, current_uncertainty):
+def find_best_split(rows, head):
     """
-    Information Gain.
+    Find the best question to ask by iterating over
+    every feature / value and
+    calculating the information gain.
 
-    The uncertainty of the starting node, minus the weighted impurity of
-    two child nodes.
-    """
-    p = float(len(left)) / (len(left) + len(right))
-    return current_uncertainty - p * gini(left) - (1 - p) * gini(right)
+    PARAMETERS
+    ==========
 
+    rows: list
+        A list of lists for which the best split
+        is to be determined.
 
-def find_best_split(rows):
+    head: list
+        A list to store the headings of the
+        columns of the rows of the dataset.
+
+    RETURNS
+    =======
+
+    best_gini
+        The least gini impurity corresponding to
+        the best split.
+
+    best_question
+        The best question to split the dataset.
     """
-    Find the best question to ask by iterating over every feature / value
-    and calculating the information gain.
-    """
-    best_gain = 0  # keep track of the best information gain
+
+    best_gini = 100  # keep track of the best gini impurity
     best_question = None  # keep train of the feature / value that produced it
-    current_uncertainty = gini(rows)
     n_features = len(rows[0]) - 1  # number of columns
 
     for col in range(n_features):  # for each feature
 
-        values = set([row[col] for row in rows])  # unique values in the column
+        # unique values in the column
+        values = list(set([row[col] for row in rows]))
 
         for val in values:  # for each value
 
-            question = Question(col, val)
+            question = Question(col, val, head)
 
             # try splitting the dataset
             true_rows, false_rows = partition(rows, question)
@@ -123,41 +236,23 @@ def find_best_split(rows):
             if len(true_rows) == 0 or len(false_rows) == 0:
                 continue
 
-            # Calculate the information gain from this split
-            gain = info_gain(true_rows, false_rows, current_uncertainty)
+            # finding gini impurity for true_rows
+            ginitrue = gini(true_rows, len(rows))
 
-            # You actually can use '>' instead of '>=' here
-            # but I wanted the tree to look a certain way for our
-            # toy dataset.
-            if gain >= best_gain:
-                best_gain, best_question = gain, question
+            # finding gini impurity for false_rows
+            ginifalse = gini(false_rows, len(rows))
 
-    return best_gain, best_question
+            # calculating weighted_gini as per formula
+            mid = len(true_rows)*ginitrue + len(false_rows)*ginifalse
+            weightedgini = mid/len(rows)
 
+            # Condition to find the best split
+            if weightedgini <= best_gini:
+                best_gini, best_question = weightedgini, question
 
-class Leaf:
-    """
-    A Leaf node classifies data.
+    # Update best gini to 0
+    # if we have reached the leaf node
+    if best_gini == 100:
+        best_gini = 0
 
-    This holds a dictionary of class i.e. the number of times
-    it appears in the rows from the training data that reach this leaf.
-    """
-
-    def __init__(self, rows):
-        self.predictions = class_counts(rows)
-
-
-class Decision_Node:
-    """
-    A Decision Node asks a question.
-
-    This holds a reference to the question, and to the two child nodes.
-    """
-
-    def __init__(self,
-                 question,
-                 true_branch,
-                 false_branch):
-        self.question = question
-        self.true_branch = true_branch
-        self.false_branch = false_branch
+    return best_gini, best_question

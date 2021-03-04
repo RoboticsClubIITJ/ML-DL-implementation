@@ -2,7 +2,7 @@ from MLlib.optimizers import GradientDescent
 from MLlib.activations import Sigmoid
 from MLlib.utils.misc_utils import generate_weights
 from MLlib.utils.decision_tree_utils import partition, find_best_split
-from MLlib.utils.decision_tree_utils import Leaf, Decision_Node
+from MLlib.utils.decision_tree_utils import class_counts
 from MLlib.utils .knn_utils import get_neighbours
 from MLlib.utils.naive_bayes_utils import make_likelihood_table
 from MLlib.utils.gaussian_naive_bayes_utils import get_mean_var, p_y_given_x
@@ -463,79 +463,262 @@ class LogisticRegression(LinearRegression):
 
 
 class DecisionTreeClassifier():
+    """
+    A class to implement the Decision Tree Algorithm.
 
-    root = None
+    ATTRIBUTES
+    ==========
 
-    def fit(self, rows):
+    None
+
+    METHODS
+    =======
+
+    print_tree(rows, head, spacing = "")
+        To print the decision tree of the rows
+        in an organised manner.
+
+    classify(rows, head, prediction_val)
+        To determine and return the predictions
+        of the subsets of the dataset.
+    """
+
+    def print_tree(self, rows, head, spacing=""):
         """
-        Build the tree.
+        A tree printing function.
 
-        Rules of recursion: 1) Believe that it works. 2) Start by checking
-        for the base case (no further information gain). 3) Prepare for
-        giant stack traces.
+        PARAMETERS
+        ==========
+
+        rows: list
+            A list of lists to store the dataset.
+
+        head: list
+            A list to store the headings of the
+            columns of the dataset.
+
+        spacing: String
+            To store and update the spaces to
+            print the tree in an organised manner.
+
+        RETURNS
+        =======
+
+        None
+
         """
 
-        # Try partitioing the dataset on each of the unique attribute,
-        # calculate the information gain,
-        # and return the question that produces the highest gain.
-        gain, question = find_best_split(rows)
+        # Try partitioning the dataset on each of the unique attribute,
+        # calculate the gini impurity,
+        # and return the question that produces the least gini impurity.
+        gain, question = find_best_split(rows, head)
 
-        # Base case: no further info gain
-        # Since we can ask no further questions,
-        # we'll return a leaf.
+        # Base case: we've reached a leaf
         if gain == 0:
-            return Leaf(rows)
+            print(spacing + "Predict", class_counts(rows, len(rows[0])-1))
+            return
+
+        # If we reach here, we have found a useful feature / value
+        # to partition on.
+        true_rows, false_rows = partition(rows, question)
+
+        # Print the question at this node
+        print(spacing + str(question))
+
+        # Call this function recursively on the true branch
+        print(spacing + '--> True:')
+        self.print_tree(true_rows, head, spacing + "  ")
+
+        # Call this function recursively on the false branch
+        print(spacing + '--> False:')
+        self.print_tree(false_rows, head, spacing + "  ")
+
+    def classify(self, rows, head, prediction_val):
+        """
+        A function to make predictions of
+        the subsets of the dataset.
+
+        PARAMETERS
+        ==========
+
+        rows: list
+            A list of lists to store the subsets
+            of the dataset.
+
+        head: list
+            A list to store the headings of the
+            columns of the subset of the dataset.
+
+        prediction_val: dictionary
+            A dictionary to update and return the
+            predictions of the subsets of the
+            dataset.
+
+        RETURNS
+        =======
+
+        prediction_val
+            Dictionary to return the predictions
+            corresponding to the subsets of the
+            dataset.
+
+        """
+
+        N = len(rows[0])
+
+        # Finding random indexes for columns
+        # to collect random samples of the dataset.
+        indexcol = []
+        for j in range(0, 5):
+            r = np.random.randint(0, N-2)
+            if r not in indexcol:
+                indexcol.append(r)
+
+        row = []
+        for j in rows:
+            L = []
+            for k in indexcol:
+                L.append(j[k])
+            row.append(L)
+
+        # add last column to the random sample so created.
+        for j in range(0, len(row)):
+            row[j].append(rows[j][N-1])
+
+        rows = row
+
+        # Try partitioning the dataset on each of the unique attribute,
+        # calculate the gini impurity,
+        # and return the question that produces the least gini impurity.
+        gain, question = find_best_split(rows, head)
+
+        # Base case: we've reached a leaf
+        if gain == 0:
+            # Get the predictions of the current set of rows.
+            p = class_counts(rows, len(rows[0])-1)
+            for d in prediction_val:
+                for j in p:
+                    if d == j:
+                        # update the predictions to be returned.
+                        prediction_val[d] = prediction_val[d] + p[j]
+            return prediction_val
 
         # If we reach here, we have found a useful feature / value
         # to partition on.
         true_rows, false_rows = partition(rows, question)
 
         # Recursively build the true branch.
-        true_branch = self.fit(true_rows)
+        self.classify(true_rows, head, prediction_val)
 
         # Recursively build the false branch.
-        false_branch = self.fit(false_rows)
+        self.classify(false_rows, head, prediction_val)
 
-        # Return a Question node.
-        # This records the best feature / value to ask at this point,
-        self.root = Decision_Node(question, true_branch, false_branch)
+        # Return the dictionary of the predictions
+        # at the end of the recursion.
+        return prediction_val
 
-    def print_tree(self, spacing=""):
+
+class RandomForestClassifier(DecisionTreeClassifier):
+    """
+    A class to implement the Random Forest Classification Algorithm.
+
+    ATTRIBUTES
+    ==========
+
+    DecisionTreeClassifier: Class
+        Parent Class from where the predictions
+        for the subsets of the dataset are made.
+
+    METHODS
+    =======
+
+    predict(A, n_estimators=100):
+        Print the value that appears the
+        highest in the list of predictions
+        of the subsets of the dataset.
+    """
+
+    def predict(self, A, head, n_estimators=100):
         """
-        A tree printing function.
+        Determine the predictions of the
+        subsets of the dataset through the
+        DecisionTreeClassifier class and
+        print the mode of the predicted values.
+
+        PARAMETERS
+        ==========
+
+        A: ndarray(dtype=int,ndim=2)
+            2-D Array of Dataset's Input
+
+        n_estimators: int
+            Number of Decision Trees to be
+            iterated over for the classification.
+
+        RETURNS
+        =======
+
+        None
         """
 
-        # Base case: we've reached a leaf
-        if isinstance(self.root, Leaf):
-            print(spacing + "Predict", self.root.predictions)
-            return
+        prediction = {}
+        print("Predictions of individual decision trees")
+        # Iterate to collect predictions of
+        # 100 Decision Trees after taking
+        # random samples from the dataset.
+        for i in range(n_estimators):
+            M = len(A)
 
-        # Print the question at this node
-        print(spacing + str(self.root.question))
+            # Finding random indexes for rows
+            # to collect the bootstrapped samples
+            # of the dataset.
+            indexrow = np.random.randint(0, M-1, 6)
+            rows = []
+            for j in indexrow:
+                rows.append(A[j])
 
-        # Call this function recursively on the true branch
-        print(spacing + '--> True:')
-        self.print_tree(self.root.true_branch, spacing + "  ")
+            label = len(rows[0])-1
 
-        # Call this function recursively on the false branch
-        print(spacing + '--> False:')
-        self.print_tree(self.root.false_branch, spacing + "  ")
+            # Get prediction values for the rows
+            prediction_val = class_counts(rows, label)
+            for d in prediction_val:
+                prediction_val[d] = 0
 
-    def classify(self, row):
-        """
-        Classify a bit of data
-        """
+            # Create object of class DecisionTreeClassifier
+            RandomF = DecisionTreeClassifier()
 
-        # Base case: we've reached a leaf
-        if isinstance(self.root, Leaf):
-            return self.root.predictions
+            # Store the returned dictionary of the
+            # predictions of the subsets of the dataset.
+            di = RandomF.classify(rows, head, prediction_val)
 
-        # Decide whether to follow the true-branch or the false-branch.
-        # Compare the feature / value stored in the node,
-        # to the example we're considering.
-        if self.root.question.match(row):
-            return self.classify(row, self.root.true_branch)
-        return self.classify(row, self.root.false_branch)
+            print(di)
+
+            # find maximum predicted value for the subsets
+            # of the dataset.
+            maximum = 0
+            for j in di:
+                if di[j] > maximum:
+                    maximum = di[j]
+                    maxk = j
+
+            # Update the dictionary prediction with the
+            # maximum predicted value in the
+            # predictions of the subsets of the dataset.
+            if maxk not in prediction:
+                prediction[maxk] = maximum
+            else:
+                prediction[maxk] = prediction[maxk]+maximum
+
+        # find maximum predicted value, hence the
+        # final prediction of the Random Forest Algorithm.
+        maximum = 0
+        for i in prediction:
+            if prediction[i] > maximum:
+                maximum = prediction[i]
+                maxk = i
+
+        # predicting the maximum occurence
+        print("\n Predict = {", maxk, "}")
 
 
 class KNN():
@@ -978,48 +1161,3 @@ class PCA(PCA_utils):
         self.singular_value = singular_value[:n_components]
         self.fitted = True
         return U, S, Vh
-
-# ------------------------------Numerical Outliers Method----------------------
-
-
-class Numerical_outliers():
-
-    def get_percentile(c, percentile_rank):
-        """
-           get_percentile Function
-
-           PARAMETER
-           =========
-           c:ndarray(dtype=float,ndim=1)
-             input dataset
-           percentile_rank: float type
-
-           RETURNS
-           =======
-           Data corresponding to percentile rank
-           """
-
-        d = np.sort(c)
-        index = int(((len(d) - 1) * percentile_rank) // 100)
-        return d[index]
-
-    def get_outliers(x):
-
-        """ get_outliers Function
-
-
-         PARAMETER
-           =========
-
-        x:ndarray(dtype=float,ndim=1)
-            input dataset
-         """
-
-        Q1 = Numerical_outliers.get_percentile(x, 25)
-        Q3 = Numerical_outliers.get_percentile(x, 75)
-        iqr = Q3 - Q1
-        lowerbound = Q1 - 1.5 * iqr
-        upperbound = Q3 + 1.5 * iqr
-        for i in range(len(x)):
-            if x[i] > upperbound or x[i] < lowerbound:
-                print("outlier=", x[i])
