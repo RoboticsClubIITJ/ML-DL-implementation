@@ -249,3 +249,54 @@ class log_cosh:
         t = np.tanh(Y-X)
         derivative = np.sum(t)
         return derivative
+
+
+class Huber():
+    """
+    Calculate Huber loss.
+    """
+
+    @staticmethod
+    def loss(X, Y, delta=1.0):
+
+        """
+        Calculate loss by Huber method.
+
+        PARAMETERS
+        ==========
+
+        X:ndarray(dtype=float,ndim=1)
+          input vector
+        Y:ndarray(dtype=float)
+          output vector
+
+         RETURNS
+         =======
+
+         array of Huber losses
+        """
+        return np.where(np.abs(X-Y) <= delta,
+                        0.5*(X-Y)**2,
+                        delta*(np.abs(X-Y)-0.5*delta))
+
+    @staticmethod
+    def derivative(X, Y, delta=1.0):
+
+        """
+        Calculate derivative for Huber method.
+
+        PARAMETERS
+        ==========
+
+        X:ndarray(dtype=float,ndim=1)
+          input vector
+        Y:ndarray(dtype=float)
+          output vector
+
+         RETURNS
+         =======
+
+         array of derivates
+        """
+
+        return np.where(np.abs(X - Y) <= delta, X - Y, delta * np.sign(X - Y))
