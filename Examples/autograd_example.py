@@ -26,7 +26,7 @@ class Linear:
         self.weight.grad = None
 
     def forward(self, x):
-        x = (x @ self.weight.T()) + self.bias
+        x = (x @ self.weight.T) + self.bias
         return x
 
     def update(self, alpha):
