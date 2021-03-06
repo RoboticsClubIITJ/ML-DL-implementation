@@ -8,7 +8,7 @@ class Tensor:
     Tensor object which acts as a wrapper around a NumPy array.
     """
 
-    __slots__ = ('data', 'requires_grad', 'is_leaf', 'grad_fn', 'grad',
+    __slots__ = ('data', 'requires_grad', 'is_leaf', 'grad_fn', '_grad',
                  'is_parameter')
 
     def __init__(self, data, requires_grad=False, is_leaf=True,
@@ -43,7 +43,7 @@ class Tensor:
         self.requires_grad = requires_grad
         self.is_leaf = is_leaf
         self.grad_fn = None  # Set during forward pass
-        self.grad = None
+        self._grad = None
         self.is_parameter = is_parameter
 
     def __getitem__(self, *args):
@@ -62,6 +62,22 @@ class Tensor:
         6.
         """
         return self.data.__getitem__(*args)
+
+    def get_grad(self):
+        return self._grad
+
+    def del_grad(self):
+        del self._grad
+
+    def set_grad(self, val):
+        self._grad = val if type(val).__name__ == 'Tensor' else Tensor(val)
+
+    grad = property(get_grad, set_grad, del_grad, 'The gradient of the tensor')
+    # why do we need the grad as property?
+    # because the user may set the grad property to 0 and we want our gradients
+    # to be nothing else but Tensors. So, having grad as property helps us to
+    # define a custom `setter` function for the _grad attribute that ensures
+    # that only Tensors are stored in _grad
 
     # ----------------------
     # for printing tensors

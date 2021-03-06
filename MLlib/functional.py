@@ -400,9 +400,10 @@ class Log(autograd.Function):
             raise Exception("Arg for Log must be tensor, got\
                             {}".format(type(a).__name__))
 
-        ctx.save_for_backward(a)
-
         requires_grad = a.requires_grad
+
+        if requires_grad:
+            ctx.save_for_backward(a)
 
         c = MLlib.Tensor(np.log(a.data), requires_grad=requires_grad,
                          is_leaf=not requires_grad)
@@ -414,3 +415,110 @@ class Log(autograd.Function):
         a = ctx.saved_tensors[0]
 
         return MLlib.Tensor(grad_output.data / a.data)
+
+
+class Tan(autograd.Function):
+
+    __slots__ = ()
+
+    @staticmethod
+    def forward(ctx, a):
+        if not type(a).__name__ == 'Tensor':
+            raise Exception("Arg for tangent function must be tensor, got\
+                            {}".format(type(a).__name__))
+
+        requires_grad = a.requires_grad
+
+        if requires_grad:
+            ctx.save_for_backward(a)
+
+        c = MLlib.Tensor(np.tan(a.data), requires_grad=requires_grad,
+                         is_leaf=not requires_grad)
+
+        return c
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        a = ctx.saved_tensors[0]
+
+        return MLlib.Tensor(grad_output.data / np.cos(a.data)**2)
+
+
+class Sin(autograd.Function):
+
+    __slots__ = ()
+
+    @staticmethod
+    def forward(ctx, a):
+        if not type(a).__name__ == 'Tensor':
+            raise Exception("Arg for sine function must be tensor, got\
+                            {}".format(type(a).__name__))
+
+        requires_grad = a.requires_grad
+
+        if requires_grad:
+            ctx.save_for_backward(a)
+
+        c = MLlib.Tensor(np.sin(a.data), requires_grad=requires_grad,
+                         is_leaf=not requires_grad)
+
+        return c
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        a = ctx.saved_tensors[0]
+
+        return MLlib.Tensor(grad_output.data * np.cos(a.data))
+
+
+class Cos(autograd.Function):
+
+    __slots__ = ()
+
+    @staticmethod
+    def forward(ctx, a):
+        if not type(a).__name__ == 'Tensor':
+            raise Exception("Arg for cosine function must be tensor, got\
+                            {}".format(type(a).__name__))
+
+        requires_grad = a.requires_grad
+
+        if requires_grad:
+            ctx.save_for_backward(a)
+
+        c = MLlib.Tensor(np.cos(a.data), requires_grad=requires_grad,
+                         is_leaf=not requires_grad)
+
+        return c
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        a = ctx.saved_tensors[0]
+
+        return MLlib.Tensor(-grad_output.data * np.sin(a.data))
+
+#########################
+#                       #
+#                       #
+# ----------------------#
+# FUNCTIONAL INTERFACES #
+# ----------------------#
+#                       #
+#                       #
+#########################
+
+
+def log(input):
+    return Log.apply(input)
+
+
+def sin(input):
+    return Sin.apply(input)
+
+
+def cos(input):
+    return Cos.apply(input)
+
+
+def tan(input):
+    return Tan.apply(input)
