@@ -12,6 +12,7 @@ from MLlib.utils.pca_utils import PCA_utils, infer_dimension
 from collections import Counter
 import numpy as np
 import pickle
+import matplotlib.pyplot as plt
 from datetime import datetime
 import math
 
@@ -180,6 +181,52 @@ class LinearRegression():
         """
         with open(name + '.rob', 'wb') as robfile:
             pickle.dump(self, robfile)
+
+    def plot(self, X, Y, optimizer=GradientDescent, epochs=25):
+        """"
+        Plot the graph of loss vs number of iterations
+
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=float, ndim=1)
+           1-D array of Dataset's input
+
+        Y: ndarray(dtype=float, ndim=1)
+           1-D array of Dataset's output
+
+        optimizer: class
+           Class of one of the Optimizers like
+           AdamProp,SGD,MBGD,GradientDescent etc
+
+        epochs: int
+           Number of times, the loop to calculate loss
+           and optimize weights, will going to take
+           place.
+
+        error: float
+           The degree of how much the predicted value
+           is diverted from actual values, given by implementing
+           one of choosen loss functions from loss_func.py .
+
+        RETURNS
+        =========
+        A 2-D graph with x-axis as Number of
+        iterations and y-axis as loss.
+
+        """
+        l1 = []
+        l2 = []
+        self.weights = optimizer.loss_func.loss(X, Y, self.weights)
+        for epoch in range(1, epochs + 1):
+            l1.append(epoch)
+            self.weights = optimizer.iterate(X, Y, self.weights)
+            error = optimizer.loss_func.loss(X, Y, self.weights)
+            l2.append(error)
+        plt.plot(np.array(l1), np.array(l2))
+        plt.xlabel("Epochs")
+        plt.ylabel("Loss")
+        plt.show()
 
 
 class PolynomialRegression():
