@@ -200,3 +200,47 @@ class OneHotEncoder():
         """
         self.fit(X, thresh)
         return self.transform(X)
+
+
+def RFread_data(file):
+    """
+    Read the training data from a file in the specified directory.
+
+    Parameters
+    ==========
+    file:
+        data type : str
+        Name of the file to be read with extension.
+
+    Example
+    =======
+
+    If the training data is stored in "dataset.txt" use
+
+    >>> RFread_data('dataset.txt')
+
+    """
+    a_file = open(file, "r")
+
+    list_of_lists = []
+    for line in a_file:
+        stripped_line = line.strip()
+        line_list = stripped_line.split()
+        list_of_lists.append(line_list)
+
+    a_file.close()
+
+    head = list_of_lists[0]
+
+    A = list_of_lists[1:]
+    L = []
+    for i in A:
+        B = []
+        for j in i:
+            try:
+                s = float(j)
+                B.append(s)
+            except Exception:
+                B.append(j)
+        L.append(B)
+    return L, head
