@@ -70,7 +70,11 @@ class Tensor:
         del self._grad
 
     def set_grad(self, val):
-        self._grad = val if type(val).__name__ == 'Tensor' else Tensor(val)
+        if val is None or type(val).__name__ == 'Tensor':
+            self._grad = val
+        else:
+            raise Exception("Expected the gradient to be NoneType object or a Tensor\
+                            (got {})".format(type(val).__name__))
 
     grad = property(get_grad, set_grad, del_grad, 'The gradient of the tensor')
     # why do we need the grad as property?
