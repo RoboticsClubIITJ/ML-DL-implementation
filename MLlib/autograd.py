@@ -144,6 +144,9 @@ class Function:
 
         return output_tensor
 
+    def __call__(self, *args, **kwargs):
+        return self.apply(*args, **kwargs)
+
 
 class BackwardFunction:
     """

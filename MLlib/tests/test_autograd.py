@@ -1,6 +1,8 @@
+import MLlib
 from MLlib.utils.misc_utils import unbroadcast
 from MLlib import Tensor
 import numpy as np
+import math
 
 # -------------------
 # UTILITY FUNCTIONS
@@ -54,6 +56,18 @@ def test_Log():
         raise AssertionError
 
     if not_close(ma.grad.data, 1/(ma.data + mb.data)):
+        raise AssertionError
+
+
+def test_LogWithNegativeValue():
+    na = -np.abs(np.random.randn(6, 8))
+    a = Tensor(na, requires_grad=True)
+
+    b = MLlib.log(a)
+
+    b.backward()
+
+    if not_close(a.grad.data, 1/a.data):
         raise AssertionError
 
 
@@ -141,4 +155,72 @@ def test_Dot():
         raise AssertionError
 
     if not_close(ma.grad.data, mb.data.T):
+        raise AssertionError
+
+
+def test_Tan():
+    a = Tensor.randn(6, 8, requires_grad=True)
+
+    o = MLlib.tan(a)
+
+    o.backward()
+
+    if not_close(a.grad.data, 1/(np.cos(a.data))**2):
+        raise AssertionError
+
+
+def test_TanAtPiOverTwoWithMathModule():
+    na = np.ones((8, 12))*(math.pi) / 2
+
+    a = Tensor(na, requires_grad=True)
+
+    o = MLlib.tan(a)
+
+    o.backward()
+
+    if not_close(a.grad.data, 1/(np.cos(a.data))**2):
+        raise AssertionError
+
+
+def test_Sin():
+    a = Tensor.randn(6, 8, requires_grad=True)
+
+    o = MLlib.sin(a)
+
+    o.backward()
+
+    if not_close(a.grad.data, np.cos(a.data)):
+        raise AssertionError
+
+
+def test_Cos():
+    a = Tensor.randn(6, 8, requires_grad=True)
+
+    o = MLlib.cos(a)
+
+    o.backward()
+
+    if not_close(a.grad.data, -np.sin(a.data)):
+        raise AssertionError
+
+
+def test_ExponentWithMathModule():
+    a = Tensor.randn(8, 10, requires_grad=True)
+
+    o = math.e ** a
+
+    o.backward()
+
+    if not_close(a.grad.data, o.data):
+        raise AssertionError
+
+
+def test_Exponent():
+    a = Tensor.randn(8, 10, requires_grad=True)
+
+    o = MLlib.exp(a)
+
+    o.backward()
+
+    if not_close(a.grad.data, o.data):
         raise AssertionError

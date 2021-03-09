@@ -497,6 +497,31 @@ class Cos(autograd.Function):
 
         return MLlib.Tensor(-grad_output.data * np.sin(a.data))
 
+
+class Exp(autograd.Function):
+    __slots__ = ()
+
+    @staticmethod
+    def forward(ctx, a):
+        if not type(a).__name__ == 'Tensor':
+            raise Exception("Arg for exponent function must be tensor, got\
+                            {}".format(type(a).__name__))
+
+        requires_grad = a.requires_grad
+
+        c = MLlib.Tensor(np.exp(a.data), requires_grad=requires_grad,
+                         is_leaf=not requires_grad)
+
+        if requires_grad:
+            ctx.save_for_backward(c)
+
+        return c
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        return ctx.saved_tensors[0]
+
+
 #########################
 #                       #
 #                       #
@@ -522,3 +547,7 @@ def cos(input):
 
 def tan(input):
     return Tan.apply(input)
+
+
+def exp(input):
+    return Exp.apply(input)
