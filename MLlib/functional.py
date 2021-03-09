@@ -3,8 +3,42 @@ import MLlib
 import MLlib.autograd as autograd
 from MLlib.utils.misc_utils import unbroadcast
 
+"""
+Contains the Functions which are called whenever an operation concerning
+Tensors and computaion graph occurs.
+
+All the functions are derived from the base class `MLlib.autograd.Function`
+which defines a `.apply()` method which calls the `.forward()` method and
+the `.backward()` method (not directly though) of these functions as and when
+required.
+
+`__slots__`: defined to reduce memory overhead. This should be an empty tuple
+                unless a function explicitly requires a variable to be stored
+                in the class itself. If such case arises:the function must
+                define its own `__init__()` method and put the class variable's
+                name in `__slots__`
+
+`.forward(...)`: this method performs the required operation and is called by
+                    `.apply()`. To find out more about `.apply()` method,
+                    please checkout `autograd.py`
+
+`.backward(...)`: this method takes the gradient of the root of computation
+                    graph with respect to the output of the operation as
+                    input and returns the gradient of root of the computation
+                    graph with repect to the operands of the operation.
+
+Why unbroadcast(...) is being used?
+numpy broadcasts the input in order to perform different operations and the
+gradients are returned in the shape used for performing the operation. So we
+need a way to reshape those gradients back to the shape of the original
+operand, and the `unbroadcast()` utility does that for us.
+
+"""
+
 
 class Transpose(autograd.Function):
+
+    __slots__ = ()
 
     @staticmethod
     def forward(ctx, a):
@@ -31,6 +65,8 @@ class Transpose(autograd.Function):
 
 class Reshape(autograd.Function):
 
+    __slots__ = ()
+
     @staticmethod
     def forward(ctx, a, shape):
 
@@ -54,6 +90,8 @@ class Reshape(autograd.Function):
 
 
 class Add(autograd.Function):
+
+    __slots__ = ()
 
     @staticmethod
     def forward(ctx, a, b):
@@ -89,6 +127,8 @@ class Add(autograd.Function):
 
 class Sub(autograd.Function):
 
+    __slots__ = ()
+
     @staticmethod
     def forward(ctx, a, b):
 
@@ -122,6 +162,8 @@ class Sub(autograd.Function):
 
 class Mul(autograd.Function):
 
+    __slots__ = ()
+
     @staticmethod
     def forward(ctx, a, b):
 
@@ -153,6 +195,9 @@ class Mul(autograd.Function):
 
 
 class Div(autograd.Function):
+
+    __slots__ = ()
+
     @staticmethod
     def forward(ctx, a, b):
 
@@ -184,6 +229,8 @@ class Div(autograd.Function):
 
 
 class MatMul(autograd.Function):
+
+    __slots__ = ()
 
     @staticmethod
     def forward(ctx, a, b):
@@ -219,6 +266,8 @@ class MatMul(autograd.Function):
 
 
 class Pow(autograd.Function):
+
+    __slots__ = ()
 
     @staticmethod
     def forward(ctx, a, b):
@@ -257,6 +306,8 @@ class Pow(autograd.Function):
 
 
 class Dot(autograd.Function):
+
+    __slots__ = ()
 
     @staticmethod
     def forward(ctx, a, b):
@@ -299,6 +350,8 @@ class Dot(autograd.Function):
 
 class Sum(autograd.Function):
 
+    __slots__ = ()
+
     @staticmethod
     def forward(ctx, a, axis, keepdims):
         if not type(a).__name__ == 'Tensor':
@@ -338,15 +391,19 @@ class Sum(autograd.Function):
 
 
 class Log(autograd.Function):
+
+    __slots__ = ()
+
     @staticmethod
     def forward(ctx, a):
         if not type(a).__name__ == 'Tensor':
             raise Exception("Arg for Log must be tensor, got\
                             {}".format(type(a).__name__))
 
-        ctx.save_for_backward(a)
-
         requires_grad = a.requires_grad
+
+        if requires_grad:
+            ctx.save_for_backward(a)
 
         c = MLlib.Tensor(np.log(a.data), requires_grad=requires_grad,
                          is_leaf=not requires_grad)
@@ -358,3 +415,139 @@ class Log(autograd.Function):
         a = ctx.saved_tensors[0]
 
         return MLlib.Tensor(grad_output.data / a.data)
+
+
+class Tan(autograd.Function):
+
+    __slots__ = ()
+
+    @staticmethod
+    def forward(ctx, a):
+        if not type(a).__name__ == 'Tensor':
+            raise Exception("Arg for tangent function must be tensor, got\
+                            {}".format(type(a).__name__))
+
+        requires_grad = a.requires_grad
+
+        if requires_grad:
+            ctx.save_for_backward(a)
+
+        c = MLlib.Tensor(np.tan(a.data), requires_grad=requires_grad,
+                         is_leaf=not requires_grad)
+
+        return c
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        a = ctx.saved_tensors[0]
+
+        return MLlib.Tensor(grad_output.data / np.cos(a.data)**2)
+
+
+class Sin(autograd.Function):
+
+    __slots__ = ()
+
+    @staticmethod
+    def forward(ctx, a):
+        if not type(a).__name__ == 'Tensor':
+            raise Exception("Arg for sine function must be tensor, got\
+                            {}".format(type(a).__name__))
+
+        requires_grad = a.requires_grad
+
+        if requires_grad:
+            ctx.save_for_backward(a)
+
+        c = MLlib.Tensor(np.sin(a.data), requires_grad=requires_grad,
+                         is_leaf=not requires_grad)
+
+        return c
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        a = ctx.saved_tensors[0]
+
+        return MLlib.Tensor(grad_output.data * np.cos(a.data))
+
+
+class Cos(autograd.Function):
+
+    __slots__ = ()
+
+    @staticmethod
+    def forward(ctx, a):
+        if not type(a).__name__ == 'Tensor':
+            raise Exception("Arg for cosine function must be tensor, got\
+                            {}".format(type(a).__name__))
+
+        requires_grad = a.requires_grad
+
+        if requires_grad:
+            ctx.save_for_backward(a)
+
+        c = MLlib.Tensor(np.cos(a.data), requires_grad=requires_grad,
+                         is_leaf=not requires_grad)
+
+        return c
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        a = ctx.saved_tensors[0]
+
+        return MLlib.Tensor(-grad_output.data * np.sin(a.data))
+
+
+class Exp(autograd.Function):
+    __slots__ = ()
+
+    @staticmethod
+    def forward(ctx, a):
+        if not type(a).__name__ == 'Tensor':
+            raise Exception("Arg for exponent function must be tensor, got\
+                            {}".format(type(a).__name__))
+
+        requires_grad = a.requires_grad
+
+        c = MLlib.Tensor(np.exp(a.data), requires_grad=requires_grad,
+                         is_leaf=not requires_grad)
+
+        if requires_grad:
+            ctx.save_for_backward(c)
+
+        return c
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        return ctx.saved_tensors[0]
+
+
+#########################
+#                       #
+#                       #
+# ----------------------#
+# FUNCTIONAL INTERFACES #
+# ----------------------#
+#                       #
+#                       #
+#########################
+
+
+def log(input):
+    return Log.apply(input)
+
+
+def sin(input):
+    return Sin.apply(input)
+
+
+def cos(input):
+    return Cos.apply(input)
+
+
+def tan(input):
+    return Tan.apply(input)
+
+
+def exp(input):
+    return Exp.apply(input)
