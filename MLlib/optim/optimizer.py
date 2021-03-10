@@ -3,6 +3,9 @@ class Optimizer:
     """
     Base class for all optimizers.
     """
+
+    __slots__ = ('params')
+
     def __init__(self, parameters):
         self.params = tuple(parameters)
 

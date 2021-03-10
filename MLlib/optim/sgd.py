@@ -17,6 +17,9 @@ class SGD(optim.Optimizer):
     lr: float
         Learning rate (eta/alpha)
     """
+
+    __slots__ = ('lr')
+
     def __init__(self, parameters, lr=0.001):
         super().__init__(parameters)
         self.lr = lr
