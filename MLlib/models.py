@@ -10,6 +10,8 @@ from MLlib.utils.k_means_clustering_utils import initi_centroid, cluster_allot
 from MLlib.utils.k_means_clustering_utils import new_centroid, xy_calc
 from MLlib.utils.pca_utils import PCA_utils, infer_dimension
 from collections import Counter
+import matplotlib.pyplot as plt
+
 import numpy as np
 import pickle
 from datetime import datetime
@@ -30,7 +32,7 @@ class LinearRegression():
     METHODS
     =======
 
-    fit(X,Y,optimizer=GradientDescent,epochs=25, \
+    fit(X,Y,optimizer=GradientDescent,epochs=25,
     zeros=False,save_best=False):
         Implement the Training of
         Linear Regression Model with
@@ -359,6 +361,72 @@ class PolynomialRegression():
         """
         with open(name + '.rob', 'wb') as robfile:
             pickle.dump(self, robfile)
+
+    def plot(
+            self,
+            X,
+            Y,
+            optimizer=GradientDescent,
+            epochs=60,
+            zeros=False,
+            save_best=False
+            ):
+        """
+        prints two graphs:
+        1.loss vs epochs
+        2. values vs number of datasets
+        """
+
+        C = X
+
+        EPOCHS = epochs
+
+        PolynomialRegression.fit(X,
+                                 Y,
+                                 optimizer=optimizer,
+                                 epochs=EPOCHS,
+                                 zeros=False)
+        z = np.transpose(PolynomialRegression.predict(X))
+        pred_value = z[0]
+        zer = C.transpose()
+        true_value = zer[0]
+        li = []
+        for i in range(0, len(C)):
+            li.append(i)
+        x = np.array(li)
+        plt.xlabel('Number of Datasets', family='serif', fontsize=15)
+        plt.ylabel('Values', family='serif', fontsize=15)
+        plt.plot(x, true_value, color='green', label="True Values")
+        plt.plot(x, pred_value, label="Predicted Values")
+        plt.legend(loc="upper right")
+        plt.show()
+
+        M, N = X.shape
+        X = np.hstack((
+            X,
+            ((X[:, 0] ** 2).reshape(M, 1)),
+            ((X[:, 0] ** 3).reshape(M, 1)),
+            ((X[:, 0] ** 4).reshape(M, 1))
+            ))
+        List = []
+        m = []
+        weights = generate_weights(X.shape[1], 1, zeros=zeros)
+        best_weights = {"weights": None, "loss": float('inf')}
+        for epoch in range(1, epochs + 1):
+            m.append(epoch)
+            weights = optimizer.iterate(X, Y, weights)
+            epoch_loss = optimizer.loss_func.loss(X, Y, weights)
+            if save_best and epoch_loss < self.best_weights["loss"]:
+                best_weights['weights'] = weights
+                best_weights['loss'] = epoch_loss
+            List.append(epoch_loss)
+        x = np.array(m)
+        y = np.array(List)
+        plt.figure(figsize=(10, 5))
+        plt.xlabel('EPOCHS', family='serif', fontsize=15)
+        plt.ylabel('LOSS', family='serif', fontsize=15)
+        plt.scatter(x, y, color='navy')
+        plt.show()
 
 
 class LogisticRegression(LinearRegression):
