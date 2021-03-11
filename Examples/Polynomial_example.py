@@ -6,11 +6,11 @@ from MLlib.utils.misc_utils import read_data, printmat
 
 X, Y = read_data('datasets/Polynomial_reg.txt')
 
-polynomial_model = PolynomialRegression()
+polynomial_model = PolynomialRegression(3)  # degree as user's choice
 
 optimizer = Adam(0.01, MeanSquaredError)
 
-polynomial_model.fit(X, Y, optimizer=optimizer, epochs=200, zeros=False)
+polynomial_model.fit(X, Y, optimizer=optimizer, epochs=200, zeros=True)
 
 printmat('predictions', polynomial_model.predict(X))
 
