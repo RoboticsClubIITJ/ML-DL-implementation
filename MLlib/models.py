@@ -262,15 +262,19 @@ class PolynomialRegression():
         Model in rob format , in Local
         disk.
     """
+    def __init__(self, degree):
+        self.degree = degree
+        self.weights = 0
+        self.best_weights = {}
 
     def fit(
             self,
             X,
             Y,
             optimizer=GradientDescent,
-            epochs=60,
+            epochs=200,
             zeros=False,
-            save_best=False
+            save_best=True
             ):
         """
         Train the Polynomial Regression Model
@@ -326,14 +330,27 @@ class PolynomialRegression():
         None
         """
         M, N = X.shape
-        X = np.hstack((
-            X,
-            ((X[:, 0] ** 2).reshape(M, 1)),
-            ((X[:, 0] ** 3).reshape(M, 1)),
-            ((X[:, 0] ** 4).reshape(M, 1))
+
+        P = X[:, 0:1]
+
+        # Add polynomial terms to X
+        # upto degree 'self.degree'.
+        for i in range(2, self.degree+1):
+            P = np.hstack((
+                P,
+                (np.power(X[:, 0:1], i)).reshape(M, 1)
             ))
+
+        P = np.hstack((
+            P,
+            X[:, 1:2]
+        ))
+
+        X = P
+
         self.weights = generate_weights(X.shape[1], 1, zeros=zeros)
-        self.best_weights = {"weights": None, "loss": float('inf')}
+        self.best_weights = {"weights": self.weights, "loss":
+                             optimizer.loss_func.loss(X, Y, self.weights)}
         print("Starting training with loss:",
               optimizer.loss_func.loss(X, Y, self.weights))
         for epoch in range(1, epochs + 1):
@@ -342,7 +359,6 @@ class PolynomialRegression():
             self.weights = optimizer.iterate(X, Y, self.weights)
             epoch_loss = optimizer.loss_func.loss(X, Y, self.weights)
             if save_best and epoch_loss < self.best_weights["loss"]:
-                print("updating best weights (loss: {})".format(epoch_loss))
                 self.best_weights['weights'] = self.weights
                 self.best_weights['loss'] = epoch_loss
                 version = "model_best_" + datetime.now().strftime(DATE_FORMAT)
@@ -355,8 +371,7 @@ class PolynomialRegression():
         self.save(version)
 
         print("======================================\n")
-        print("Finished training with final loss:",
-              optimizer.loss_func.loss(X, Y, self.weights))
+        print("Finished training with final loss:", self.best_weights['loss'])
         print("=====================================================\n")
 
     def predict(self, X):
@@ -379,13 +394,23 @@ class PolynomialRegression():
             each Input of Dataset.
         """
         M, N = X.shape
-        X = np.hstack((
-            X,
-            ((X[:, 0] ** 2).reshape(M, 1)),
-            ((X[:, 0] ** 3).reshape(M, 1)),
-            ((X[:, 0] ** 4).reshape(M, 1))
+
+        P = X[:, 0:1]
+
+        for i in range(2, self.degree+1):
+            P = np.hstack((
+                P,
+                (np.power(X[:, 0:1], i)).reshape(M, 1)
             ))
-        return np.dot(X, self.weights)
+
+        P = np.hstack((
+            P,
+            X[:, 1:2]
+        ))
+
+        X = P
+
+        return np.dot(X, self.best_weights['weights'])
 
     def save(self, name):
         """
