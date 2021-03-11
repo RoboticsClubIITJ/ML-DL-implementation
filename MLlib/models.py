@@ -11,6 +11,10 @@ from MLlib.utils.k_means_clustering_utils import new_centroid, xy_calc
 from MLlib.utils.pca_utils import PCA_utils, infer_dimension
 from collections import Counter
 import numpy as np
+from numpy.random import random
+from scipy.stats import norm
+from warnings import catch_warnings
+from warnings import simplefilter
 import pickle
 import matplotlib.pyplot as plt
 from datetime import datetime
@@ -1231,6 +1235,50 @@ class KMeansClustering():
             print("==============================\n")
             print(cluster)
             print("\n==============================\n")
+
+
+class Bayes_Optimization():
+    # surrogate or approximation for the objective function
+    def surrogate(self, model, X):
+        # catch any warning generated when making a prediction
+        with catch_warnings():
+            # ignore generated warnings
+            simplefilter("ignore")
+            return model.predict(X, return_std=True)
+
+    def acquisition(self, X, Xsamples, model):
+        yhat, _ = self.surrogate(model, X)
+        best = max(yhat)
+        # calculate mean and stdev via surrogate function
+        mu, std = self.surrogate(model, Xsamples)
+        mu = mu[:, 0]
+        # calculate the probability of improvement
+        probs = norm.cdf((mu - best) / (std+1E-9))
+        return probs
+
+    # optimize the acquisition function
+    def opt_acquisition(self, X, y, model):
+        # random search, generate random samples
+        Xsamples = random(100)
+        Xsamples = Xsamples.reshape(len(Xsamples), 1)
+        # calculate the acquisition function for each sample
+        scores = self.acquisition(X, Xsamples, model)
+        # locate the index of the largest scores
+        ix = np.argmax(scores)
+        return Xsamples[ix, 0]
+
+    # plot real observations vs surrogate function
+    def plot(self, X, y, model):
+        # scatter plot of inputs and real objective function
+        plt.scatter(X, y)
+        # line plot of surrogate function across domain
+        Xsamples = np.asarray(np.arange(0, 1, 0.001))
+        Xsamples = Xsamples.reshape(len(Xsamples), 1)
+        ysamples, _ = self.surrogate(model, Xsamples)
+        plt.plot(Xsamples, ysamples)
+        # show the plot
+        plt.show()
+
 
 # ---------------------- Principle Component Analysis ------------------------
 
