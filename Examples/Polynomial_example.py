@@ -6,7 +6,7 @@ from MLlib.utils.misc_utils import read_data, printmat
 
 X, Y = read_data('datasets/Polynomial_reg.txt')
 
-polynomial_model = PolynomialRegression(3)# degree as user's choice
+polynomial_model = PolynomialRegression(3)  # degree as user's choice
 
 optimizer = Adam(0.01, MeanSquaredError)
 
