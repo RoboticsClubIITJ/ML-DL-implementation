@@ -14,4 +14,8 @@ polynomial_model.fit(X, Y, optimizer=optimizer, epochs=200, zeros=True)
 
 printmat('predictions', polynomial_model.predict(X))
 
+Z = polynomial_model.predict(X)
+
 polynomial_model.save('test')
+
+polynomial_model.plot(X, Y, Z, optimizer=optimizer, epochs=200, zeros=True)

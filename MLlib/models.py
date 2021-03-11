@@ -31,7 +31,7 @@ class LinearRegression():
     METHODS
     =======
 
-    fit(X,Y,optimizer=GradientDescent,epochs=25, \
+    fit(X,Y,optimizer=GradientDescent,epochs=25,
     zeros=False,save_best=False):
         Implement the Training of
         Linear Regression Model with
@@ -431,6 +431,112 @@ class PolynomialRegression():
         """
         with open(name + '.rob', 'wb') as robfile:
             pickle.dump(self, robfile)
+
+    def plot(
+            self,
+            X,
+            Y,
+            Z,
+            optimizer=GradientDescent,
+            epochs=60,
+            zeros=False,
+            save_best=False
+            ):
+
+        """
+        Plot the graph of Loss vs Epochs
+        Plot the graph of line Of Polynomial Regression
+
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=float, ndim=1)
+           1-D array of Dataset's input
+
+        Y: ndarray(dtype=float, ndim=1)
+           1-D array of Dataset's output
+
+        Z: ndarray(dtype=float, ndim=1)
+           1-D array of Predicted Values
+
+        optimizer: class
+            Class of one of the Optimizers like
+            AdamProp,SGD,MBGD,RMSprop,AdamDelta,
+            Gradient Descent,etc.
+
+        epochs: int
+            Number of times, the loop to calculate loss
+            and optimize weights, is going to take
+            place.
+
+        zeros: boolean
+            Condition to initialize Weights as either
+            zeroes or some random decimal values.
+
+        save_best: boolean
+            Condition to enable or disable the option
+            of saving the suitable Weight values for the
+            model after reaching the region nearby the
+            minima of Loss-Function with respect to Weights.
+
+        RETURNS
+        =======
+
+        None
+        """
+
+        M, N = X.shape
+
+        P = X[:, 0:1]
+
+        for i in range(2, self.degree+1):
+            P = np.hstack((
+                P,
+                (np.power(X[:, 0:1], i)).reshape(M, 1)
+            ))
+
+        P = np.hstack((
+            P,
+            X[:, 1:2]
+            ))
+
+        X = P
+        m = []
+        List = []
+        self.weights = generate_weights(X.shape[1], 1, zeros=zeros)
+        self.best_weights = {"weights": self.weights, "loss":
+                             optimizer.loss_func.loss(X, Y, self.weights)}
+        print("Starting training with loss:",
+              optimizer.loss_func.loss(X, Y, self.weights))
+        for epoch in range(1, epochs + 1):
+            m.append(epoch)
+            self.weights = optimizer.iterate(X, Y, self.weights)
+            epoch_loss = optimizer.loss_func.loss(X, Y, self.weights)
+            if save_best and epoch_loss < self.best_weights["loss"]:
+                self.best_weights['weights'] = self.weights
+                self.best_weights['loss'] = epoch_loss
+            List.append(epoch_loss)
+        x = np.array(m)
+        y = np.array(List)
+        plt.figure(figsize=(10, 5))
+        plt.xlabel('EPOCHS', family='serif', fontsize=15)
+        plt.ylabel('LOSS', family='serif', fontsize=15)
+        plt.scatter(x, y, color='navy')
+        plt.show()
+
+        z = np.reshape(Z, (1, M))
+        pred_value = z[0]
+        true_value = Y[0]
+        A = []
+        for i in range(0, len(Y[0])):
+            A.append(i)
+        x_axis = np.array(A)
+        plt.xlabel('Number of Datasets', family='serif', fontsize=15)
+        plt.ylabel('Values', family='serif', fontsize=15)
+        plt.scatter(x_axis, true_value, label="True Values")
+        plt.plot(x_axis, pred_value, label="Predicted Values")
+        plt.legend(loc="upper right")
+        plt.show()
 
 
 class LogisticRegression(LinearRegression):
