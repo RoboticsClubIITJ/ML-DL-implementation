@@ -1,11 +1,50 @@
 import numpy as np
 from MLlib.activations import Sigmoid
+from MLlib import Tensor
+from MLlib import autograd
+from MLlib.utils.misc_utils import unbroadcast
 
 
-class MeanSquaredError():
+class MeanSquaredError(autograd.Function):
     """
     Calculate Mean Squared Error.
     """
+
+    __slots__ = ()
+
+    @staticmethod
+    def forward(ctx, prediction, target):
+        if not (type(prediction).__name__ == 'Tensor' and
+                type(target).__name__ == 'Tensor'):
+
+            raise RuntimeError("Expected Tensors, got {} and {}. Please use "
+                               ".loss() method for non-Tensor data"
+                               .format(type(prediction).__name__,
+                                       type(target).__name__))
+
+        requires_grad = prediction.requires_grad
+
+        batch_size = target.data.shape[0]
+
+        out = prediction.data - target.data
+
+        if requires_grad:
+            ctx.derivative_core = out
+
+        out = np.sum(np.power(out, 2)) / (2*batch_size)
+
+        output = Tensor(out, requires_grad=requires_grad,
+                        is_leaf=not requires_grad)
+
+        return output
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        derivative = ctx.derivative_core
+
+        grad_prediction = (derivative / derivative.shape[0]) * grad_output.data
+
+        return Tensor(unbroadcast(grad_prediction, derivative.shape))
 
     @staticmethod
     def loss(X, Y, W):
@@ -52,6 +91,10 @@ class MeanSquaredError():
         """
         M = X.shape[0]
         return np.dot((np.dot(X, W).T - Y), X).T / M
+
+
+class MSELoss(MeanSquaredError):
+    pass
 
 
 class LogarithmicError():
