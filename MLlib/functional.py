@@ -519,7 +519,10 @@ class Exp(autograd.Function):
 
     @staticmethod
     def backward(ctx, grad_output):
-        return ctx.saved_tensors[0]
+        grad_out = grad_output.data
+        o = ctx.saved_tensors[0]
+
+        return MLlib.Tensor(grad_out * o.data)
 
 
 #########################
