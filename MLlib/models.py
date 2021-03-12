@@ -12,7 +12,12 @@ from MLlib.utils.pca_utils import PCA_utils, infer_dimension
 import MLlib.nn as nn
 from collections import Counter, OrderedDict
 import numpy as np
+from numpy.random import random
+from scipy.stats import norm
+from warnings import catch_warnings
+from warnings import simplefilter
 import pickle
+import matplotlib.pyplot as plt
 from datetime import datetime
 import math
 
@@ -31,7 +36,7 @@ class LinearRegression():
     METHODS
     =======
 
-    fit(X,Y,optimizer=GradientDescent,epochs=25, \
+    fit(X,Y,optimizer=GradientDescent,epochs=25,
     zeros=False,save_best=False):
         Implement the Training of
         Linear Regression Model with
@@ -182,6 +187,52 @@ class LinearRegression():
         with open(name + '.rob', 'wb') as robfile:
             pickle.dump(self, robfile)
 
+    def plot(self, X, Y, optimizer=GradientDescent, epochs=25):
+        """"
+        Plot the graph of loss vs number of iterations
+
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=float, ndim=1)
+           1-D array of Dataset's input
+
+        Y: ndarray(dtype=float, ndim=1)
+           1-D array of Dataset's output
+
+        optimizer: class
+           Class of one of the Optimizers like
+           AdamProp,SGD,MBGD,GradientDescent etc
+
+        epochs: int
+           Number of times, the loop to calculate loss
+           and optimize weights, will going to take
+           place.
+
+        error: float
+           The degree of how much the predicted value
+           is diverted from actual values, given by implementing
+           one of choosen loss functions from loss_func.py .
+
+        RETURNS
+        =========
+        A 2-D graph with x-axis as Number of
+        iterations and y-axis as loss.
+
+        """
+        l1 = []
+        l2 = []
+        self.weights = optimizer.loss_func.loss(X, Y, self.weights)
+        for epoch in range(1, epochs + 1):
+            l1.append(epoch)
+            self.weights = optimizer.iterate(X, Y, self.weights)
+            error = optimizer.loss_func.loss(X, Y, self.weights)
+            l2.append(error)
+        plt.plot(np.array(l1), np.array(l2))
+        plt.xlabel("Epochs")
+        plt.ylabel("Loss")
+        plt.show()
+
 
 class PolynomialRegression():
     """
@@ -216,15 +267,19 @@ class PolynomialRegression():
         Model in rob format , in Local
         disk.
     """
+    def __init__(self, degree):
+        self.degree = degree
+        self.weights = 0
+        self.best_weights = {}
 
     def fit(
             self,
             X,
             Y,
             optimizer=GradientDescent,
-            epochs=60,
+            epochs=200,
             zeros=False,
-            save_best=False
+            save_best=True
             ):
         """
         Train the Polynomial Regression Model
@@ -280,14 +335,27 @@ class PolynomialRegression():
         None
         """
         M, N = X.shape
-        X = np.hstack((
-            X,
-            ((X[:, 0] ** 2).reshape(M, 1)),
-            ((X[:, 0] ** 3).reshape(M, 1)),
-            ((X[:, 0] ** 4).reshape(M, 1))
+
+        P = X[:, 0:1]
+
+        # Add polynomial terms to X
+        # upto degree 'self.degree'.
+        for i in range(2, self.degree+1):
+            P = np.hstack((
+                P,
+                (np.power(X[:, 0:1], i)).reshape(M, 1)
             ))
+
+        P = np.hstack((
+            P,
+            X[:, 1:2]
+        ))
+
+        X = P
+
         self.weights = generate_weights(X.shape[1], 1, zeros=zeros)
-        self.best_weights = {"weights": None, "loss": float('inf')}
+        self.best_weights = {"weights": self.weights, "loss":
+                             optimizer.loss_func.loss(X, Y, self.weights)}
         print("Starting training with loss:",
               optimizer.loss_func.loss(X, Y, self.weights))
         for epoch in range(1, epochs + 1):
@@ -296,7 +364,6 @@ class PolynomialRegression():
             self.weights = optimizer.iterate(X, Y, self.weights)
             epoch_loss = optimizer.loss_func.loss(X, Y, self.weights)
             if save_best and epoch_loss < self.best_weights["loss"]:
-                print("updating best weights (loss: {})".format(epoch_loss))
                 self.best_weights['weights'] = self.weights
                 self.best_weights['loss'] = epoch_loss
                 version = "model_best_" + datetime.now().strftime(DATE_FORMAT)
@@ -309,8 +376,7 @@ class PolynomialRegression():
         self.save(version)
 
         print("======================================\n")
-        print("Finished training with final loss:",
-              optimizer.loss_func.loss(X, Y, self.weights))
+        print("Finished training with final loss:", self.best_weights['loss'])
         print("=====================================================\n")
 
     def predict(self, X):
@@ -333,13 +399,23 @@ class PolynomialRegression():
             each Input of Dataset.
         """
         M, N = X.shape
-        X = np.hstack((
-            X,
-            ((X[:, 0] ** 2).reshape(M, 1)),
-            ((X[:, 0] ** 3).reshape(M, 1)),
-            ((X[:, 0] ** 4).reshape(M, 1))
+
+        P = X[:, 0:1]
+
+        for i in range(2, self.degree+1):
+            P = np.hstack((
+                P,
+                (np.power(X[:, 0:1], i)).reshape(M, 1)
             ))
-        return np.dot(X, self.weights)
+
+        P = np.hstack((
+            P,
+            X[:, 1:2]
+        ))
+
+        X = P
+
+        return np.dot(X, self.best_weights['weights'])
 
     def save(self, name):
         """
@@ -360,6 +436,112 @@ class PolynomialRegression():
         """
         with open(name + '.rob', 'wb') as robfile:
             pickle.dump(self, robfile)
+
+    def plot(
+            self,
+            X,
+            Y,
+            Z,
+            optimizer=GradientDescent,
+            epochs=60,
+            zeros=False,
+            save_best=False
+            ):
+
+        """
+        Plot the graph of Loss vs Epochs
+        Plot the graph of line Of Polynomial Regression
+
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=float, ndim=1)
+           1-D array of Dataset's input
+
+        Y: ndarray(dtype=float, ndim=1)
+           1-D array of Dataset's output
+
+        Z: ndarray(dtype=float, ndim=1)
+           1-D array of Predicted Values
+
+        optimizer: class
+            Class of one of the Optimizers like
+            AdamProp,SGD,MBGD,RMSprop,AdamDelta,
+            Gradient Descent,etc.
+
+        epochs: int
+            Number of times, the loop to calculate loss
+            and optimize weights, is going to take
+            place.
+
+        zeros: boolean
+            Condition to initialize Weights as either
+            zeroes or some random decimal values.
+
+        save_best: boolean
+            Condition to enable or disable the option
+            of saving the suitable Weight values for the
+            model after reaching the region nearby the
+            minima of Loss-Function with respect to Weights.
+
+        RETURNS
+        =======
+
+        None
+        """
+
+        M, N = X.shape
+
+        P = X[:, 0:1]
+
+        for i in range(2, self.degree+1):
+            P = np.hstack((
+                P,
+                (np.power(X[:, 0:1], i)).reshape(M, 1)
+            ))
+
+        P = np.hstack((
+            P,
+            X[:, 1:2]
+            ))
+
+        X = P
+        m = []
+        List = []
+        self.weights = generate_weights(X.shape[1], 1, zeros=zeros)
+        self.best_weights = {"weights": self.weights, "loss":
+                             optimizer.loss_func.loss(X, Y, self.weights)}
+        print("Starting training with loss:",
+              optimizer.loss_func.loss(X, Y, self.weights))
+        for epoch in range(1, epochs + 1):
+            m.append(epoch)
+            self.weights = optimizer.iterate(X, Y, self.weights)
+            epoch_loss = optimizer.loss_func.loss(X, Y, self.weights)
+            if save_best and epoch_loss < self.best_weights["loss"]:
+                self.best_weights['weights'] = self.weights
+                self.best_weights['loss'] = epoch_loss
+            List.append(epoch_loss)
+        x = np.array(m)
+        y = np.array(List)
+        plt.figure(figsize=(10, 5))
+        plt.xlabel('EPOCHS', family='serif', fontsize=15)
+        plt.ylabel('LOSS', family='serif', fontsize=15)
+        plt.scatter(x, y, color='navy')
+        plt.show()
+
+        z = np.reshape(Z, (1, M))
+        pred_value = z[0]
+        true_value = Y[0]
+        A = []
+        for i in range(0, len(Y[0])):
+            A.append(i)
+        x_axis = np.array(A)
+        plt.xlabel('Number of Datasets', family='serif', fontsize=15)
+        plt.ylabel('Values', family='serif', fontsize=15)
+        plt.scatter(x_axis, true_value, label="True Values")
+        plt.plot(x_axis, pred_value, label="Predicted Values")
+        plt.legend(loc="upper right")
+        plt.show()
 
 
 class LogisticRegression(LinearRegression):
@@ -461,6 +643,102 @@ class LogisticRegression(LinearRegression):
                 actual_predictions[0][i] = 1
 
         return actual_predictions
+
+    def Plot(self,
+             X,
+             Y,
+             actual_predictions,
+             optimizer=GradientDescent,
+             epochs=25,
+             zeros=False
+             ):
+
+        """
+        Plots for Logistic Regression.
+
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=float,ndim=1)
+            1-D Array of Dataset's Input.
+
+        Y: ndarray(dtype=float,ndim=1)
+            1-D Array of Dataset's Output.
+
+        actual_predictions: ndarray(dtype=int,ndim=1)
+            1-D Array of Output, associated
+            to each Input of Dataset,
+            Predicted by Trained Logistic
+            Regression Model.
+
+        optimizer: class
+           Class of one of the Optimizers like
+           AdamProp,SGD,MBGD,GradientDescent etc
+
+        epochs: int
+           Number of times, the loop to calculate loss
+           and optimize weights, will going to take
+           place.
+
+        error: float
+           The degree of how much the predicted value
+           is diverted from actual values, given by implementing
+           one of choosen loss functions from loss_func.py .
+
+        zeros: boolean
+            Condition to initialize Weights as either
+            zeroes or some random decimal values.
+
+        RETURNS
+        =======
+
+        2-D graph of Sigmoid curve,
+        Comparision Plot of True output and Predicted output versus Feacture.
+        2-D graph of Loss versus Number of iterations.
+        """
+        Plot = plt.figure(figsize=(8, 8))
+        plot1 = Plot.add_subplot(2, 2, 1)
+        plot2 = Plot.add_subplot(2, 2, 2)
+        plot3 = Plot.add_subplot(2, 2, 3)
+
+        # 2-D graph of Sigmoid curve.
+        x = np.linspace(- max(X[:, 0]) - 2, max(X[:, 0]) + 2, 1000)
+        plot1.set_title('Sigmoid curve')
+        plot1.grid()
+        sigmoid = Sigmoid()
+        plot1.scatter(X.T[0], Y, color="red", marker="+", label="labels")
+        plot1.plot(x, 0*x+0.5, linestyle="--", label="Decision bound, y=0.5")
+        plot1.plot(x, sigmoid.activation(x),
+                   color="green", label='Sigmoid function: 1 / (1 + e^-x)'
+                   )
+        plot1.legend()
+
+        # Comparision Plot of Actual output and Predicted output vs Feacture.
+        plot2.set_title('Actual output and Predicted output versus Feacture')
+        plot2.set_xlabel("x")
+        plot2.set_ylabel("y")
+        plot2.scatter(X[:, 0], Y, color="orange", label='Actual output')
+        plot2.grid()
+        plot2.scatter(X[:, 0], actual_predictions,
+                      color="blue", marker="+", label='Predicted output'
+                      )
+        plot2.legend()
+
+        # 2-D graph of Loss versus Number of iterations.
+        plot3.set_title("Loss versus Number of iterations")
+        plot3.set_xlabel("iterations")
+        plot3.set_ylabel("Cost")
+        iterations = []
+        cost = []
+        self.weights = generate_weights(X.shape[1], 1, zeros=zeros)
+        for epoch in range(1, epochs + 1):
+            iterations.append(epoch)
+            self.weights = optimizer.iterate(X, Y, self.weights)
+            error = optimizer.loss_func.loss(X, Y, self.weights)
+            cost.append(error)
+        plot3.plot(np.array(iterations), np.array(cost))
+
+        plt.show()
 
 
 class DecisionTreeClassifier():
@@ -1054,6 +1332,50 @@ class KMeansClustering():
             print("==============================\n")
             print(cluster)
             print("\n==============================\n")
+
+
+class Bayes_Optimization():
+    # surrogate or approximation for the objective function
+    def surrogate(self, model, X):
+        # catch any warning generated when making a prediction
+        with catch_warnings():
+            # ignore generated warnings
+            simplefilter("ignore")
+            return model.predict(X, return_std=True)
+
+    def acquisition(self, X, Xsamples, model):
+        yhat, _ = self.surrogate(model, X)
+        best = max(yhat)
+        # calculate mean and stdev via surrogate function
+        mu, std = self.surrogate(model, Xsamples)
+        mu = mu[:, 0]
+        # calculate the probability of improvement
+        probs = norm.cdf((mu - best) / (std+1E-9))
+        return probs
+
+    # optimize the acquisition function
+    def opt_acquisition(self, X, y, model):
+        # random search, generate random samples
+        Xsamples = random(100)
+        Xsamples = Xsamples.reshape(len(Xsamples), 1)
+        # calculate the acquisition function for each sample
+        scores = self.acquisition(X, Xsamples, model)
+        # locate the index of the largest scores
+        ix = np.argmax(scores)
+        return Xsamples[ix, 0]
+
+    # plot real observations vs surrogate function
+    def plot(self, X, y, model):
+        # scatter plot of inputs and real objective function
+        plt.scatter(X, y)
+        # line plot of surrogate function across domain
+        Xsamples = np.asarray(np.arange(0, 1, 0.001))
+        Xsamples = Xsamples.reshape(len(Xsamples), 1)
+        ysamples, _ = self.surrogate(model, Xsamples)
+        plt.plot(Xsamples, ysamples)
+        # show the plot
+        plt.show()
+
 
 # ---------------------- Principle Component Analysis ------------------------
 

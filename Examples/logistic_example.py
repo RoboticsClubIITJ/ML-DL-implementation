@@ -14,4 +14,8 @@ linear_model.fit(X, Y, optimizer=optimizer, epochs=200, zeros=False)
 
 printmat('predictions', linear_model.predict(X))
 
+linear_model.Plot(X, Y, linear_model.classify(X),
+                  optimizer=optimizer, epochs=200, zeros=False
+                  )
+
 linear_model.save('test')
