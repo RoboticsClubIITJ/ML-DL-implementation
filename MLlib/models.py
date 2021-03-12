@@ -643,6 +643,102 @@ class LogisticRegression(LinearRegression):
 
         return actual_predictions
 
+    def Plot(self,
+             X,
+             Y,
+             actual_predictions,
+             optimizer=GradientDescent,
+             epochs=25,
+             zeros=False
+             ):
+
+        """
+        Plots for Logistic Regression.
+
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=float,ndim=1)
+            1-D Array of Dataset's Input.
+
+        Y: ndarray(dtype=float,ndim=1)
+            1-D Array of Dataset's Output.
+
+        actual_predictions: ndarray(dtype=int,ndim=1)
+            1-D Array of Output, associated
+            to each Input of Dataset,
+            Predicted by Trained Logistic
+            Regression Model.
+
+        optimizer: class
+           Class of one of the Optimizers like
+           AdamProp,SGD,MBGD,GradientDescent etc
+
+        epochs: int
+           Number of times, the loop to calculate loss
+           and optimize weights, will going to take
+           place.
+
+        error: float
+           The degree of how much the predicted value
+           is diverted from actual values, given by implementing
+           one of choosen loss functions from loss_func.py .
+
+        zeros: boolean
+            Condition to initialize Weights as either
+            zeroes or some random decimal values.
+
+        RETURNS
+        =======
+
+        2-D graph of Sigmoid curve,
+        Comparision Plot of True output and Predicted output versus Feacture.
+        2-D graph of Loss versus Number of iterations.
+        """
+        Plot = plt.figure(figsize=(8, 8))
+        plot1 = Plot.add_subplot(2, 2, 1)
+        plot2 = Plot.add_subplot(2, 2, 2)
+        plot3 = Plot.add_subplot(2, 2, 3)
+
+        # 2-D graph of Sigmoid curve.
+        x = np.linspace(- max(X[:, 0]) - 2, max(X[:, 0]) + 2, 1000)
+        plot1.set_title('Sigmoid curve')
+        plot1.grid()
+        sigmoid = Sigmoid()
+        plot1.scatter(X.T[0], Y, color="red", marker="+", label="labels")
+        plot1.plot(x, 0*x+0.5, linestyle="--", label="Decision bound, y=0.5")
+        plot1.plot(x, sigmoid.activation(x),
+                   color="green", label='Sigmoid function: 1 / (1 + e^-x)'
+                   )
+        plot1.legend()
+
+        # Comparision Plot of Actual output and Predicted output vs Feacture.
+        plot2.set_title('Actual output and Predicted output versus Feacture')
+        plot2.set_xlabel("x")
+        plot2.set_ylabel("y")
+        plot2.scatter(X[:, 0], Y, color="orange", label='Actual output')
+        plot2.grid()
+        plot2.scatter(X[:, 0], actual_predictions,
+                      color="blue", marker="+", label='Predicted output'
+                      )
+        plot2.legend()
+
+        # 2-D graph of Loss versus Number of iterations.
+        plot3.set_title("Loss versus Number of iterations")
+        plot3.set_xlabel("iterations")
+        plot3.set_ylabel("Cost")
+        iterations = []
+        cost = []
+        self.weights = generate_weights(X.shape[1], 1, zeros=zeros)
+        for epoch in range(1, epochs + 1):
+            iterations.append(epoch)
+            self.weights = optimizer.iterate(X, Y, self.weights)
+            error = optimizer.loss_func.loss(X, Y, self.weights)
+            cost.append(error)
+        plot3.plot(np.array(iterations), np.array(cost))
+
+        plt.show()
+
 
 class DecisionTreeClassifier():
     """
