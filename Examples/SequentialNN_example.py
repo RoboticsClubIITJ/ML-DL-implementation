@@ -2,32 +2,39 @@ from MLlib import Tensor
 import MLlib.optim as optim
 import MLlib.nn as nn
 from MLlib.models import Sequential
+from MLlib.activations import Relu
+from MLlib.loss_func import MSELoss
 import numpy as np      # for features and target generation
 
 
 np.random.seed(5322)
 
+
 model = Sequential(
-    nn.Linear(2, 6),
-    nn.Linear(6, 8),
-    nn.Linear(8, 1)
+    nn.Linear(4, 16, activation_fn=Relu),
+    nn.Linear(16, 8, activation_fn=Relu),
+    nn.Linear(8, 2)
 )
 
 
-X = Tensor(np.random.randn(3, 2))       # (batch_size, features)
-Y = Tensor(np.random.randn(3, 1))       # (batch_size, output)
+X = Tensor(np.random.randn(10, 4))       # (batch_size, features)
+Y = Tensor(np.random.randn(10, 2))       # (batch_size, output)
+
 
 nb_epochs = 800     # number of epochs
 
-alpha = 0.01        # learning rate
+alpha = 0.001        # learning rate
 
-optimizer = optim.SGD(model.parameters(), alpha)        # SGD optimizer
+# SGD optimizer
+optimizer = optim.SGDWithMomentum(model.parameters(), alpha, momentum=0.9)
+
+loss_fn = MSELoss()     # Mean Squared Error loss
 
 for i in range(nb_epochs):
 
     pred = model(X)
 
-    loss = ((Y-pred)**2).sum()/3
+    loss = loss_fn(pred, Y)
 
     if (i+1) % 100 == 0:
         print('Loss after epoch {}: {}'.format(i+1, loss.data))
@@ -37,20 +44,3 @@ for i in range(nb_epochs):
     optimizer.step()
 
     optimizer.zero_grad()
-
-
-p = model(X)
-print('\nTarget: \n', Y, '\n')
-print('Predicted: \n', p.data, '\n')
-
-
-# TODO:
-# -decide a naming convention for classes in functional.py
-# -add activation functions in functional.py
-#
-# -create a .fit(...) method inside Sequential model class
-#
-# -create a Layer class inheriting from Module which can
-#   apply activation function in forward pass which is passed
-#   to it in __init__(...)
-#
