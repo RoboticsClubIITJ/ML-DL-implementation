@@ -27,3 +27,19 @@ class SGD(optim.Optimizer):
     def step(self):
         for param in self.params:
             param.data = param.data - self.lr * param.grad.data
+
+
+class SGDWithMomentum(optim.Optimizer):
+
+    def __init__(self, parameters, lr=0.001, momentum=0.9):
+        super().__init__(parameters)
+        self.beta = momentum
+        self.lr = lr
+
+        # list(last velocity of params, initialized to zero)
+        self.v = [0] * len(self.params)
+
+    def step(self):
+        for i in range(len(self.params)):
+            self.v[i] = self.beta*self.v[i] + self.lr*self.params[i].grad.data
+            self.params[i].data = self.params[i].data - self.v[i]

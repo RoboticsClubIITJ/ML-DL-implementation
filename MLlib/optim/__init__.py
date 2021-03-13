@@ -1,4 +1,4 @@
 from .optimizer import Optimizer
-from .sgd import SGD
+from .sgd import SGD, SGDWithMomentum
 
-__all__ = ['Optimizer', 'SGD']
+__all__ = ['Optimizer', 'SGD', 'SGDWithMomentum']
