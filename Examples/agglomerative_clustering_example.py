@@ -5,4 +5,5 @@ X = np.genfromtxt('datasets/agglomerative_clustering.txt')
 
 
 model = Agglomerative_clustering()
-model.work(X, 0.9)
+model.work(X, 4)
+model.plot(X)
