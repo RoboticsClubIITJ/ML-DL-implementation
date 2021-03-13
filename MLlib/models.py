@@ -11,6 +11,7 @@ from MLlib.utils.k_means_clustering_utils import new_centroid, xy_calc
 from MLlib.utils.pca_utils import PCA_utils, infer_dimension
 import MLlib.nn as nn
 from collections import Counter, OrderedDict
+from MLlib.utils.agglomerative_clustering_utils import compute_distance
 import numpy as np
 from numpy.random import random
 from scipy.stats import norm
@@ -20,6 +21,7 @@ import pickle
 import matplotlib.pyplot as plt
 from datetime import datetime
 import math
+import scipy.cluster.hierarchy as shc
 
 DATE_FORMAT = '%d-%m-%Y_%H-%M-%S'
 
@@ -267,6 +269,7 @@ class PolynomialRegression():
         Model in rob format , in Local
         disk.
     """
+
     def __init__(self, degree):
         self.degree = degree
         self.weights = 0
@@ -280,7 +283,7 @@ class PolynomialRegression():
             epochs=200,
             zeros=False,
             save_best=True
-            ):
+    ):
         """
         Train the Polynomial Regression Model
         by fitting its associated weights,
@@ -446,8 +449,7 @@ class PolynomialRegression():
             epochs=60,
             zeros=False,
             save_best=False
-            ):
-
+    ):
         """
         Plot the graph of Loss vs Epochs
         Plot the graph of line Of Polynomial Regression
@@ -503,7 +505,7 @@ class PolynomialRegression():
         P = np.hstack((
             P,
             X[:, 1:2]
-            ))
+        ))
 
         X = P
         m = []
@@ -652,7 +654,6 @@ class LogisticRegression(LinearRegression):
              epochs=25,
              zeros=False
              ):
-
         """
         Plots for Logistic Regression.
 
@@ -1209,7 +1210,7 @@ class BernoulliNB(object):
         count_for_sample = x.shape[0]
         self.class_log = [np.log(len(i)/count_for_sample) for i in separate]
         count = self.alpha + np.array([np.array(i).sum(axis=0) for i in
-                                      separate])
+                                       separate])
         smoothing = 2 * self.alpha
         doc = np.array([smoothing + len(i) for i in separate])
         self.log_prob = count / doc[np.newaxis].T
@@ -1217,7 +1218,7 @@ class BernoulliNB(object):
 
     def predict_log(self, x):
         return [(np.log(self.log_prob) * i + np.log(1 - self.log_prob) *
-                np.abs(i - 1)).sum(axis=1) + self.class_log for i in x]
+                 np.abs(i - 1)).sum(axis=1) + self.class_log for i in x]
 
     def predict(self, x):
         return np.argmax(self.predict_log(x), axis=1)
@@ -1387,6 +1388,7 @@ class PCA(PCA_utils):
     data to project it to a lower dimensional space. The input data is centered
     but not scaled for each feature before applying the SVD.
     """
+
     def __init__(self, n_components=None, whiten=False, svd_solver='auto'):
         self.n_components = n_components
         self.whiten = whiten
@@ -1508,7 +1510,6 @@ class Numerical_outliers():
         return d[index]
 
     def get_outliers(x):
-
         """ get_outliers Function
          PARAMETER
            =========
@@ -1563,3 +1564,91 @@ class Sequential(nn.Module):
         for layer in self._submodules.values():
             x = layer(x)
         return x
+
+
+class Agglomerative_clustering():
+    """
+    One of the models used for Unsupervised
+    learning, by making finite number of clusters
+    from Dataset points.
+
+    ATTRIBUTES
+    ==========
+
+    None
+
+    METHODS
+    =======
+
+    work(M, num_cluster):
+        Give details about cluster arrangements
+        from Dataset's Points
+    """
+
+    def work(self, X, num_clusters):
+        """
+        Show the arrangement of clusters , provided with
+        number of clusters and Input Dataset
+        Matrix.
+
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=int,ndim=2)
+            Dataset Matrix with finite number
+            of points, having their corresponding
+            x and y coordinates.
+
+        num_cluster: int
+            Number of Clusters to be made from
+            the provided Dataset's points. num_cluster should be
+            less than or equal to X.shape[0]
+
+        samples: list
+            List of lists of Dataset points, which will be
+            updated with every iteration of while loop due
+            to merging of data points, in
+            order to obtain suitable clusters.
+
+        Distance_mat: ndarray(dtype=int,ndim=2)
+            Adjacency Matrix, consisting of
+            distance between every two points/ two clusters/
+            one point - one cluster
+
+        RETURNS
+        =======
+
+        None
+        """
+
+        samples = [[list(X[i])] for i in range(X.shape[0])]
+        m = len(samples)
+        # create adjacency matrix
+        Distance_mat = compute_distance(samples)
+        print("Samples before clustering : {}".format(samples))
+        print("=============================================")
+        while m > num_clusters:
+            Distance_mat = compute_distance(samples)
+            # find the index [i,j] of the minimum distance from the matrix
+            # samples[i], samples[j] are to be merged
+            sample_ind_needed = np.where(Distance_mat == Distance_mat.min())[0]
+            print("Sample size before clustering   : ", m)
+            print("Samples indexes to be merged: {}".format(sample_ind_needed))
+            value_to_add = samples.pop(sample_ind_needed[1])
+            # print("Values :{}".format(value_to_add))
+            print("Samples before clustering: {}".format(samples))
+            samples[sample_ind_needed[0]].append(value_to_add)
+            print("Samples after clustering: {}".format(samples))
+            m = len(samples)
+            print("Sample size after clustering   : ", m)
+            print("=============================================")
+        print("Number of clusters formed are : {}".format(m))
+        print("Clusters formed are  : {}".format(samples))
+
+        # plotting the dendrograms
+
+    def plot(self, X):
+        plt.figure(figsize=(10, 7))
+        plt.title("Dendrograms")
+        shc.dendrogram(shc.linkage(X, method='single'))
+        plt.show()
