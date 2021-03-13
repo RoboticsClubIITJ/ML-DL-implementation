@@ -4,7 +4,6 @@ import MLlib.optim as optim
 class SGD(optim.Optimizer):
     """
     Stochastic Gradient Descent optimizer.
-    #TODO: Include momentum
 
     Usage:
     >>> optimizer = SGD(model.parameters(), lr=0.1)
@@ -30,6 +29,25 @@ class SGD(optim.Optimizer):
 
 
 class SGDWithMomentum(optim.Optimizer):
+    """
+    Stochastic Gradient Descent optimizer with Momentum.
+
+    Usage:
+    >>> optimizer = SGDWithMomentum(model.parameters(),
+                                    lr=0.1,
+                                    momentum=0.95)
+
+    PARAMETERS
+    ==========
+    params: list or iterator
+            Parameters to update
+
+    lr: float
+        Learning rate (eta/alpha)
+
+    momentum: float
+              The momentum (beta)
+    """
 
     def __init__(self, parameters, lr=0.001, momentum=0.9):
         super().__init__(parameters)
