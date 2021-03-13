@@ -49,6 +49,8 @@ class SGDWithMomentum(optim.Optimizer):
               The momentum (beta)
     """
 
+    __slots__ = ('beta', 'lr', 'v')
+
     def __init__(self, parameters, lr=0.001, momentum=0.9):
         super().__init__(parameters)
         self.beta = momentum
