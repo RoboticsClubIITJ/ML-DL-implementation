@@ -63,7 +63,7 @@ class ContextManager:
                     This method can be used to save Tensors only. For saving \
                     other types, just save directly as a new \
                     attribute'.format(type(obj)))
-            self.saved_tensors.append(obj.copy())
+            self.saved_tensors.append(obj)
 
 
 class Function:
