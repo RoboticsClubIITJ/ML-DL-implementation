@@ -21,7 +21,7 @@ class Linear(nn.Module):
                                           requires_grad=True,
                                           is_parameter=True)
 
-        self.actvn_fn = activation_fn() if activation_fn is not None else None
+        self.actvn_fn = activation_fn if activation_fn is not None else None
 
     def forward(self, x):
         x = (x @ self.weights.T) + self.bias
