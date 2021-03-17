@@ -9,8 +9,9 @@ from MLlib.utils.gaussian_naive_bayes_utils import get_mean_var, p_y_given_x
 from MLlib.utils.k_means_clustering_utils import initi_centroid, cluster_allot
 from MLlib.utils.k_means_clustering_utils import new_centroid, xy_calc
 from MLlib.utils.pca_utils import PCA_utils, infer_dimension
+import MLlib.nn as nn
+from collections import Counter, OrderedDict
 from MLlib.utils.agglomerative_clustering_utils import compute_distance
-from collections import Counter
 import numpy as np
 from numpy.random import random
 from scipy.stats import norm
@@ -1524,6 +1525,45 @@ class Numerical_outliers():
         for i in range(len(x)):
             if x[i] > upperbound or x[i] < lowerbound:
                 print("outlier=", x[i])
+
+# ---------------------- Sequential Neural Network ---------------------------
+
+
+class Sequential(nn.Module):
+    """
+    A class to construct Neural Networks with ease.
+
+    Usage:
+    >>> from MLlib.models import Sequential
+    >>> model = Sequential(
+        layer1,
+        layer2,
+        layer3,
+        layer4,
+        ...
+    )
+
+    The layers(layer1, layer2, etc.) can be custom layers but must inherit from
+    `MLlib.nn.Module` class.
+    """
+
+    # TODO:
+    #       - create a method .fit(train_data, epochs, loss_fn, optimizer)
+
+    def __init__(self, *layers):
+        """
+
+        """
+        super().__init__()
+        self._submodules = OrderedDict()
+
+        for i in range(len(layers)):
+            self.register_module(str(i), layers[i])
+
+    def forward(self, x):
+        for layer in self._submodules.values():
+            x = layer(x)
+        return x
 
 
 class Agglomerative_clustering():

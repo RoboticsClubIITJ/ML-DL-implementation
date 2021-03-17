@@ -1,7 +1,41 @@
+import MLlib
 import numpy as np
+from MLlib import autograd
+from MLlib.utils.misc_utils import unbroadcast
 
 
-class Sigmoid():
+class Sigmoid(autograd.Function):
+
+    __slots__ = ()
+
+    @staticmethod
+    def forward(ctx, input):
+        if not (type(input).__name__ == 'Tensor'):
+            raise RuntimeError("Expected a Tensor, got {}. Please use "
+                               "Sigmoid.activation() for non-Tensor data"
+                               .format(type(input).__name__))
+
+        requires_grad = input.requires_grad
+
+        output = 1 / (1 + np.exp(-input.data))
+
+        output = MLlib.Tensor(output, requires_grad=requires_grad,
+                              is_leaf=not requires_grad)
+
+        if requires_grad:
+            ctx.save_for_backward(output)
+
+        return output
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        o = ctx.saved_tensors[0]
+
+        grad_o = o.data * (1 - o.data) * grad_output.data
+        grad_o = MLlib.Tensor(unbroadcast(grad_o, o.shape))
+
+        return grad_o
+
     @staticmethod
     def activation(X):
         """
@@ -83,7 +117,41 @@ class TanH():
         return 1.0 - np.tanh(X)**2
 
 
-class Softmax():
+class Softmax(autograd.Function):
+
+    __slots__ = ()
+
+    @staticmethod
+    def forward(ctx, input):
+        if not (type(input).__name__ == 'Tensor'):
+            raise RuntimeError("Expected a Tensor, got {}. Please use "
+                               "Softmax.activation() for non-Tensor data"
+                               .format(type(input).__name__))
+
+        requires_grad = input.requires_grad
+
+        intermediate = np.exp(input.data - np.max(input.data))
+
+        output = intermediate / np.sum(intermediate, axis=-1, keepdims=True)
+        # axis=-1 because we don't want to compute across batch dimension
+
+        output = MLlib.Tensor(output, requires_grad=requires_grad,
+                              is_leaf=not requires_grad)
+
+        if requires_grad:
+            ctx.save_for_backward(output)
+
+        return output
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        o = ctx.saved_tensors[0]
+
+        grad_o = o.data * (1 - o.data) * grad_output.data
+        grad_o = MLlib.Tensor(unbroadcast(grad_o, o.shape))
+
+        return grad_o
+
     @staticmethod
     def activation(X):
         """
@@ -171,7 +239,38 @@ class Softsign():
         return 1 / (np.abs(X) + 1)**2
 
 
-class Relu():
+class Relu(autograd.Function):
+
+    __slots__ = ()
+
+    @staticmethod
+    def forward(ctx, input):
+        if not (type(input).__name__ == 'Tensor'):
+            raise RuntimeError("Expected a Tensor, got {}. Please use "
+                               "Relu.activation() for non-Tensor data"
+                               .format(type(input).__name__))
+
+        requires_grad = input.requires_grad
+
+        output = np.maximum(input.data, 0)
+
+        output = MLlib.Tensor(output, requires_grad=requires_grad,
+                              is_leaf=not requires_grad)
+
+        if requires_grad:
+            ctx.save_for_backward(output)
+
+        return output
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        o = ctx.saved_tensors[0]
+
+        grad_o = np.greater(o.data, 0).astype(int) * grad_output.data
+        grad_o = MLlib.Tensor(unbroadcast(grad_o, o.shape))
+
+        return grad_o
+
     @staticmethod
     def activation(X):
         """

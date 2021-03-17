@@ -89,6 +89,70 @@ class Reshape(autograd.Function):
         return MLlib.Tensor(grad_output.data.reshape(ctx.shape))
 
 
+class Absolute(autograd.Function):
+
+    __slots__ = ()
+
+    @staticmethod
+    def forward(ctx, x):
+        if not type(x).__name__ == 'Tensor':
+            raise Exception("Arg for Absolute function must be tensor, got\
+                            {}".format(type(x).__name__))
+
+        out = np.absolute(x.data)
+
+        requires_grad = x.requires_grad
+
+        if requires_grad:
+            ctx.save_for_backward(x)
+
+        output = MLlib.Tensor(out, requires_grad=requires_grad,
+                              is_leaf=not requires_grad)
+
+        return output
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        x = ctx.saved_tensors[0]
+
+        grad_x = (-1 * (x.data < 0).astype(int) + (x.data > 0).astype(int))
+
+        grad_x = MLlib.Tensor(grad_x * grad_output.data)
+
+        return grad_x
+
+
+class Pad2d(autograd.Function):
+
+    __slots__ = ()
+
+    @staticmethod
+    def forward(ctx, input, pad=(0, 0), mode='zeros'):
+        if not type(input).__name__ == 'Tensor':
+            raise Exception("Arg for Pad function must be tensor, got\
+                            {}".format(type(input).__name__))
+
+        output = np.pad(input.data,
+                        ((0, 0), (0, 0), (pad[0], pad[0]), (pad[1], pad[1])))
+
+        requires_grad = input.requires_grad
+
+        if requires_grad:
+            ctx.input_shape = input.shape
+
+        output = MLlib.Tensor(output, requires_grad=requires_grad,
+                              is_leaf=not requires_grad)
+
+        return output
+
+    @staticmethod
+    def backward(ctx, grad_ouput):
+        # shape = ctx.input_shape
+
+        # TODO: unpad the grad_out to be of shape `shape` above
+        pass
+
+
 class Add(autograd.Function):
 
     __slots__ = ()
@@ -519,7 +583,10 @@ class Exp(autograd.Function):
 
     @staticmethod
     def backward(ctx, grad_output):
-        return ctx.saved_tensors[0]
+        grad_out = grad_output.data
+        o = ctx.saved_tensors[0]
+
+        return MLlib.Tensor(grad_out * o.data)
 
 
 #########################
@@ -551,3 +618,7 @@ def tan(input):
 
 def exp(input):
     return Exp.apply(input)
+
+
+def absolute(input):
+    return Absolute.apply(input)

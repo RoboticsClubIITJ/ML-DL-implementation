@@ -63,7 +63,7 @@ class ContextManager:
                     This method can be used to save Tensors only. For saving \
                     other types, just save directly as a new \
                     attribute'.format(type(obj)))
-            self.saved_tensors.append(obj.copy())
+            self.saved_tensors.append(obj)
 
 
 class Function:
@@ -106,7 +106,7 @@ class Function:
         class and store it into `backward_function` (temporarily variable).
 
         -Obtain the output Tensor by calling `.forward(...)` method which will
-        perform the requires operation(s) on the Tensor(s)
+        perform the required operation(s) on the Tensor(s)
 
         -We store the `grad_fn` (node object) of every 'Parent Tensor' which
         is passed to this function to perform the desired operation(s) into the
@@ -128,19 +128,36 @@ class Function:
 
         output_tensor = cls.forward(backward_function.ctx, *args, **kwargs)
 
-        # grad_fn contains the node object
+        # do we really need to backpropagate through the output tensor?
+        # the requires_grad flag is set inside .forward() method above
 
-        # adding parental nodes to the comp graph
-        for obj in args:
-            if type(obj).__name__ == 'Tensor':      # parent tensor
-                if obj.requires_grad and obj.is_leaf:
-                    # if True,gradients must be stored in nodes during backprop
-                    if obj.grad_fn is None:
+        if output_tensor.requires_grad:
+
+            # adding parental nodes to the comp graph
+
+            for obj in args:
+                if type(obj).__name__ == 'Tensor':          # parent "Tensor"
+                    if (obj.requires_grad and obj.is_leaf
+                            and (obj.grad_fn is None)):
+                        # if True, grads must be stored in nodes for backprop
+
                         obj.grad_fn = AccumulateGrad(obj)
-                backward_function.next_functions.append(obj.grad_fn)
 
-        # store the node on current tensor inside grad_fn
-        output_tensor.grad_fn = backward_function
+                    backward_function.next_functions.append(obj.grad_fn)
+
+            # store the node on current tensor inside grad_fn
+            # grad_fn contains the node object
+            output_tensor.grad_fn = backward_function
+
+        else:
+            # if output_tensor had requires_grad=True then the .forward() must
+            # have had used the `ctx` object passed to it. But if not, it
+            # won't have used it because the .forward() method is built like
+            # that. So, we should delete the backward_function variable
+            # (to save memory) which would have served the purpose of
+            # output_tensor.grad_fn if it were required to be backpropagated.
+
+            del backward_function
 
         return output_tensor
 
