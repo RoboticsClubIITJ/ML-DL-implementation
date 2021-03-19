@@ -143,7 +143,6 @@ class Softmax(autograd.Function):
 
         if requires_grad:
             ctx.save_for_backward(output)
-            ctx.nb_elems = input.data.size
 
         return output
 
