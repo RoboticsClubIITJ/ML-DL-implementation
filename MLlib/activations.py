@@ -128,27 +128,37 @@ class Softmax(autograd.Function):
                                "Softmax.activation() for non-Tensor data"
                                .format(type(input).__name__))
 
+        if len(input.shape) != 2:
+            raise RuntimeError("Expected a batch of data of size (m, classes)"
+                               ", got {}".format(input.shape))
+
         requires_grad = input.requires_grad
 
-        intermediate = np.exp(input.data - np.max(input.data))
-
-        output = intermediate / np.sum(intermediate, axis=-1, keepdims=True)
-        # axis=-1 because we don't want to compute across batch dimension
+        e_x = np.exp(input.data)
+        output = e_x / np.sum(e_x, axis=1, keepdims=True)
+        # axis=1 because we don't want to compute across batch dimension
 
         output = MLlib.Tensor(output, requires_grad=requires_grad,
                               is_leaf=not requires_grad)
 
         if requires_grad:
             ctx.save_for_backward(output)
+            ctx.nb_elems = input.data.size
 
         return output
 
     @staticmethod
     def backward(ctx, grad_output):
-        o = ctx.saved_tensors[0]
+        output = ctx.saved_tensors[0].data
 
-        grad_o = o.data * (1 - o.data) * grad_output.data
-        grad_o = MLlib.Tensor(unbroadcast(grad_o, o.shape))
+        o = -output[..., None] * output[:, None, :]
+        diag_x, diag_y = np.diag_indices_from(o[0])
+        o[:, diag_y, diag_x] = output * (1.0 - output)
+
+        grad_o = o.sum(axis=1)
+
+        grad_o = grad_o * grad_output.data
+        grad_o = MLlib.Tensor(grad_o)
 
         return grad_o
 
