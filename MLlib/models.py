@@ -8,6 +8,7 @@ from MLlib.utils.naive_bayes_utils import make_likelihood_table
 from MLlib.utils.gaussian_naive_bayes_utils import get_mean_var, p_y_given_x
 from MLlib.utils.k_means_clustering_utils import initi_centroid, cluster_allot
 from MLlib.utils.k_means_clustering_utils import new_centroid, xy_calc
+from MLlib.utils.divisive_clustering_utils import KMeans, sse, visualize_clusters
 from MLlib.utils.pca_utils import PCA_utils, infer_dimension
 import MLlib.nn as nn
 from collections import Counter, OrderedDict
@@ -1333,6 +1334,67 @@ class KMeansClustering():
             print("==============================\n")
             print(cluster)
             print("\n==============================\n")
+
+
+# logging.basicConfig(filename='MLlib/tests/divisive.log', level=logging.DEBUG, format='\n%(asctime)s\n%(message)s')
+# logging.Formatter('\n%(asctime)s - %(message)s')
+class DivisiveClustering():
+    def work(self, M, n_clusters, n_iterations, enable_for_larger_clusters=False):
+        if n_clusters > len(M):
+            raise(ValueError(f'Number of clusters {n_clusters} inputted is greater than dataset number of examples {len(M)}.'))
+        KMC = KMeans()
+        clusters, centroids = KMC.runKMeans(M, 2, 7)
+        global_clusters = clusters
+        global_centroids = centroids
+        visualize = False
+        cluster_sse_list = [sse(clusters[0], centroids[0]), sse(clusters[1], centroids[1])]
+        cluster_len_list = [len(clusters[0]), len(clusters[1])]
+        if n_clusters > 20 and not enable_for_larger_clusters:
+            print('Visualization disabled for number of clusters > 20. To enable them for input number of clusters, pass enable_for_larger_clusters = True argument for DC.work.')
+        else:
+            visualize = True
+        i = 2
+        while len(global_clusters) < n_clusters:
+            rem_index = cluster_sse_list.index(max(cluster_sse_list))
+            # print(rem_index)
+            parent = global_clusters[rem_index]
+            l = cluster_len_list[rem_index]
+            if l == 1:
+                global_centroids[rem_index] = parent[0]
+                # print('\n------------------------------------------------------------------------------')
+                # print(f'M: {M}\nglobal_clusters:{global_clusters}\nlen(global_clusters): {len(global_clusters)}\n cluster_sse_list:{cluster_sse_list}\ncluster_len_list:{cluster_len_list}\nparent:{parent}\nglobal_centroids:{global_centroids}\nlen(global_centroids):{len(global_centroids)}')
+                cluster_sse_list[rem_index] = 0.
+                m = max(cluster_len_list)
+                #case where all sse errors are zero 
+                if any(cluster_sse_list) and m == 1:
+                    i += 1
+                    continue
+                else:
+                    rem_index = cluster_len_list.index(max(cluster_len_list))
+                    parent = global_clusters[rem_index]
+                i += 1
+            del(global_clusters[rem_index]) 
+            del(cluster_sse_list[rem_index])
+            del(cluster_len_list[rem_index])
+            global_centroids = np.delete(global_centroids, rem_index, 0)
+            clusters, centroids = KMC.runKMeans(parent, 2, 7)
+            try:
+                global_clusters.extend([clusters[0], clusters[1]])
+            except: pass
+            # print(f'global_clusters: {global_clusters}, len(global_clusters): {len(global_clusters)}, clusters: {clusters}, len(clusters): {len(clusters)}, parent:{parent}')
+            cluster_sse_list.extend([sse(clusters[0], centroids[0]), sse(clusters[1], centroids[1])])
+            cluster_len_list.extend([len(clusters[0]), len(clusters[1])])
+            # print('\n----------------------------------------------------------------------')
+            # logging.debug(f'cluster_len_list:{cluster_len_list}\nsum: {sum(cluster_len_list)}\nlen:{len(cluster_len_list)}\ncount of 2:{cluster_len_list.count(2)}') 
+            # if sum(cluster_len_list) < 10:
+                # print(f'KMeans results: clusters:{clusters}, len:{len(clusters)}, centroids: {centroids}, len: {len(centroids)}')
+            global_centroids = np.append(global_centroids, centroids, axis=0)
+            # if visualize:
+                # visualize_clusters(global_clusters, global_centroids, i)
+            # i += 1
+        # plt.show()
+        # print(f'cluster_sse_list: {cluster_sse_list}')
+        return global_clusters, global_centroids
 
 
 class Bayes_Optimization():
