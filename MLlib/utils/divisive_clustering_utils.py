@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import math
-from time import perf_counter
+# from time import perf_counter
 # import logging
 # logging.basicConfig(filename='MLlib/tests/divisive_clustering.log',
 # level=logging.DEBUG, filemode='w', format='\n%(asctime)s\n%(message)s')
@@ -21,7 +21,8 @@ class KMeans:
         self.init_centroids(X)
         for i in range(n_iterations):
             self.allocate(X)  # allocate every point to its closest centroid
-            self.update_centroids()  # calculate new centroids of the newly-formed clusters
+            self.update_centroids()  # calculate new centroids of the
+        # newly-formed clusters
         return self.clusters, self.centroids
 
     def init_centroids(self, X: np.ndarray):
@@ -29,17 +30,19 @@ class KMeans:
         Initialize centroids with random examples (or points) from the dataset.
         '''
         # Number of examples
-        l = X.shape[0]
+        datalen = X.shape[0]
         # Initialize centroids array with points from X with random indices
         # chosen from 0 to number of examples
         rng = np.random.default_rng()
-        self.centroids = X[rng.choice(l, size=self.n_clusters, replace=False)]
+        self.centroids = X[rng.choice(datalen,           size=self.n_clusters,
+                                      replace=False)]
         # self.centroids = X[np.random.randint(0, l, size=self.n_clusters)]
         self.centroids.astype(np.float32)
 
     def allocate(self, X: np.ndarray):
         '''
-        This function forms new clusters from the centroids updated in the previous iterations.
+        This function forms new clusters from the centroids updated in the
+        previous iterations.
         '''
         # Step 1: Fill new clusters with a single point
         # Calculate the differences in the features between X and centroids
@@ -48,12 +51,14 @@ class KMeans:
 
         # Find Euclidean distances using the above differences
         euc = np.linalg.norm(res, axis=2)
-        # (n_clusters, X.shape[0]); contains distances of each centroid to every example point
+        # (n_clusters, X.shape[0]); contains distances of each centroid to
+        # every example point
         m, n = euc.shape
         # indices of first points to allot to each cluster
         first_indices = np.full((m,), -1, dtype=int)
 
-        # Add the closest point to the corresponding centroid to the cluster array.
+        # Add the closest point to the corresponding centroid to the
+        # cluster array.
         # We do this to avoid formation of empty clusters
         # Loop to allot unique first points to each cluster  #!FIXME: Could it
         # be better?
@@ -62,21 +67,21 @@ class KMeans:
             res = np.argmin(euc, axis=1)
             res.astype(int)
             resu = np.unique(res)  # one index per row
-            l = len(res)
-            lu = len(resu)
-            if lu == l:  # already unique
+            lres = len(res)
+            lresu = len(resu)
+            if lresu == lres:  # already unique
                 first_indices = res
                 break
             else:
                 # list to classify row indices w.r.t. columns
                 arr = []
                 # initialization
-                for i in range(l):
+                for i in range(lres):
                     # logging.debug(f'arr entries: {np.where(res==i)}, i:{i}')
                     arr.append(np.where(res == i)[0])
                 # logging.debug(f'euc:{euc}\nres:{res}\narr:{arr}')
                 # assign exactly one row index as first index
-                for i in range(l):  # here i plays the role of column index
+                for i in range(lres):  # here i plays the role of column index
                     if len(arr[i]) == 1:
                         first_indices[arr[i]] = i  # arr[i] has row indices.
                         # logging.debug(f'fi after equal:\nfi:{first_indices},
@@ -86,7 +91,9 @@ class KMeans:
                         # i={i}\neuc[arr[i], i]:{euc[arr[i], i]}')
                         temp = np.argmin(euc[arr[i], i])
                         first_indices[temp] = i
-            # logging.debug(f'argmin:{np.argmin(euc, axis=1)}\neuc:{euc}\neuc.shape:{euc.shape}\nres(first_indices): {res}\nres2: {res2}\neuc[res]: {euc[res2]}\n')
+            # logging.debug(f'argmin:{np.argmin(euc, axis=1)}\neuc:{euc}\
+            # \neuc.shape:{euc.shape}\nres(first_indices): {res}\
+            # \nres2: {res2}\neuc[res]: {euc[res2]}\n')
             # check if unique indices for all rows are found
             if -1 in first_indices:
                 # column indices where min distances were found
@@ -115,7 +122,8 @@ class KMeans:
         euc = np.linalg.norm(res, axis=2)
 
         # Find the closest centroid from each point.
-        # Find unique indices of the closest points. Using res again for optimization
+        # Find unique indices of the closest points. Using res again for
+        # optimization
         # not unique indices
         res = np.where(euc == euc.min(axis=1)[:, np.newaxis])
         # res[0] is used as indices for row-wise indices in res[1]
@@ -128,8 +136,10 @@ class KMeans:
             if not c == -1:
                 # add the point to the corresponding cluster
                 cluster_array[c] = np.append(cluster_array[c], [X[i]], axis=0)
-        # if len(X) == 2 and (cluster_array[0].shape == (2,2) or cluster_array[1].shape == (2,2)):
-        # logging.debug(f'first_indices: {first_indices}\nmin_indices: {min_indices}\ncentroids: {self.centroids}')
+        # if len(X) == 2 and (cluster_array[0].shape == (2,2) or \
+        # cluster_array[1].shape == (2,2)):
+        # logging.debug(f'first_indices: {first_indices}\nmin_indices: \
+        # {min_indices}\ncentroids: {self.centroids}')
         # update the fair clusters array
         self.clusters = cluster_array
 
@@ -149,7 +159,8 @@ class KMeans:
 
 def visualize_clusters(global_clusters, global_centroids, iteration):
     '''
-    Utility to visualize the changes in clusters at every iteration of the work algorithm in models.py
+    Utility to visualize the changes in clusters at every iteration of the
+    work algorithm in models.py
     '''
     # centroids = np.array(centroids)
     fig, ax = plt.subplots()
@@ -183,9 +194,8 @@ def sse(cluster: np.array, centroid: np.array):
     return np.sum((cluster - centroid)**2)
 
 
-def to_adjacency_matrix(
-    global_centroids: np.ndarray,
-     n_clusters) -> np.ndarray:
+def to_adjacency_matrix(global_centroids: np.ndarray, n_clusters) -> \
+        np.ndarray:
     '''
     Creates an adjacency matrix of the distances of the result centroids.
     '''
@@ -268,7 +278,10 @@ def create_label_map(locations, n_clusters):
     # logging.debug(f'linkedlists: {linkedlists}, ref_arr:{ref_arr}')
     label_map = {}
     # function to initialize dicts inside of label map
-    init_label_map = lambda a, b: {'label': a, 'xpos': b, 'ypos': 0}
+
+    def init_label_map(a, b):
+        return {'label': a, 'xpos': b, 'ypos': 0}
+    # init_label_map = lambda a, b:
     for i, l in enumerate(linkedlists[0]):
         label_map[l] = init_label_map(l, i + 1)
     # logging.debug(f'label_map:{label_map}')
@@ -309,13 +322,15 @@ def visualize(global_clusters, global_centroids, n_clusters, datasize):
     locations = []
     levels = []
     centroid_dist_mat = to_adjacency_matrix(global_centroids, n_clusters)
-    # logging.debug('==========================================================')
+    # logging.debug('=========================================================
+    # =')
     # logging.debug(f'centroid dist matrix initially: \n{centroid_dist_mat}')
 
     for i in range(n_clusters - 1):
         centroid_dist_mat, tup, dist = update_mat(
             centroid_dist_mat, n_clusters)
-        # logging.debug('==========================================================')
+        # logging.debug('=====================================================
+        # =====')
         # logging.debug(f'updated matrix at {i}th iteration:
         # \n{centroid_dist_mat}')
         locations.append(tup)
@@ -346,12 +361,13 @@ def visualize(global_clusters, global_centroids, n_clusters, datasize):
     ax.set_ylabel('Distance')
 
 
-def numConcat(l: list):
+def numConcat(li: list):
     '''
     Utility function to concatenate two float numbers in a list.
-    Reference: https://www.geeksforgeeks.org/python-program-to-concatenate-two-integer-values-into-one/
+    Reference: https://www.geeksforgeeks.org/python-program-to-concatenate-two
+    -integer-values-into-one/
     '''
-    num1, num2 = l
+    num1, num2 = li
     # Convert both the numbers to strings
     num1 = str(int(num1))
     num2 = str(int(num2))
@@ -359,10 +375,14 @@ def numConcat(l: list):
     num1 += num2
     return int(num1)
 
+
 '''
 Notable References:
 Algorithm: https://www.youtube.com/watch?v=Fm01pqWLqzU
 Numpy docs: https://numpy.org/doc/1.20/
-Bisecting KMeans: https://www.geeksforgeeks.org/bisecting-k-means-algorithm-introduction/
+Bisecting KMeans: https://www.geeksforgeeks.org/bisecting-k-means-algorithm-in
+troduction/
     https://cs.fit.edu/~pkc/classes/ml-internet/papers/steinbach00tr.pdf
-Dendrogram: https://stackoverflow.com/questions/56123380/how-to-draw-dendrogram-in-matplotlib-without-using-scipy
+Dendrogram: https://stackoverflow.com/questions/56123380/how-to-draw-dendrogra
+m-in-matplotlib-without-using-scipy
+'''

@@ -1,11 +1,12 @@
 from MLlib.models import DivisiveClustering
-from MLlib.utils.divisive_clustering_utils import visualize, sse, numConcat
+from MLlib.utils.divisive_clustering_utils import visualize, numConcat
 import numpy as np
 from time import perf_counter
 import matplotlib.pyplot as plt
 from scipy.cluster.hierarchy import dendrogram, linkage
 # import logging
-# logging.basicConfig(filename='MLlib/tests/divisive_example.log', level=logging.DEBUG, filemode='w', format='\n%(asctime)s\n%(message)s')
+# logging.basicConfig(filename='MLlib/tests/divisive_example.log', \
+#   level=logging.DEBUG, filemode='w', format='\n%(asctime)s\n%(message)s')
 
 # Example 1
 # X = np.genfromtxt('Examples/datasets/k_means_clustering.txt')
@@ -14,7 +15,8 @@ from scipy.cluster.hierarchy import dendrogram, linkage
 
 # Example 2: Redundant datapoints not allowed
 # Try with different number of clusters
-LOAD = False  # set to True to load the previously saved dataset, False for custom config
+LOAD = False  # set to True to load the previously saved dataset, False for cu
+# stom config
 SAVE = False  # set to True if you want to save below configurations
 if LOAD:
     with open('Examples/datasets/divisive_clustering.npy', 'rb') as f:
@@ -60,7 +62,8 @@ print(f'Time taken by this algorithm: {stop-start}')
 # scatter plot of data and dendrogram
 visualize(result_clusters, result_centroids, n_clusters, count)
 
-# scipy's agglomerative used for benchmarking. Comparable only when n_clusters=count
+# scipy's agglomerative used for benchmarking. Comparable only when
+# n_clusters=count
 # start = perf_counter()
 Z = linkage(X, 'median')
 # stop = perf_counter()
