@@ -8,6 +8,8 @@ from MLlib.utils.naive_bayes_utils import make_likelihood_table
 from MLlib.utils.gaussian_naive_bayes_utils import get_mean_var, p_y_given_x
 from MLlib.utils.k_means_clustering_utils import initi_centroid, cluster_allot
 from MLlib.utils.k_means_clustering_utils import new_centroid, xy_calc
+from MLlib.utils.divisive_clustering_utils import KMeans, sse, \
+    visualize_clusters
 from MLlib.utils.pca_utils import PCA_utils, infer_dimension
 import MLlib.nn as nn
 from collections import Counter, OrderedDict
@@ -343,7 +345,7 @@ class PolynomialRegression():
 
         # Add polynomial terms to X
         # upto degree 'self.degree'.
-        for i in range(2, self.degree+1):
+        for i in range(2, self.degree + 1):
             P = np.hstack((
                 P,
                 (np.power(X[:, 0:1], i)).reshape(M, 1)
@@ -405,7 +407,7 @@ class PolynomialRegression():
 
         P = X[:, 0:1]
 
-        for i in range(2, self.degree+1):
+        for i in range(2, self.degree + 1):
             P = np.hstack((
                 P,
                 (np.power(X[:, 0:1], i)).reshape(M, 1)
@@ -496,7 +498,7 @@ class PolynomialRegression():
 
         P = X[:, 0:1]
 
-        for i in range(2, self.degree+1):
+        for i in range(2, self.degree + 1):
             P = np.hstack((
                 P,
                 (np.power(X[:, 0:1], i)).reshape(M, 1)
@@ -708,7 +710,8 @@ class LogisticRegression(LinearRegression):
         plot1.grid()
         sigmoid = Sigmoid()
         plot1.scatter(X.T[0], Y, color="red", marker="+", label="labels")
-        plot1.plot(x, 0*x+0.5, linestyle="--", label="Decision bound, y=0.5")
+        plot1.plot(x, 0 * x + 0.5, linestyle="--",
+                   label="Decision bound, y=0.5")
         plot1.plot(x, sigmoid.activation(x),
                    color="green", label='Sigmoid function: 1 / (1 + e^-x)'
                    )
@@ -795,7 +798,7 @@ class DecisionTreeClassifier():
 
         # Base case: we've reached a leaf
         if gain == 0:
-            print(spacing + "Predict", class_counts(rows, len(rows[0])-1))
+            print(spacing + "Predict", class_counts(rows, len(rows[0]) - 1))
             return
 
         # If we reach here, we have found a useful feature / value
@@ -850,7 +853,7 @@ class DecisionTreeClassifier():
         # to collect random samples of the dataset.
         indexcol = []
         for j in range(0, 5):
-            r = np.random.randint(0, N-2)
+            r = np.random.randint(0, N - 2)
             if r not in indexcol:
                 indexcol.append(r)
 
@@ -863,7 +866,7 @@ class DecisionTreeClassifier():
 
         # add last column to the random sample so created.
         for j in range(0, len(row)):
-            row[j].append(rows[j][N-1])
+            row[j].append(rows[j][N - 1])
 
         rows = row
 
@@ -875,7 +878,7 @@ class DecisionTreeClassifier():
         # Base case: we've reached a leaf
         if gain == 0:
             # Get the predictions of the current set of rows.
-            p = class_counts(rows, len(rows[0])-1)
+            p = class_counts(rows, len(rows[0]) - 1)
             for d in prediction_val:
                 for j in p:
                     if d == j:
@@ -952,12 +955,12 @@ class RandomForestClassifier(DecisionTreeClassifier):
             # Finding random indexes for rows
             # to collect the bootstrapped samples
             # of the dataset.
-            indexrow = np.random.randint(0, M-1, 6)
+            indexrow = np.random.randint(0, M - 1, 6)
             rows = []
             for j in indexrow:
                 rows.append(A[j])
 
-            label = len(rows[0])-1
+            label = len(rows[0]) - 1
 
             # Get prediction values for the rows
             prediction_val = class_counts(rows, label)
@@ -987,7 +990,7 @@ class RandomForestClassifier(DecisionTreeClassifier):
             if maxk not in prediction:
                 prediction[maxk] = maximum
             else:
-                prediction[maxk] = prediction[maxk]+maximum
+                prediction[maxk] = prediction[maxk] + maximum
 
         # find maximum predicted value, hence the
         # final prediction of the Random Forest Algorithm.
@@ -1166,7 +1169,7 @@ class Gaussian_Naive_Bayes():
 
     # data is variable input given by user for which we predict the label.
     # Here we predict the gender from given list of height, weight, foot_size
-    def predict(self, data,  x_label, y_class):
+    def predict(self, data, x_label, y_class):
         """
         Gaussian Naive Bayes Model to predict the
         label given the class values.
@@ -1208,7 +1211,7 @@ class BernoulliNB(object):
 
         separate = [[i for i, t in zip(x, y) if t == c] for c in np.unique(y)]
         count_for_sample = x.shape[0]
-        self.class_log = [np.log(len(i)/count_for_sample) for i in separate]
+        self.class_log = [np.log(len(i) / count_for_sample) for i in separate]
         count = self.alpha + np.array([np.array(i).sum(axis=0) for i in
                                        separate])
         smoothing = 2 * self.alpha
@@ -1233,7 +1236,7 @@ class MultinomialNB(object):
 
         separate = [[i for i, t in zip(x, y) if t == c] for c in np.unique(y)]
         count_for_sample = x.shape[0]
-        self.class_log = [np.log(len(i)/count_for_sample) for i in separate]
+        self.class_log = [np.log(len(i) / count_for_sample) for i in separate]
         count = self.alpha + np.array([np.array(i).sum(axis=0) for i in
                                        separate])
         self.log_prob = np.log(count / count.sum(axis=1)[np.newaxis].T)
@@ -1334,6 +1337,81 @@ class KMeansClustering():
             print(cluster)
             print("\n==============================\n")
 
+# ---------------------- Divisive Hierarchical Clustering ----------------
+
+
+class DivisiveClustering():
+    def work(self, M, n_clusters, n_iterations=7,
+             enable_for_larger_clusters=False):
+        if n_clusters > len(M):
+            raise(ValueError(
+                f'Number of clusters {n_clusters} inputted is greater than \
+                    dataset number of examples {len(M)}.'))
+        KMC = KMeans()
+        clusters, centroids = KMC.runKMeans(M, 2, n_iterations)
+        # global list of clusters and global np.array of centroids
+        global_clusters, global_centroids = clusters, centroids
+        # Visualize flag to toggle visualization of clusters while the
+        # algorithm runs
+        _visualize = False
+        # List to store sum of squared errors of each cluster
+        cluster_sse_list = [sse(clusters[0], centroids[0]),
+                            sse(clusters[1], centroids[1])]
+        # List to store lengths of each cluster
+        cluster_len_list = [len(clusters[0]), len(clusters[1])]
+        if n_clusters > 20 and not enable_for_larger_clusters:
+            print('Visualization disabled for number of clusters > 20. To \
+                enable them for larger number of clusters, pass enable_for_\
+                    larger_clusters = True argument for DC.work.')
+        else:
+            _visualize = True
+        i = 2
+        while len(global_clusters) < n_clusters:
+            # index of the cluster to be splitted; selection criteria: cluster
+            # having max sse
+            rem_index = cluster_sse_list.index(max(cluster_sse_list))
+            # cluster to be splitted
+            parent = global_clusters[rem_index]
+            cl = cluster_len_list[rem_index]
+            if cl == 1:
+                # if single example remaining, directly add into global
+                # clusters
+                global_centroids[rem_index] = parent[0]
+                cluster_sse_list[rem_index] = 0.
+                # check if all previous clusters are splitted completely
+                # #!FIXME: Necessary?
+                m = max(cluster_len_list)
+                # case where all sse errors are zero
+                if any(cluster_sse_list) and m == 1:
+                    i += 1
+                    continue
+                else:
+                    # index of cluster to be splitted
+                    rem_index = cluster_len_list.index(max(cluster_len_list))
+                    # cluster to be splitted
+                    parent = global_clusters[rem_index]
+            i += 1
+            # delete all residues of the cluster to be splitted
+            del(global_clusters[rem_index])
+            del(cluster_sse_list[rem_index])
+            del(cluster_len_list[rem_index])
+            global_centroids = np.delete(global_centroids, rem_index, 0)
+            # run kmeans to split the cluster
+            clusters, centroids = KMC.runKMeans(parent, 2, 7)
+            # update util arrays using data from splitted clusters
+            global_clusters.extend([clusters[0], clusters[1]])
+            # print(f'global_clusters: {global_clusters}, len(global_clusters):
+            # {len(global_clusters)}, clusters: {clusters}, len(clusters):
+            # {len(clusters)}, parent:{parent}')
+            cluster_sse_list.extend([sse(clusters[0], centroids[0]),      sse(
+                            clusters[1], centroids[1])])
+            cluster_len_list.extend([len(clusters[0]), len(clusters[1])])
+            global_centroids = np.append(global_centroids, centroids, axis=0)
+            # visualize formation of clusters
+            if _visualize:
+                visualize_clusters(global_clusters, global_centroids, i)
+        return global_clusters, global_centroids
+
 
 class Bayes_Optimization():
     # surrogate or approximation for the objective function
@@ -1351,7 +1429,7 @@ class Bayes_Optimization():
         mu, std = self.surrogate(model, Xsamples)
         mu = mu[:, 0]
         # calculate the probability of improvement
-        probs = norm.cdf((mu - best) / (std+1E-9))
+        probs = norm.cdf((mu - best) / (std + 1E-9))
         return probs
 
     # optimize the acquisition function
@@ -1418,7 +1496,7 @@ class PCA(PCA_utils):
         '''Fitting function for the model'''
         # count the sparsity of the  ndarray
         count = np.count_nonzero(X)
-        sparsity = 1.0 - (count/np.size(X))
+        sparsity = 1.0 - (count / np.size(X))
         if sparsity > 0.5:
             raise TypeError('PCA does not support sparse input.')
         if self.n_components is None:
@@ -1462,7 +1540,7 @@ class PCA(PCA_utils):
         Vh *= signs[:, np.newaxis]
         components = Vh
         # explained variance by singular values
-        explained_variances = (S**2)/(n_samples-1)
+        explained_variances = (S**2) / (n_samples - 1)
         explained_variance_ratio = (explained_variances /
                                     explained_variances.sum())
         singular_value = S.copy()
