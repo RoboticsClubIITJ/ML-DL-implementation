@@ -343,3 +343,36 @@ class Huber():
         """
 
         return np.where(np.abs(X - Y) <= delta, X - Y, delta * np.sign(X - Y))
+
+
+class MeanSquaredLogLoss():
+    """""
+    Calcute Mean Squared Log Loss
+    """
+
+    @staticmethod
+    def loss(X, Y, W):
+        """
+            Calculate  Mean Squared Log Loss
+
+            PARAMETERS
+            ==========
+
+            X:ndarray(dtype=float,ndim=1)
+              input vector
+            Y:ndarray(dtype=float)
+              output vector
+            W:ndarray(dtype=float)
+              Weights
+
+            RETURNS
+            =======
+
+            array of mean of logarithmic losses
+        """
+
+        M = X.shape[0]
+        sigmoid = Sigmoid()
+        H = sigmoid.activations(np.dot(X, W).T)
+        return np.sqrt((1 / M) * (np.sum(np.log(Y + 1) - np.log(H + 1))))
+
