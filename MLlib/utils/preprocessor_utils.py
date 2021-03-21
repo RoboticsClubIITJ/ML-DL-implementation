@@ -50,6 +50,70 @@ class Feature_Scaling():
         x.plot(kind='density', subplots=True, layout=(3, 3))
         plt.show()
 
+    def Standard_Scaler(self, X):
+        """
+        Data scaling by Standard Scaler.
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=float,ndim=1)
+           1-D Array of Dataset's Input.
+
+        RETURNS
+        =======
+        Scaled value of feature.
+        """
+        # X_new = (X - mean) / standerd deviation
+        X = self.X
+        for i in range(len(X)):
+            m = np.mean(X)
+            X = X - m
+        X = np.divide(X, np.std(X))
+        return X
+
+    def MaxAbs_Scaler(self):
+        """
+        Data scaling by Max-Abs Scaler.
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=float,ndim=1)
+           1-D Array of Dataset's Input.
+
+        RETURNS
+        =======
+        Scaled value of feature.
+        """
+        # x= X/ Absolute(max(x))
+        X = self.X
+        for i in range(len(X)):
+            k = abs(max(X))
+        X = np.divide(X, k)
+        return X
+
+    def Feature_Clipping(self, max, min):
+        """
+        Data scaling by Feature Clipping.
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=float,ndim=1)
+           1-D Array of Dataset's Input.
+        max: random maximum value taken from user
+        min: random minimum value taken from user
+
+        RETURNS
+        =======
+        Scaled value of feature.
+        """
+        X = self.X
+        for i in range(len(X)):
+            if X[i] < min:
+                X[i] == min
+            if X[i] > max:
+                X[i] == max
+        return X
+
     def Z_Score_Normalization(self):
         """
         Data scaling by Z-Score Normalization.
