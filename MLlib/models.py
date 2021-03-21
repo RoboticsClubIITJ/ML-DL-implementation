@@ -235,6 +235,7 @@ class LinearRegression():
         plt.plot(np.array(l1), np.array(l2))
         plt.xlabel("Epochs")
         plt.ylabel("Loss")
+        plt.scatter(X, Y)
         plt.show()
 
 
