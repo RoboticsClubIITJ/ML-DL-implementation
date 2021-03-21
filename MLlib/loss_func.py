@@ -375,4 +375,3 @@ class MeanSquaredLogLoss():
         sigmoid = Sigmoid()
         H = sigmoid.activations(np.dot(X, W).T)
         return np.sqrt((1 / M) * (np.sum(np.log(Y + 1) - np.log(H + 1))))
-
