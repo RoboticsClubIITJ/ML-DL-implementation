@@ -246,7 +246,7 @@ class CosineSimilarity():
         return dissimilarity*(np.sum(np.square(Y))**(0.5))
 
 
-class log_cosh:
+class log_cosh():
 
     @staticmethod
     def logcosh_loss(X, Y):
