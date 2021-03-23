@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.org/RoboticsClubIITJ/ML-DL-implementation.svg?branch=master)](https://travis-ci.org/RoboticsClubIITJ/ML-DL-implementation)
 [![Gitter](https://badges.gitter.im/ML-DL-implementation/community.svg)](https://gitter.im/ML-DL-implementation/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/RoboticsClubIITJ/ML-DL-implementation)
+<a href="https://devlup-labs.github.io"><img src="https://img.shields.io/badge/Maintained%20under-Winter%20of%20Code%2C%20DevlUp%20Labs-brightgreen"/></a>
 
 Machine Learning and Deep Learning library in python using numpy and matplotlib.
 
@@ -65,7 +66,7 @@ Follow the following steps to get started with contributing to the repository.
 | :------------ | ------------: | :------------ | ------------: | :------------ | ------------: |
 | **ACTIVATION FUNCTIONS**| |**OPTIMIZERS**|| **MODELS** | |
 | Sigmoid | [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/activations.py#L4) | Gradient Descent | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/optimizers.py#L6) | Linear Regression | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L21) 
-| Tanh | [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/activations.py#L46) | StochasticGradientDescent | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/optimizers.py#L59) | Logistic Regression| [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L364) |
+| Tanh | [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/activations.py#L46) | Stochastic Gradient Descent | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/optimizers.py#L59) | Logistic Regression| [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L364) |
 | Softmax | [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/activations.py#L86) | Mini Batch Gradient Descent | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/optimizers.py#L126) | Decision Tree Classifier| [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L465)|
 | Softsign | [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/activations.py#L134) | Momentum Gradient Descent | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/optimizers.py#L204) | KNN Classifier/Regessor| [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L541) |
 | Relu | [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/activations.py#L174) | Nesterov Accelerated Descent | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/optimizers.py#L297) | Naive Bayes | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L626)|
@@ -80,6 +81,6 @@ Follow the following steps to get started with contributing to the repository.
 | :------------ | ------------: |
 |**LOSS FUNCTIONS**| |
 | Mean Squared Error | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/loss_func.py#L5)
-|Log Error | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/loss_func.py#L57)
+| Logarithmic Error | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/loss_func.py#L57)
 | Absolute Error | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/loss_func.py#L113)
 | Cosine Similarity | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/loss_func.py#L173)

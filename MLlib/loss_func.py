@@ -246,7 +246,7 @@ class CosineSimilarity():
         return dissimilarity*(np.sum(np.square(Y))**(0.5))
 
 
-class log_cosh:
+class Log_cosh():
 
     @staticmethod
     def logcosh_loss(X, Y):
@@ -375,4 +375,3 @@ class MeanSquaredLogLoss():
         sigmoid = Sigmoid()
         H = sigmoid.activations(np.dot(X, W).T)
         return np.sqrt((1 / M) * (np.sum(np.log(Y + 1) - np.log(H + 1))))
-
