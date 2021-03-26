@@ -176,7 +176,7 @@ def visualize_clusters(global_clusters, global_centroids, iteration):
                    [:, 1], marker='.', color=tuple(colors[i]))
     # scatter-plot of centroids
     ax.scatter(global_centroids[:, 0], global_centroids[:, 1],
-               marker='s', color='#F008', label='Centroids')
+               marker='s', c='#F008', label='Centroids')
     # give labels to centroids
     for i in range(n_clusters):
         ax.annotate(f'c{i}', (global_centroids[i, 0], global_centroids[i, 1]))
@@ -309,7 +309,7 @@ def visualize(global_clusters, global_centroids, n_clusters, datasize):
                     [:, 1], marker='.', color=tuple(colors[i]))
     # scatter-plot of centroids
     plt.scatter(global_centroids[:, 0], global_centroids[:, 1],
-                marker='s', color='#F008', label='Centroids')
+                marker='s', c='#F008', label='Centroids')
     # give labels to centroids
     for i in range(n_clusters):
         plt.annotate(f'c{i}', (global_centroids[i, 0], global_centroids[i, 1]))
