@@ -62,7 +62,7 @@ Follow the following steps to get started with contributing to the repository.
 
 # Algorithms Implemented
 
-| Algorithm | Location |  Algorithm | Location | Algorithm | Location |
+| Activations | Location |  Optimizers | Location | Models | Location |
 | :------------ | ------------: | :------------ | ------------: | :------------ | ------------: |
 | **ACTIVATION FUNCTIONS**| |**OPTIMIZERS**|| **MODELS** | |
 | Sigmoid | [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/activations.py#L4) | Gradient Descent | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/optimizers.py#L6) | Linear Regression | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L21) 
@@ -77,7 +77,7 @@ Follow the following steps to get started with contributing to the repository.
 | | | | | Multinomial Naive Bayes | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L764) |
 | | | | | Principle component analysis | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L874) |
 
-| Algorithm | Location |
+| Loss Functions | Location |
 | :------------ | ------------: |
 |**LOSS FUNCTIONS**| |
 | Mean Squared Error | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/loss_func.py#L5)
