@@ -5,7 +5,7 @@ preprocessor = np.genfromtxt('datasets/salaryinp.csv', delimiter=',')
 X = preprocessor[1:, 1]
 print(X)
 Scale = Feature_Scaling(X, 'datasets/salaryinp.csv', 'Salary')
-print(Scale.Standard_Scaler())
+print(Scale.Standard_Scaler(X))
 print(Scale.MaxAbs_Scaler())
 print(Scale.Feature_Clipping(100000, 10000))
 print(Scale.Mean_Normalization())
