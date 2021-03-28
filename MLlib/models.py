@@ -194,6 +194,8 @@ class LinearRegression():
     def plot(self, X, Y, optimizer=GradientDescent, epochs=25):
         """"
         Plot the graph of loss vs number of iterations
+        Plot the graph of Output Vs Input
+        Plot the graph of Predicted output Vs Input
 
         PARAMETERS
         ==========
@@ -203,6 +205,12 @@ class LinearRegression():
 
         Y: ndarray(dtype=float, ndim=1)
            1-D array of Dataset's output
+
+        X_:ndarray(dtype=float, ndim=1)
+           1-D array of Dataset's input
+
+        Y_:ndarray(dtype=float, ndim=1)
+           1-D array of Predicted output
 
         optimizer: class
            Class of one of the Optimizers like
@@ -222,6 +230,10 @@ class LinearRegression():
         =========
         A 2-D graph with x-axis as Number of
         iterations and y-axis as loss.
+        A 2-D graph with x-axis as input and y_axis
+        as output
+        A 2-D graph with x-axis as input and
+        y-axis as predicted output
 
         """
         l1 = []
@@ -232,10 +244,24 @@ class LinearRegression():
             self.weights = optimizer.iterate(X, Y, self.weights)
             error = optimizer.loss_func.loss(X, Y, self.weights)
             l2.append(error)
-        plt.plot(np.array(l1), np.array(l2))
-        plt.xlabel("Epochs")
-        plt.ylabel("Loss")
-        plt.scatter(X, Y)
+        Plot = plt.figure(figsize=(8, 8))
+        plot1 = Plot.add_subplot(2, 2, 1)
+        plot2 = Plot.add_subplot(2, 2, 2)
+        plot3 = Plot.add_subplot(2, 2, 3)
+        plot1.set_title('Epochs Vs Loss')
+        plot1.set_xlabel("Epochs")
+        plot1.set_ylabel("Loss")
+        plot1.plot(np.array(l1), np.array(l2))
+        X_ = np.delete(X, 1, 1)
+        plot2.scatter(X_.flatten(), Y.flatten())
+        plot2.set_title("Input Vs Actual Output")
+        plot2.set_xlabel("Input")
+        plot2.set_ylabel("Output")
+        Y_ = np.dot(X, self.best_weights["weights"])
+        plot3.set_xlabel("Input")
+        plot3.set_ylabel("Predicted Output")
+        plot3.plot(X_.flatten(), Y_.flatten())
+        plot3.scatter(X_.flatten(), Y.flatten(), color="Red")
         plt.show()
 
 
