@@ -10,8 +10,8 @@ linear_model = LinearRegression()
 
 optimizer = Adam(0.01, MeanSquaredError)
 
-linear_model.fit(X,Y,optimizer=optimizer,epochs=200,\
-                 zeros=False,save_best=True)
+linear_model.fit(X, Y, optimizer=optimizer, epochs=200, \
+                 zeros=False, save_best=True)
 
 printmat('predictions', linear_model.predict(X))
 
