@@ -10,10 +10,11 @@ linear_model = LinearRegression()
 
 optimizer = Adam(0.01, MeanSquaredError)
 
-linear_model.fit(X, Y, optimizer=optimizer, epochs=200, zeros=False)
-
-linear_model.plot(X, Y, optimizer=optimizer, epochs=200)
+linear_model.fit(X, Y, optimizer=optimizer, epochs=200,
+                 zeros=False, save_best=True)
 
 printmat('predictions', linear_model.predict(X))
 
 linear_model.save('test')
+
+linear_model.plot(X, Y, optimizer=optimizer, epochs=200)
