@@ -1631,6 +1631,49 @@ class Numerical_outliers():
             if x[i] > upperbound or x[i] < lowerbound:
                 print("outlier=", x[i])
 
+# ---------------------- z_score Method---------------------------
+
+
+class z_score():
+    """
+    z_score class find outliers by calculating z_score.
+    The z-score or standard score of an observation is a metric that
+    indicates how many standard deviations a data point is from the
+    sample’s mean.
+
+    ATTRIBUTES
+    ==========
+    None
+
+    METHODS
+    =======
+    get_outliers(input_dataset,threshold_value=3)
+    Calculate z_score and prints outlier
+
+    """
+    def get_outlier(input_dataset, threshold_value=3):
+
+        """
+        PARAMETERS
+        ==========
+
+        input_dataset: ndarray(dtype=float, ndim=1)
+                Input Array
+
+        threshold_value: float
+                When computing the z-score for each sample on the data set
+                a threshold must be specified. Some good ‘thumb-rule’
+                thresholds can be: 2.5, 3, 3.5
+        """
+
+        Mean = np.mean(input_dataset)
+        standard_deviation = np.std(input_dataset)
+        score = (input_dataset-Mean)/standard_deviation
+        for i in range(len(input_dataset)):
+            if (score[i] < (-threshold_value) or score[i] > threshold_value):
+                print(input_dataset[i])
+
+
 # ---------------------- Sequential Neural Network ---------------------------
 
 
