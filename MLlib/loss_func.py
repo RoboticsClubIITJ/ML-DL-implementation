@@ -238,8 +238,7 @@ class CosineSimilarity():
 
          Percentage of error in the actural value and predicted value
          """
-        sigmoid = Sigmoid()
-        H = sigmoid.activation(np.dot(X, W).T)
+        H = (np.dot(X, W).T)
         DP = np.sum(np.dot(H, Y))
         S = DP/((np.sum(np.square(H))**(0.5))*(np.sum(np.square(Y))**(0.5)))
         dissimilarity = 1-S
