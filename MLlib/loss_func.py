@@ -303,7 +303,7 @@ class Huber():
     """
 
     @staticmethod
-    def loss(X, Y, delta=1.0):
+    def loss(X, Y, W, delta=1.0):
 
         """
         Calculate loss by Huber method.
@@ -315,18 +315,23 @@ class Huber():
           input vector
         Y:ndarray(dtype=float)
           output vector
+        W:ndarray(dtype=float)
+          Weights
 
          RETURNS
          =======
 
-         array of Huber losses
+         array of Huber loss
         """
-        return np.where(np.abs(X-Y) <= delta,
-                        0.5*(X-Y)**2,
-                        delta*(np.abs(X-Y)-0.5*delta))
+        y_pred = np.dot(X, W).T
+        M = X.shape[0]
+        error = np.where(np.abs(Y - y_pred) <= delta,
+                         0.5 * (Y - y_pred)**2,
+                         delta * (np.abs(Y - y_pred)-0.5*delta))
+        return np.sum(error) / M
 
     @staticmethod
-    def derivative(X, Y, delta=1.0):
+    def derivative(X, Y, W, delta=1.0):
 
         """
         Calculate derivative for Huber method.
@@ -338,14 +343,25 @@ class Huber():
           input vector
         Y:ndarray(dtype=float)
           output vector
+        W:ndarray(dtype=float)
+          Weights
 
          RETURNS
          =======
 
          array of derivates
         """
-
-        return np.where(np.abs(X - Y) <= delta, X - Y, delta * np.sign(X - Y))
+        y_pred = np.dot(X, W).T
+        M = X.shape[0]
+        der = 0
+        for i in range(M):
+            y = Y.transpose()
+            yp = y_pred.transpose()
+            if abs(y[i] - yp[i]) <= delta:
+                der += -X[i] * (y[i] - yp[i])
+            else:
+                der += delta * X[i] * (y[i] - yp[i]) / abs(yp[i] - y[i])
+        return der
 
 
 class MeanSquaredLogLoss():
