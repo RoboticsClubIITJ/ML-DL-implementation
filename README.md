@@ -77,10 +77,14 @@ Follow the following steps to get started with contributing to the repository.
 | | | | | Multinomial Naive Bayes | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L764) |
 | | | | | Principle component analysis | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L874) |
 
-| Loss Functions | Location |
-| :------------ | ------------: |
-|**LOSS FUNCTIONS**| |
-| Mean Squared Error | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/loss_func.py#L5)
-| Logarithmic Error | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/loss_func.py#L57)
-| Absolute Error | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/loss_func.py#L113)
-| Cosine Similarity | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/loss_func.py#L173)
+| Loss Functions | Location | Regularizer | Location | Metrics | Location |
+| :------------ | ------------: | :------------ | ------------: | :------------ | ------------: |
+|**LOSS FUNCTIONS**| |**REGULARIZER**| |**METRICS**| | 
+| Mean Squared Error | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/loss_func.py#L5) | L1_Regularizer| [regularizer.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/regularizer.py#L9) | Confusion Matrix | [metrics.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/metrics.py#L25) 
+| Logarithmic Error | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/loss_func.py#L57) | L2_Regularizer | [regularizer.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/regularizer.py#L58) | Precision | [metrics.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/metrics.py#L81) 
+| Absolute Error | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/loss_func.py#L113) | LinearRegWith_Regularization | [regularizer.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/regularizer.py#L106) | Accuracy | [metrics.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/metrics.py#L80) 
+| Cosine Similarity | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/loss_func.py#L173) | | | Recall | [metrics.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/metrics.py#L82) 
+| Log_cosh | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/loss_func.py#L248) | | | F1 Score | [metrics.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/metrics.py#L85) 
+| Huber | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/loss_func.py#L300) | | | FbTheta | [metrics.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/metrics.py#L88) 
+| MeanSquaredLogLoss | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/loss_func.py#L367) | | | Specificity | [metrics.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/metrics.py#L86) 
+
