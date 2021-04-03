@@ -71,19 +71,18 @@ Follow the following steps to get started with contributing to the repository.
 | Softsign | [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/activations.py#L134) | Momentum Gradient Descent | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/optimizers.py#L204) | KNN Classifier/Regessor| [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L1034) |
 | Relu | [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/activations.py#L174) | Nesterov Accelerated Descent | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/optimizers.py#L297) | Naive Bayes | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L1119)|
 | Leaky Relu | [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/activations.py#L214) | Adagrad | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/optimizers.py#L392) | Gaussian Naive Bayes| [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L1179) |
-| Elu | [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/activations.py#L261) | Adadelta | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/optimizers.py#L467) |  K Means Clustering| [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L1279) |
+| Elu | [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/activations.py#L261) | Adadelta | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/optimizers.py#L467) | Multinomial Naive Bayes | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L1257) |
 | Swish | [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/activations.py#L305) | Adam | [optimizers.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/optimizers.py#L545) | Polynomial Regression | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L268) |
 | Unit Step | [activations.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/activations.py#L285) | | | Bernoli Naive Bayes | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L1233) |
-| | | | | Multinomial Naive Bayes | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L1257) |
 | | | | | Random Forest Classifier | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L931) |
-| | | | | Divisive Clustering | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L1370) | 
+| | | | | K Means Clustering| [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L1279) |
+| | | | | Divisive Clustering | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L1370) |
+| | | | | Agglomerative Clustering | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L1717) |
 | | | | | BayesOptimization | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L1443) |
 | | | | | Numerical Outliers| [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L1598) |
-| | | | | Principle component analysis | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L1489) |
+| | | | | Principle Component Analysis | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L1489) |
 | | | | | Z_Score | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L1637) |
-| | | | | SequentialModule | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L1680) |
-| | | | | Agglomerative Clustering | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L1717) |
-
+| | | | | Sequential Neural Network | [models.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/models.py#L1680) |
 
 | Loss Functions | Location | Regularizer | Location | Metrics | Location |
 | :------------ | ------------: | :------------ | ------------: | :------------ | ------------: |
