@@ -93,5 +93,5 @@ Follow the following steps to get started with contributing to the repository.
 | Cosine Similarity | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/loss_func.py#L173) | | | Recall | [metrics.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/metrics.py#L82) 
 | Log_cosh | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/loss_func.py#L248) | | | F1 Score | [metrics.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/metrics.py#L85) 
 | Huber | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/loss_func.py#L300) | | | F-B Theta | [metrics.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/metrics.py#L88) 
-| MeanSquaredLogLoss | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/loss_func.py#L367) | | | Specificity | [metrics.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/metrics.py#L86) 
+| Mean Squared Log Error | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/loss_func.py#L367) | | | Specificity | [metrics.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/metrics.py#L86) 
 
