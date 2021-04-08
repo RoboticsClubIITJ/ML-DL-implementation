@@ -423,4 +423,5 @@ class MeanAbsolutePrecentageError():
         """
 
         y_pred = np.dot(X, W).T
-        return np.sum(np.true_divide((np.abs(Y - y_pred) * 100), Y)) / X.shape[0]
+        L = np.sum(np.true_divide((np.abs(Y - y_pred) * 100), Y)) / X.shape[0]
+        return L
