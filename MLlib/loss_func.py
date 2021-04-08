@@ -395,6 +395,7 @@ class MeanSquaredLogLoss():
         H = sigmoid.activations(np.dot(X, W).T)
         return np.sqrt((1 / M) * (np.sum(np.log(Y + 1) - np.log(H + 1))))
 
+
 class MeanAbsolutePrecentageError():
     """""
     Calcute Mean Absolute Percentage Loss
@@ -421,5 +422,5 @@ class MeanAbsolutePrecentageError():
             array of Mean Absolute Percentage Loss
         """
 
-        y_pred = np.dot(X,W).T
-        return np.true_divide((np.abs(Y - y_pred) * 100),Y)
+        y_pred = np.dot(X, W).T
+        return np.true_divide((np.abs(Y - y_pred) * 100), Y)
