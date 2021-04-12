@@ -94,4 +94,4 @@ Follow the following steps to get started with contributing to the repository.
 | Log_cosh | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/loss_func.py#L248) | | | F1 Score | [metrics.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/metrics.py#L85) 
 | Huber | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/loss_func.py#L300) | | | F-B Theta | [metrics.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/metrics.py#L88) 
 | Mean Squared Log Error | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/loss_func.py#L367) | | | Specificity | [metrics.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/metrics.py#L86) 
-
+| Mean Absolute Percentage Error | [loss_func.py](https://github.com/RoboticsClubIITJ/ML-DL-implementation/blob/master/MLlib/loss_func.py#L399)
