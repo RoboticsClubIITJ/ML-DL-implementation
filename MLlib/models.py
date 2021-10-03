@@ -1114,6 +1114,58 @@ class KNN():
         else:
             prediction = sum(ouput) / len(ouput)
         return prediction
+    
+    def plot(self,train,test_row,k_start,k_end):
+        """"
+        KNN method to plot the graph of error of 
+        each k value vs k value for both 
+        classifier and regressor.
+
+        PARAMETERS
+        ==========
+
+        train: ndarray
+            Array representation of of Collection
+            of Points, with their corresponding
+            x1,x2 and y features.
+        
+        test_row: ndarray(dtype=int,ndim=1,axis=1)
+            Array representation of test point,
+            with its corresponding x1,x2 and y
+            features.
+
+        k_oddstart: int
+           Value of k to start the graph from.
+
+        k_evenend:int
+           Value of k to end at such that k_evenend is 
+           less than length of train array.
+
+        RETURNS
+        =========
+
+        A plot of error rate vs values of k.
+
+        """
+        if k_end<len(train):
+          error_rate=[]
+          model=KNN()
+          for k in range(k_start,k_end,2):
+             predict_list=[]
+             for i in range(len(train)):
+                predict_list.append(model.predict(train,test_row[i],num_neighbours=k,classify=True))
+             f=np.array(predict_list)
+             error_rate.append(np.mean(f!=train[:,2]))
+          k_values=[j for j in range(k_start,k_end,2)]
+          print(error_rate)           
+          plt.plot(k_values,error_rate)
+          plt.title('Error Rate vs K')
+          plt.xlabel('values of K')
+          plt.ylabel('Error rate')
+          plt.show()
+        else:
+            print('Please choose k_end<len(train)')
+
 
 
 class Naive_Bayes():
@@ -1419,7 +1471,8 @@ class DivisiveClustering():
                     parent = global_clusters[rem_index]
             i += 1
             # delete all residues of the cluster to be splitted
-            del(global_clusters[rem_index])
+            del(
+                [rem_index])
             del(cluster_sse_list[rem_index])
             del(cluster_len_list[rem_index])
             global_centroids = np.delete(global_centroids, rem_index, 0)
