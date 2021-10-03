@@ -1471,8 +1471,7 @@ class DivisiveClustering():
                     parent = global_clusters[rem_index]
             i += 1
             # delete all residues of the cluster to be splitted
-            del(
-                [rem_index])
+            del([rem_index])
             del(cluster_sse_list[rem_index])
             del(cluster_len_list[rem_index])
             global_centroids = np.delete(global_centroids, rem_index, 0)
