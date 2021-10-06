@@ -157,3 +157,4 @@ class Distance_metrics:
             single=np.sum((abs(W*(X1[i]-X2[i])))**p)
             distance.append((single)**(1/p))
         return(distance)
+
