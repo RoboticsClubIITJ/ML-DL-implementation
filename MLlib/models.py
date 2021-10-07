@@ -1,4 +1,5 @@
 from MLlib.optimizers import GradientDescent
+from MLlib.loss_func import SVMLoss
 from MLlib.activations import Sigmoid
 from MLlib.utils.misc_utils import generate_weights
 from MLlib.utils.decision_tree_utils import partition, find_best_split
@@ -772,6 +773,244 @@ class LogisticRegression(LinearRegression):
         plt.show()
 
 
+class LinearSVC():
+    """
+    Implement Support Vector Machine classifier.
+
+    ATTRIBUTES
+    ==========
+
+    None
+
+    METHODS
+    =======
+
+    fit(X,Y,optimizer=GradientDescent,epochs=25,
+    zeros=False,save_best=False):
+        Implement the Training of
+        Support Vector Machine Model with
+        suitable optimizer, inititalised
+        random weights and Dataset's
+        Input-Output, upto certain number
+        of epochs.
+
+    predict(X):
+        Return the Predicted Value of
+        Output associated with Input,
+        using the weights, which were
+        tuned by Training Support Vector Machine
+        Model.
+
+    save(name):
+        Save the Trained Support Vector Machine
+        Model in rob format , in Local
+        disk.
+    """
+
+    def fit(
+            self,
+            X,
+            Y,
+            optimizer=GradientDescent,
+            epochs=25,
+            reg_strength=5,
+            zeros=False,
+            save_best=False
+    ):
+        """
+        Train the Support Vector Machine Model
+        by fitting its associated weights,
+        according to Dataset's Inputs and
+        their corresponding Output Values.
+
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=float,ndim=1)
+            1-D Array of Dataset's Input.
+
+        Y: ndarray(dtype=float,ndim=1)
+            1-D Array of Dataset's Output.
+
+        optimizer: class
+            Class of one of the Optimizers like
+            AdamProp,SGD,MBGD,RMSprop,AdamDelta,
+            Gradient Descent,etc.
+
+        epochs: int
+            Number of times, the loop to calculate loss
+            and optimize weights, will going to take
+            place.
+
+        zeros: boolean
+            Condition to initialize Weights as either
+            zeroes or some random decimal values.
+
+        save_best: boolean
+            Condition to enable or disable the option
+            of saving the suitable Weight values for the
+            model after reaching the region nearby the
+            minima of Loss-Function with respect to Weights.
+
+        epoch_loss: float
+            The degree of how much the predicted value
+            is diverted from actual values, given by
+            implementing one of choosen loss functions
+            from loss_func.py .
+
+        version: str
+            Descriptive update of Model's Version at each
+            step of Training Loop, along with Time description
+            according to DATA_FORMAT.
+
+        RETURNS
+        =======
+
+        None
+        """
+        optimizer = optimizer(loss_func=SVMLoss(reg_strength))
+        self.weights = generate_weights(X.shape[1] + 1, 1, zeros=zeros)
+        self.best_weights = {"weights": None, "loss": float('inf')}
+        print(self.weights)
+        print("Starting training with loss:",
+              optimizer.loss_func.loss(X, Y, self.weights))
+        for epoch in range(1, epochs + 1):
+            print("======================================")
+            print("epoch:", epoch)
+            self.weights = optimizer.iterate(X, Y, self.weights)
+            epoch_loss = optimizer.loss_func.loss(X, Y, self.weights)
+            if save_best and epoch_loss < self.best_weights["loss"]:
+                print("updating best weights (loss: {})".format(epoch_loss))
+                self.best_weights['weights'] = self.weights
+                self.best_weights['loss'] = epoch_loss
+                version = "model_best_" + datetime.now().strftime(DATE_FORMAT)
+                print("Saving best model version: ", version)
+                self.save(version)
+            print("Loss in this step: ", epoch_loss)
+
+        version = "model_final_" + datetime.now().strftime(DATE_FORMAT)
+        print("Saving final model version: ", version)
+        self.save(version)
+
+        print("======================================\n")
+        print("Finished training with final loss:",
+              optimizer.loss_func.loss(X, Y, self.weights))
+        print("=====================================================\n")
+
+    def predict(self, X):
+        """
+        Predict the Output Value of
+        Input, in accordance with
+        Support Vector Classification Model.
+
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=float,ndim=1)
+            1-D Array of Dataset's Input.
+
+        RETURNS
+        =======
+
+        ndarray(dtype=float,ndim=1)
+            Predicted Values corresponding to
+            each Input of Dataset.
+        """
+
+        X = np.hstack((X, np.ones((X.shape[0], 1))))
+        return np.sign(np.dot(X, self.weights))
+
+    def save(self, name):
+        """
+        Save the Model in rob
+        format for further usage.
+
+        PARAMETERS
+        ==========
+
+        name: str
+            Title of the Model's file
+            to be saved in rob format.
+
+        RETURNS
+        =======
+
+        None
+        """
+        with open(name + '.rob', 'wb') as robfile:
+            pickle.dump(self, robfile)
+
+    def plot(
+            self,
+            X,
+            Y,
+            zeros=False,
+            optimizer=GradientDescent,
+            reg_strength=5,
+            epochs=25):
+        """"
+        Plot the graph of loss vs number of iterations
+        Plot the seperating hyperplane of the SVM along with
+        the scatter plot of points
+
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=float, ndim=1)
+           1-D array of Dataset's input
+
+        Y: ndarray(dtype=float, ndim=1)
+           1-D array of Dataset's output
+
+        optimizer: class
+           Class of one of the Optimizers like
+           AdamProp,SGD,MBGD,GradientDescent etc
+
+        epochs: int
+           Number of times, the loop to calculate loss
+           and optimize weights, will going to take
+           place.
+
+        error: float
+           The degree of how much the predicted value
+           is diverted from actual values, given by implementing
+           one of choosen loss functions from loss_func.py .
+
+        RETURNS
+        =========
+        A 2-D graph with x-axis as Number of
+        iterations and y-axis as loss.
+        A 2-D graph with x-axis as x-coordinate of points and y_axis
+        as y-coordinate of points
+
+        """
+        optimizer = optimizer(loss_func=SVMLoss(reg_strength))
+        l1 = []
+        l2 = []
+        self.weights = generate_weights(X.shape[1] + 1, 1, zeros=zeros)
+        for epoch in range(1, epochs + 1):
+            l1.append(epoch)
+            self.weights = optimizer.iterate(X, Y, self.weights)
+            error = optimizer.loss_func.loss(X, Y, self.weights)
+            l2.append(error)
+        Plot = plt.figure(figsize=(8, 8))
+        plot1 = Plot.add_subplot(2, 1, 1)
+        plot2 = Plot.add_subplot(2, 1, 2)
+        plot1.set_title('Epochs Vs Loss')
+        plot1.set_xlabel("Epochs")
+        plot1.set_ylabel("Loss")
+        plot1.plot(np.array(l1), np.array(l2))
+        plot2.scatter(X[:, 0], X[:, 1], c=Y)
+        x = np.linspace(min(X[:, 0]) - 1, max(X[:, 0]) + 1, 20)
+        y = (-self.weights[2] - self.weights[0] * x) / self.weights[1]
+        plot2.plot(x, y)
+        plot2.set_title("Seperating hyperplane")
+        plot2.set_xlabel("x-coordinate")
+        plot2.set_ylabel("y-coordinate")
+        X = np.hstack((X, np.ones((X.shape[0], 1))))
+        plt.show()
+
+
 class DecisionTreeClassifier():
     """
     A class to implement the Decision Tree Algorithm.
@@ -1114,11 +1353,11 @@ class KNN():
         else:
             prediction = sum(ouput) / len(ouput)
         return prediction
-    
-    def plot(self,train,test_row,k_start,k_end):
+
+    def plot(self, train, test_row, k_start, k_end):
         """"
-        KNN method to plot the graph of error of 
-        each k value vs k value for both 
+        KNN method to plot the graph of error of
+        each k value vs k value for both
         classifier and regressor.
 
         PARAMETERS
@@ -1128,7 +1367,7 @@ class KNN():
             Array representation of of Collection
             of Points, with their corresponding
             x1,x2 and y features.
-        
+
         test_row: ndarray(dtype=int,ndim=1,axis=1)
             Array representation of test point,
             with its corresponding x1,x2 and y
@@ -1138,7 +1377,7 @@ class KNN():
            Value of k to start the graph from.
 
         k_evenend:int
-           Value of k to end at such that k_evenend is 
+           Value of k to end at such that k_evenend is
            less than length of train array.
 
         RETURNS
@@ -1147,25 +1386,29 @@ class KNN():
         A plot of error rate vs values of k.
 
         """
-        if k_end<len(train):
-          error_rate=[]
-          model=KNN()
-          for k in range(k_start,k_end,2):
-             predict_list=[]
-             for i in range(len(train)):
-                predict_list.append(model.predict(train,test_row[i],num_neighbours=k,classify=True))
-             f=np.array(predict_list)
-             error_rate.append(np.mean(f!=train[:,2]))
-          k_values=[j for j in range(k_start,k_end,2)]
-          print(error_rate)           
-          plt.plot(k_values,error_rate)
-          plt.title('Error Rate vs K')
-          plt.xlabel('values of K')
-          plt.ylabel('Error rate')
-          plt.show()
+        if k_end < len(train):
+            error_rate = []
+            model = KNN()
+            for k in range(k_start, k_end, 2):
+                predict_list = []
+                for i in range(len(train)):
+                    predict_list.append(
+                        model.predict(
+                            train,
+                            test_row[i],
+                            num_neighbours=k,
+                            classify=True))
+                f = np.array(predict_list)
+                error_rate.append(np.mean(f != train[:, 2]))
+            k_values = [j for j in range(k_start, k_end, 2)]
+            print(error_rate)
+            plt.plot(k_values, error_rate)
+            plt.title('Error Rate vs K')
+            plt.xlabel('values of K')
+            plt.ylabel('Error rate')
+            plt.show()
         else:
             print('Please choose k_end<len(train)')
-
 
 
 class Naive_Bayes():
@@ -1482,8 +1725,8 @@ class DivisiveClustering():
             # print(f'global_clusters: {global_clusters}, len(global_clusters):
             # {len(global_clusters)}, clusters: {clusters}, len(clusters):
             # {len(clusters)}, parent:{parent}')
-            cluster_sse_list.extend([sse(clusters[0], centroids[0]),      sse(
-                            clusters[1], centroids[1])])
+            cluster_sse_list.extend([sse(clusters[0], centroids[0]), sse(
+                clusters[1], centroids[1])])
             cluster_len_list.extend([len(clusters[0]), len(clusters[1])])
             global_centroids = np.append(global_centroids, centroids, axis=0)
             # visualize formation of clusters
@@ -1704,7 +1947,6 @@ class z_score():
 
     """
     def get_outlier(input_dataset, threshold_value=3):
-
         """
         PARAMETERS
         ==========
@@ -1720,7 +1962,7 @@ class z_score():
 
         Mean = np.mean(input_dataset)
         standard_deviation = np.std(input_dataset)
-        score = (input_dataset-Mean)/standard_deviation
+        score = (input_dataset - Mean) / standard_deviation
         for i in range(len(input_dataset)):
             if (score[i] < (-threshold_value) or score[i] > threshold_value):
                 print(input_dataset[i])
