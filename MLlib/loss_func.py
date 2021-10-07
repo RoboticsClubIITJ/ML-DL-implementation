@@ -31,7 +31,7 @@ class MeanSquaredError(autograd.Function):
         if requires_grad:
             ctx.derivative_core = out
 
-        out = np.sum(np.power(out, 2)) / (2*batch_size)
+        out = np.sum(np.power(out, 2)) / (2 * batch_size)
 
         output = Tensor(out, requires_grad=requires_grad,
                         is_leaf=not requires_grad)
@@ -125,7 +125,7 @@ class LogarithmicError():
         M = X.shape[0]
         sigmoid = Sigmoid()
         H = sigmoid.activation(np.dot(X, W).T)
-        return (1/M)*(np.sum((-Y)*np.log(H)-(1-Y)*np.log(1-H)))
+        return (1 / M) * (np.sum((-Y) * np.log(H) - (1 - Y) * np.log(1 - H)))
 
     @staticmethod
     def derivative(X, Y, W):
@@ -150,7 +150,7 @@ class LogarithmicError():
         M = X.shape[0]
         sigmoid = Sigmoid()
         H = sigmoid.activation(np.dot(X, W).T)
-        return (1/M)*(np.dot(X.T, (H-Y).T))
+        return (1 / M) * (np.dot(X.T, (H - Y).T))
 
 
 class AbsoluteError():
@@ -202,7 +202,7 @@ class AbsoluteError():
          array of derivates
         """
         M = X.shape[0]
-        AbsError = (np.dot(X, W).T-Y)
+        AbsError = (np.dot(X, W).T - Y)
         return np.dot(
             np.divide(
                 AbsError,
@@ -210,7 +210,7 @@ class AbsoluteError():
                 out=np.zeros_like(AbsError),
                 where=(np.absolute(AbsError)) != 0),
             X
-        ).T/M
+        ).T / M
 
 
 class CosineSimilarity():
@@ -240,9 +240,10 @@ class CosineSimilarity():
          """
         H = (np.dot(X, W).T)
         DP = np.sum(np.dot(H, Y))
-        S = DP/((np.sum(np.square(H))**(0.5))*(np.sum(np.square(Y))**(0.5)))
-        dissimilarity = 1-S
-        return dissimilarity*(np.sum(np.square(Y))**(0.5))
+        S = DP / ((np.sum(np.square(H))**(0.5))
+                  * (np.sum(np.square(Y))**(0.5)))
+        dissimilarity = 1 - S
+        return dissimilarity * (np.sum(np.square(Y))**(0.5))
 
 
 class Log_cosh():
@@ -292,7 +293,7 @@ class Log_cosh():
 
         Derivative of Log cosh prediction error
         """
-        t = np.tanh(Y-np.dot(X, W).T) @ (-X)
+        t = np.tanh(Y - np.dot(X, W).T) @ (-X)
         derivative = np.sum(t)
         return derivative
 
@@ -304,7 +305,6 @@ class Huber():
 
     @staticmethod
     def loss(X, Y, W, delta=1.0):
-
         """
         Calculate loss by Huber method.
 
@@ -327,12 +327,11 @@ class Huber():
         M = X.shape[0]
         error = np.where(np.abs(Y - y_pred) <= delta,
                          0.5 * (Y - y_pred)**2,
-                         delta * (np.abs(Y - y_pred)-0.5*delta))
+                         delta * (np.abs(Y - y_pred) - 0.5 * delta))
         return np.sum(error) / M
 
     @staticmethod
     def derivative(X, Y, W, delta=1.0):
-
         """
         Calculate derivative for Huber method.
 
@@ -425,3 +424,79 @@ class MeanAbsolutePrecentageError():
         y_pred = np.dot(X, W).T
         L = np.sum(np.true_divide((np.abs(Y - y_pred) * 100), Y)) / X.shape[0]
         return L
+
+
+class SVMLoss():
+    """
+    Calculates the loss function involved in Support Vector Machine model.
+    """
+    reg_strength = 1
+
+    def __init__(self, reg_strength=1):
+        self.reg_strength = reg_strength
+
+    def loss(self, X, Y, W):
+        """
+            Calculates the loss function
+            involved in Support Vector Machine Model.
+
+            PARAMETERS
+            ==========
+
+            X:ndarray(dtype=float,ndim=1)
+              input vector
+            Y:ndarray(dtype=float)
+              output vector
+            W:ndarray(dtype=float)
+              Weights
+
+            RETURNS
+            =======
+            The value of loss function
+            involved in support vector machine model.
+        """
+        if isinstance(Y, np.float64):
+            Y = np.array([Y])
+            X = np.array([X])
+        W = W.flatten()
+        W0 = W[:-1]
+        X = np.hstack((X, np.ones((X.shape[0], 1))))
+        distances = 1 - Y * (np.dot(X, W))
+        distances[distances < 0] = 0
+        L = (self.reg_strength / 2) * np.dot(W0, W0) + np.sum(distances)
+        return L
+
+    def derivative(self, X, Y, W):
+        """
+        Calculate derivative for SVM loss function.
+
+        PARAMETERS
+        ==========
+
+        X:ndarray(dtype=float,ndim=1)
+          input vector
+        Y:ndarray(dtype=float)
+          output vector
+        W:ndarray(dtype=float)
+          Weights
+
+         RETURNS
+         =======
+
+         array of derivates
+        """
+        if isinstance(Y, np.int64):
+            Y = np.array([Y])
+            X = np.array([X])
+        W = W.flatten()
+        X = np.hstack((X, np.ones((X.shape[0], 1))))
+        first_term_derivative = self.reg_strength * np.append(W[:-1], [0])
+        second_term_derivative = np.zeros((X.shape[1],))
+        distances = 1 - Y * (np.dot(X, W))
+        distances[distances < 0] = 0
+        for i, d in enumerate(distances):
+            if d > 0:
+                second_term_derivative += Y[i] * X[i]
+        D = first_term_derivative - (second_term_derivative / len(Y))
+        D.resize((D.shape[0], 1))
+        return D
