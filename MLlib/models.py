@@ -1348,7 +1348,7 @@ class KMeansClustering():
         number of epoch steps.
     """
 
-    def work(self, M, num_cluster, epochs):
+    def work(self, M, num_cluster, epochs,config=None):
         """
         Show the arrangement of clusters after
         certain  number of epochs, provided with
@@ -1415,6 +1415,84 @@ class KMeansClustering():
             print("==============================\n")
             print(cluster)
             print("\n==============================\n")
+        if config==True:
+            return new_array,cluster_array
+
+    def plot(self,M,num_cluster,epochs):
+        """
+        Plot of clusters with their corresponding
+        cluster center
+        
+        PARAMETERS
+        =============
+        M: ndarray(dtype=int,ndim=2)
+            Dataset Matrix with finite number
+            of points, having their corresponding
+            x and y coordinates.
+
+        num_cluster: int
+            Number of Clusters to be made from
+            the provided Dataset's points.
+
+        epochs: int
+            Number of times, centroids' coordinates
+            will change, to obtain suitable clusters
+            with appropriate number of points.
+
+        centroid_array: list
+            List of randomly initialised centroids,
+            out of Dataset points, which will be
+            going to update with every epoch, in
+            order to obtain suitable clusters.
+
+        interm: ndarray(dtype=int,ndim=2)
+            Intermediate Matrix, consisting of
+            clusterwise sum of each coordinate,
+            with number of points in each cluster.
+
+        new_array: list
+            Updated list of new centroids, due to
+            changes in cluster points, with each
+            epoch.
+                cluster_array: list
+            List of Resultant Clusters, made after
+            updating centroids with each epoch.
+            It consist of Centroid and its
+            corresponding nearby points of each
+            Cluster.
+
+        cluster: list
+            List of Current cluster to be shown
+            on screen, with its corresponding
+            centroid and nearby points.
+
+        RETURNS
+        =======
+
+        Plot of clusters formed.
+        """
+        k_means=KMeansClustering()
+        new_array,cluster_array=k_means.work(M,num_cluster,epochs,config=True)
+        y=[]
+        for j in range(M.shape[0]):
+          for cluster in cluster_array:
+             for i in range(1,len(cluster)):
+                if (cluster[i]-M[j]).any()==0:
+                     y.append(new_array.index(cluster[0]))
+        centroid=[]
+        for cluster in cluster_array:
+            centroid.append(cluster[0])
+        centroid=np.array(centroid)
+        name=[]
+        for i in range(num_cluster):
+            em=''
+            em+='cluster'+str(i)
+            name.append(em)
+        
+        scatter=plt.scatter(M[:,0],M[:,1],c=y,s=50,cmap='rainbow')
+        plt.scatter(centroid[:,0],centroid[:,1],c='black',marker_size=15,marker='*')
+        plt.legend(handles=scatter.legend_elements()[0], labels=name)
+        plt.show()
 
 # ---------------------- Divisive Hierarchical Clustering ----------------
 
