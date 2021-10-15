@@ -1930,3 +1930,119 @@ class Agglomerative_clustering():
         plt.title("Dendrograms")
         shc.dendrogram(shc.linkage(X, method='single'))
         plt.show()
+
+#-----------------------------DBSCAN------------------------------------#
+
+class DBSCAN():
+    """ 
+    To detect outliers and to categorise
+    datapoints as core points and 
+    boundary points.
+
+    ATTRIBUTES
+    ==========
+
+    NONE
+
+    METHODS
+    =========
+
+    work(X,epsilon,min_samples,config=None)
+        Method that separates datapoints
+        considering epsilon and min_samples.
+
+    plot(X,epsilon,min_samples)
+        Plots the graph of input datapoints
+        showing them as core ,boundary and
+        outlier points.
+    """
+    def work(self, X, epsilon, min_samples, config=None):
+        """
+        Method that separates datapoints
+        considering epsilon and min_samples.
+
+        PARAMETERS
+        ==========
+
+        X:ndarray given as input 
+        which is to be classified into 
+        core,boundary,outlier points
+
+        epsilon:Maximum distance between two
+        points to group them together
+
+        min_samples:Minimum number of sample
+        points ,considered as threshold to 
+        categorise points accordingly.
+
+        config:Decides which array is to be
+        returned.If true all the 3 categories
+        will be returned else only outlier 
+        points
+
+        RETURN
+        =======
+        Outlier points' array ,if config is False
+        Core_points,Boundary_points and outliers
+        if config is True.
+
+        """
+
+        dict = {}
+        for i in range(X.shape[0]):
+         l1 = []
+         for j in range(X.shape[0]):
+            dist = 0
+            dist += np.sqrt(np.sum(np.square(X[i]-X[j])))
+            if (dist <= epsilon):
+                l1.append(j)
+         dict[i] = l1
+        core_points = []
+        boundary_points = []
+        outliers = []
+        for key,values in dict.items():
+          if (len(dict[key]) > min_samples or len(dict[key]) == min_samples):
+            core_points.append(key)
+          if len(dict[key]) == 1:
+            outliers.append(key)
+          if (len(dict[key]) < min_samples and len(dict[key]) > 1):
+            boundary_points.append(key)
+        core_pts = np.array([X[i] for i in core_points])
+        bound_pts = np.array([X[j] for j in boundary_points])
+        outlier = np.array([X[k] for k in outliers])
+        if config == True :
+          return core_pts, bound_pts, outlier
+        return outlier
+
+    def plot(self, X, epsilon, min_samples) :
+        """
+        Plots the graph of input datapoints
+        showing them as core ,boundary and
+        outlier points.
+
+        PARAMETERS
+        ==========
+        
+        X:ndarray given as input 
+        which is to be classified into 
+        core,boundary,outlier points
+
+        epsilon:Maximum distance between two
+        points to group them together
+
+        min_samples:Minimum number of sample
+        points ,considered as threshold to 
+        categorise points accordingly.
+
+        RETURN
+        ========
+        Plot of 3 different categories of points.
+        """
+        
+        dbscan = DBSCAN()
+        cp, bp , out = dbscan.work(X,epsilon,min_samples,config=True)
+        plt.scatter(cp[:,0], cp[:,1] , c='blue')
+        plt.scatter(bp[:,0], bp[:,1] , c='green')
+        plt.scatter(out[:,0], out[:,0] , c='yellow')
+        plt.legend(['core points' , 'boundary points' , 'outlier'], loc='lower right')
+        plt.show()
