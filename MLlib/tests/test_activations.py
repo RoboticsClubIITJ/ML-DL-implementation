@@ -127,3 +127,6 @@ def test_Swish(alpha):
         Swish.derivative(X)
     ) is not True:
         raise AssertionError
+
+
+# This is a Demonstration Code
