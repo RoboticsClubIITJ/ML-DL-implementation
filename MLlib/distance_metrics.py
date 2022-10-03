@@ -36,7 +36,7 @@ class Distance_metrics:
     def Manhattan_Distance(X1,X2):
         """"
         Returns the list of manhattan distance
-        between two corresponding points of 
+        between two corresponding points of
         two arrays
 
         PARAMETERS
@@ -158,3 +158,27 @@ class Distance_metrics:
             distance.append((single)**(1/p))
         return(distance)
 
+    def Hamming_Distance(X1,X2):
+        """
+        Returns the Hamming distance between
+        two binary arrays
+
+        PARAMETERS
+        ==========
+        X1:ndarray(dtype=int, axis=1)
+        input array with more than 1 dimension
+
+        X2:ndarray(dtype=int, axis=1)
+        input array with more than 1 dimension
+
+        RETURNS
+        =======
+        distance:float
+        Returns the Hamming distance between
+        two binary arrays
+        """
+        s = 0
+        for e1,e2 in zip(X1,X2):
+            s += abs(e1-e2)
+        distance = s/len(X1)
+        return distance

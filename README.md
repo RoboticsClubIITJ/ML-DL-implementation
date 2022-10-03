@@ -11,7 +11,7 @@ Machine Learning and Deep Learning library in python using numpy and matplotlib.
 
 This repository gives beginners and newcomers in
 the field of AI and ML a chance to understand the
-inner workings of popular learning algorithms by presenting them with a simple to analyze the implementation of ML and DL algorithms in pure python using only numpy as a backend for linear algebraic computations for the sake of efficiency.
+inner workings of popular learning algorithms by presenting them with a simple way to analyze the implementation of ML and DL algorithms in pure python using only numpy as a backend for linear algebraic computations.
 
 The goal of this repository is not to create the most efficient implementation but the most transparent one, so that anyone with little knowledge of the field can contribute and learn.
 
@@ -35,7 +35,7 @@ Testing
 
 For testing your patch locally follow the steps given below,
 
-1. Install [pytest-cov](https://pypi.org/project/pytest-cov/). Skip this step if you are already having the package.
+1. Install [pytest-cov](https://pypi.org/project/pytest-cov/). Skip this step if you already have the package.
 2. Run, `python3 -m pytest --doctest-modules --cov=./ --cov-report=html`. Look for, `htmlcov/index.html` and open it in your browser, which will show the coverage report. Try to ensure that the coverage is not decreasing by more than 1% for your patch.
 
 
