@@ -425,3 +425,25 @@ class MeanAbsolutePrecentageError():
         y_pred = np.dot(X, W).T
         L = np.sum(np.true_divide((np.abs(Y - y_pred) * 100), Y)) / X.shape[0]
         return L
+
+class BinaryCrossentropy():
+    """
+    Binary Crossentropy loss Function
+    """
+
+    @staticmethod
+    def loss(X, W, Y):
+        """
+            Calculate Binary Crossentropy Loss
+
+            PARAMETERS
+            ==========
+            X 
+
+            RETURNS
+            =======
+
+        """
+        y_pred = np.dot(X, W).T
+        L = -1 * (Y[0] * log(y_pred[0]) + Y[1] * log(y_pred[1]))
+        return L
