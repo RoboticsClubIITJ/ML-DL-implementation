@@ -385,7 +385,7 @@ class Distance_metrics:
         distance=[]
         for i in range(len(X1)):
             result=self.__boolean_opr(X1[i],X2[i])
-            distance.append(result[2]+result[3]+result[0]-result[1])/(result[2]+result[3]+result[0])
+            distance.append((result[2]+result[3]+result[0]-result[1])/(result[2]+result[3]+result[0]))
         return(distance)
     
     def Rogers_Tanimoto_Distance(self,X1,X2):
