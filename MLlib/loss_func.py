@@ -438,7 +438,14 @@ class BinaryCrossentropy():
 
             PARAMETERS
             ==========
-            X 
+            X: ndarray(dtype = float, ndim = 1)
+                input vector
+
+            Y: ndarray(dtype = float)
+                output vector
+
+            W: ndarray(dtype = float)
+                Weights
 
             RETURNS
             =======
@@ -447,3 +454,25 @@ class BinaryCrossentropy():
         y_pred = np.dot(X, W).T
         L = -1 * (Y[0] * log(y_pred[0]) + Y[1] * log(y_pred[1]))
         return L
+
+    @staticmethod
+    def derivative(X, W, Y):
+        """
+            Calculate derivative for Binary crossentropy loss function.
+
+            PARAMETERS
+            ==========
+
+            X:ndarray(dtype=float,ndim=1)
+                input vector
+            Y:ndarray(dtype=float)
+                output vector
+            W:ndarray(dtype=float)
+                Weights
+
+            RETURNS
+            =======
+
+            array of derivates
+        """
+        return np.dot((np.dot(X, W).T - Y), X)
