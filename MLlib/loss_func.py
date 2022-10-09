@@ -475,4 +475,5 @@ class BinaryCrossentropy():
 
             array of derivates
         """
-        return np.dot((np.dot(X, W).T - Y), X)
+        return np.dot((np.dot(X, W).T - Y),X)
+
