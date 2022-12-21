@@ -1,3 +1,4 @@
+import numpy as np
 from MLlib.activations import Sigmoid, Softmax
 
 def test_sigmoid():
@@ -6,6 +7,6 @@ def test_sigmoid():
     assert Sigmoid.derivative(X) == 0.25
 
 def test_Softmax():
-    X = 0
-    assert Softmax.activation(X) == 1
-    assert Softmax.derivative(X) == 1.5    
+    X = np.array([0])
+    assert Softmax.activation(X) ==  np.array([1,2,3,4]).all()
+    assert Softmax.derivative(X) == np.array([0,1,2,3,4,5]).all()
