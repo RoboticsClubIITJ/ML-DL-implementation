@@ -1,0 +1,15 @@
+coverage:
+  status:
+    project:
+      default:
+        target: 0%
+        threshold: 100%
+
+    patch: false
+
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: default
+  require_changes: false
+  require_base: no
+  require_head: yes
