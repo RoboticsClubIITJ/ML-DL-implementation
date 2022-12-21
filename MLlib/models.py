@@ -1114,11 +1114,11 @@ class KNN():
         else:
             prediction = sum(ouput) / len(ouput)
         return prediction
-    
-    def plot(self,train,test_row,k_start,k_end):
+
+    def plot(self, train, test_row, k_start, k_end):
         """"
-        KNN method to plot the graph of error of 
-        each k value vs k value for both 
+        KNN method to plot the graph of error of
+        each k value vs k value for both
         classifier and regressor.
 
         PARAMETERS
@@ -1128,7 +1128,7 @@ class KNN():
             Array representation of of Collection
             of Points, with their corresponding
             x1,x2 and y features.
-        
+
         test_row: ndarray(dtype=int,ndim=1,axis=1)
             Array representation of test point,
             with its corresponding x1,x2 and y
@@ -1138,7 +1138,7 @@ class KNN():
            Value of k to start the graph from.
 
         k_evenend:int
-           Value of k to end at such that k_evenend is 
+           Value of k to end at such that k_evenend is
            less than length of train array.
 
         RETURNS
@@ -1147,25 +1147,24 @@ class KNN():
         A plot of error rate vs values of k.
 
         """
-        if k_end<len(train):
-          error_rate=[]
-          model=KNN()
-          for k in range(k_start,k_end,2):
-             predict_list=[]
-             for i in range(len(train)):
-                predict_list.append(model.predict(train,test_row[i],num_neighbours=k,classify=True))
-             f=np.array(predict_list)
-             error_rate.append(np.mean(f!=train[:,2]))
-          k_values=[j for j in range(k_start,k_end,2)]
-          print(error_rate)           
-          plt.plot(k_values,error_rate)
-          plt.title('Error Rate vs K')
-          plt.xlabel('values of K')
-          plt.ylabel('Error rate')
-          plt.show()
+        if k_end < len(train):
+            error_rate = []
+            model = KNN()
+            for k in range(k_start, k_end, 2):
+                predict_list = []
+                for i in range(len(train)):
+                    predict_list.append(model.predict(train, test_row[i], num_neighbours=k, classify=True))
+                f = np.array(predict_list)
+                error_rate.append(np.mean(f != train[:, 2]))
+            k_values = [j for j in range(k_start, k_end, 2)]
+            print(error_rate)
+            plt.plot(k_values, error_rate)
+            plt.title('Error Rate vs K')
+            plt.xlabel('values of K')
+            plt.ylabel('Error rate')
+            plt.show()
         else:
             print('Please choose k_end<len(train)')
-
 
 
 class Naive_Bayes():
@@ -1215,7 +1214,7 @@ class Naive_Bayes():
         for j in range(len(Y)):
             total = 0
             for i in range(len(X)):
-                if(likelihood[i][j] == 0):
+                if likelihood[i][j] == 0:
                     continue
                 total += math.log(likelihood[i][j])
                 y_sum = (y_class == Y[j]).sum()
@@ -1277,7 +1276,7 @@ class Gaussian_Naive_Bayes():
             for i in range(len(v1)):
                 pro *= p_y_given_x(data[i], v1[i], v2[i])
             pxy = pro * pre_prob
-            if(pxy > argmax):
+            if pxy > argmax:
                 prediction = k1
         return prediction
 
@@ -1348,7 +1347,7 @@ class KMeansClustering():
         number of epoch steps.
     """
 
-    def work(self, M, num_cluster, epochs,config=None):
+    def work(self, M, num_cluster, epochs, config=None):
         """
         Show the arrangement of clusters after
         certain  number of epochs, provided with
@@ -1415,14 +1414,14 @@ class KMeansClustering():
             print("==============================\n")
             print(cluster)
             print("\n==============================\n")
-        if config==True:
-            return new_array,cluster_array
+        if config:
+            return new_array, cluster_array
 
-    def plot(self,M,num_cluster,epochs):
+    def plot(self, M, num_cluster, epochs):
         """
         Plot of clusters with their corresponding
         cluster center
-        
+
         PARAMETERS
         =============
         M: ndarray(dtype=int,ndim=2)
@@ -1471,26 +1470,26 @@ class KMeansClustering():
 
         Plot of clusters formed.
         """
-        k_means=KMeansClustering()
-        new_array,cluster_array=k_means.work(M,num_cluster,epochs,config=True)
-        y=[]
+        k_means = KMeansClustering()
+        new_array, cluster_array = k_means.work(M, num_cluster, epochs, config=True)
+        y = []
         for j in range(M.shape[0]):
-          for cluster in cluster_array:
-             for i in range(1,len(cluster)):
-                if (cluster[i]-M[j]).any()==0:
-                     y.append(new_array.index(cluster[0]))
-        centroid=[]
+            for cluster in cluster_array:
+                for i in range(1, len(cluster)):
+                    if (cluster[i] - M[j]).any() == 0:
+                        y.append(new_array.index(cluster[0]))
+        centroid = []
         for cluster in cluster_array:
             centroid.append(cluster[0])
-        centroid=np.array(centroid)
-        name=[]
+        centroid = np.array(centroid)
+        name = []
         for i in range(num_cluster):
-            em=''
-            em+='cluster'+str(i)
+            em = ''
+            em += 'cluster' + str(i)
             name.append(em)
-        
-        scatter=plt.scatter(M[:,0],M[:,1],c=y,s=50,cmap='rainbow')
-        plt.scatter(centroid[:,0],centroid[:,1],c='black',marker_size=15,marker='*')
+
+        scatter = plt.scatter(M[:, 0], M[:, 1], c=y, s=50, cmap='rainbow')
+        plt.scatter(centroid[:, 0], centroid[:, 1], c='black', marker_size=15, marker='*')
         plt.legend(handles=scatter.legend_elements()[0], labels=name)
         plt.show()
 
@@ -1501,9 +1500,9 @@ class DivisiveClustering():
     def work(self, M, n_clusters, n_iterations=7,
              enable_for_larger_clusters=False):
         if n_clusters > len(M):
-            raise(ValueError(
+            raise ValueError(
                 f'Number of clusters {n_clusters} inputted is greater than \
-                    dataset number of examples {len(M)}.'))
+                    dataset number of examples {len(M)}.')
         KMC = KMeans()
         clusters, centroids = KMC.runKMeans(M, 2, n_iterations)
         # global list of clusters and global np.array of centroids
@@ -1549,9 +1548,10 @@ class DivisiveClustering():
                     parent = global_clusters[rem_index]
             i += 1
             # delete all residues of the cluster to be splitted
-            del([rem_index])
-            del(cluster_sse_list[rem_index])
-            del(cluster_len_list[rem_index])
+            del cluster_sse_list[rem_index]
+            del cluster_len_list[rem_index]
+            del [rem_index]
+
             global_centroids = np.delete(global_centroids, rem_index, 0)
             # run kmeans to split the cluster
             clusters, centroids = KMC.runKMeans(parent, 2, 7)
@@ -1931,12 +1931,11 @@ class Agglomerative_clustering():
         shc.dendrogram(shc.linkage(X, method='single'))
         plt.show()
 
-#-----------------------------DBSCAN------------------------------------#
 
 class DBSCAN():
-    """ 
+    """
     To detect outliers and to categorise
-    datapoints as core points and 
+    datapoints as core points and
     boundary points.
 
     ATTRIBUTES
@@ -1964,20 +1963,20 @@ class DBSCAN():
         PARAMETERS
         ==========
 
-        X:ndarray given as input 
-        which is to be classified into 
+        X:ndarray given as input
+        which is to be classified into
         core,boundary,outlier points
 
         epsilon:Maximum distance between two
         points to group them together
 
         min_samples:Minimum number of sample
-        points ,considered as threshold to 
+        points ,considered as threshold to
         categorise points accordingly.
 
         config:Decides which array is to be
         returned.If true all the 3 categories
-        will be returned else only outlier 
+        will be returned else only outlier
         points
 
         RETURN
@@ -1990,31 +1989,31 @@ class DBSCAN():
 
         dict = {}
         for i in range(X.shape[0]):
-         l1 = []
-         for j in range(X.shape[0]):
-            dist = 0
-            dist += np.sqrt(np.sum(np.square(X[i]-X[j])))
-            if (dist <= epsilon):
-                l1.append(j)
-         dict[i] = l1
+            l1 = []
+            for j in range(X.shape[0]):
+                dist = 0
+                dist += np.sqrt(np.sum(np.square(X[i]-X[j])))
+                if (dist <= epsilon):
+                    l1.append(j)
+            dict[i] = l1
         core_points = []
         boundary_points = []
         outliers = []
-        for key,values in dict.items():
-          if (len(dict[key]) > min_samples or len(dict[key]) == min_samples):
-            core_points.append(key)
-          if len(dict[key]) == 1:
-            outliers.append(key)
-          if (len(dict[key]) < min_samples and len(dict[key]) > 1):
-            boundary_points.append(key)
+        for key, values in dict.items():
+            if (len(dict[key]) > min_samples or len(dict[key]) == min_samples):
+                core_points.append(key)
+            if len(dict[key]) == 1:
+                outliers.append(key)
+            if (len(dict[key]) < min_samples and len(dict[key]) > 1):
+                boundary_points.append(key)
         core_pts = np.array([X[i] for i in core_points])
         bound_pts = np.array([X[j] for j in boundary_points])
         outlier = np.array([X[k] for k in outliers])
-        if config == True :
-          return core_pts, bound_pts, outlier
+        if config:
+            return core_pts, bound_pts, outlier
         return outlier
 
-    def plot(self, X, epsilon, min_samples) :
+    def plot(self, X, epsilon, min_samples):
         """
         Plots the graph of input datapoints
         showing them as core ,boundary and
@@ -2022,27 +2021,27 @@ class DBSCAN():
 
         PARAMETERS
         ==========
-        
-        X:ndarray given as input 
-        which is to be classified into 
+
+        X:ndarray given as input
+        which is to be classified into
         core,boundary,outlier points
 
         epsilon:Maximum distance between two
         points to group them together
 
         min_samples:Minimum number of sample
-        points ,considered as threshold to 
+        points ,considered as threshold to
         categorise points accordingly.
 
         RETURN
         ========
         Plot of 3 different categories of points.
         """
-        
+
         dbscan = DBSCAN()
-        cp, bp , out = dbscan.work(X,epsilon,min_samples,config=True)
-        plt.scatter(cp[:,0], cp[:,1] , c='blue')
-        plt.scatter(bp[:,0], bp[:,1] , c='green')
-        plt.scatter(out[:,0], out[:,0] , c='yellow')
-        plt.legend(['core points' , 'boundary points' , 'outlier'], loc='lower right')
+        cp, bp, out = dbscan.work(X, epsilon, min_samples, config=True)
+        plt.scatter(cp[:, 0], cp[:, 1], c='blue')
+        plt.scatter(bp[:, 0], bp[:, 1], c='green')
+        plt.scatter(out[:, 0], out[:, 0], c='yellow')
+        plt.legend(['core points', 'boundary points', 'outlier'], loc='lower right')
         plt.show()

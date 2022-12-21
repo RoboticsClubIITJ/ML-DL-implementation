@@ -1,5 +1,6 @@
 from MLlib.activations import Sigmoid, TanH
 
+
 def test_sigmoid():
     X = 0
     assert Sigmoid.activation(X) == 0.5
