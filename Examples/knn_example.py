@@ -8,4 +8,4 @@ model = KNN()
 prediction = model.predict(X, X[1], num_neighbours=5, classify=False)
 
 print(X[1][-1], prediction)
-model.plot(X,X,5,10)
+model.plot(X, X, 5, 10)
