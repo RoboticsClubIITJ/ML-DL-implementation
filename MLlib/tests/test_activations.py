@@ -16,5 +16,5 @@ def test_tanh():
 
 def test_Softmax():
     X = np.array([0])
-    assert Softmax.activation(X) ==  np.array([1, 2, 3, 4]).all()
+    assert Softmax.activation(X) == np.array([1, 2, 3, 4]).all()
     assert Softmax.derivative(X) == np.array([0, 1, 2, 3, 4, 5]).all()
