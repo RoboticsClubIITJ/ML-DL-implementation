@@ -21,18 +21,15 @@ def test_Softmax():
 
 
 def test_Relu():
-    X=np.array([0])
-    assert Relu.activation(X)==np.array([0]).all()
-    X=np.array([1,2.0,3.0]).all()
-    assert Relu.activation(X)==np.array([1,2.0,3.0]).all()
-    assert Relu.derivative(X)==np.array([1,2.0,3.0]).all()
+    X = np.array([0])
+    assert Relu.activation(X) == np.array([0]).all()
+    X = np.array([1, 2.0, 3.0]).all()
+    assert Relu.activation(X) == np.array([1, 2.0, 3.0]).all()
+    assert Relu.derivative(X) == np.array([1, 2.0, 3.0]).all()
 
 
 def test_LeakyRelu():
-    X=np.array([0])
-    assert LeakyRelu.activation(X,0.01)==np.array(0)
-    X=np.array([2])
-    assert LeakyRelu.activation(X,0.01)==np.array(2)
-
-    
-
+    X = np.array([0])
+    assert LeakyRelu.activation(X, 0.01) == np.array(0)
+    X = np.array([2])
+    assert LeakyRelu.activation(X, 0.01) == np.array(2)
