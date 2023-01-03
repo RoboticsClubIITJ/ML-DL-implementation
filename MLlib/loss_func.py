@@ -458,3 +458,29 @@ class PoisonLoss():
 
         y_pred = np.dot(X, W).T
         return np.mean(y_pred - Y * np.log(y_pred), axis=-1)
+
+    @staticmethod
+    def derivative(X, Y, W):
+        """
+        Calculate derivative for Poisson Loss method.
+
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=float)
+            Input vector
+        Y: ndarray(dtype=float)
+            Output vector
+        W: ndarray(dtype=float)
+            Weights
+
+        RETURNS
+        =======
+
+        ndarray
+            array of derivatives
+        """
+
+        M = X.shape[0]
+        y_pred = np.dot(X, W).T
+        return np.dot(1 - Y / y_pred, X) / M
