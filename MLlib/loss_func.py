@@ -425,3 +425,62 @@ class MeanAbsolutePrecentageError():
         y_pred = np.dot(X, W).T
         L = np.sum(np.true_divide((np.abs(Y - y_pred) * 100), Y)) / X.shape[0]
         return L
+
+
+class PoisonLoss():
+    """
+    Calculate Poisson Loss.
+    """
+
+    @staticmethod
+    def loss(X, Y, W):
+        """
+        Calculate Poisson Loss.
+
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=float)
+            Input vector
+        Y: ndarray(dtype=float)
+            Output vector
+        W: ndarray(dtype=float)
+            Weights
+
+        RETURNS
+        =======
+
+        float or ndarray
+            array of Poisson losses or
+            float value of Poisson loss
+            (depending on the parameters)
+        """
+
+        y_pred = np.dot(X, W).T
+        return np.mean(y_pred - Y * np.log(y_pred), axis=-1)
+
+    @staticmethod
+    def derivative(X, Y, W):
+        """
+        Calculate derivative for Poisson Loss method.
+
+        PARAMETERS
+        ==========
+
+        X: ndarray(dtype=float)
+            Input vector
+        Y: ndarray(dtype=float)
+            Output vector
+        W: ndarray(dtype=float)
+            Weights
+
+        RETURNS
+        =======
+
+        ndarray
+            array of derivatives
+        """
+
+        M = X.shape[0]
+        y_pred = np.dot(X, W).T
+        return np.dot(1 - Y / y_pred, X) / M
