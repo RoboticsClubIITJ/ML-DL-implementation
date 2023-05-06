@@ -425,3 +425,59 @@ class MeanAbsolutePrecentageError():
         y_pred = np.dot(X, W).T
         L = np.sum(np.true_divide((np.abs(Y - y_pred) * 100), Y)) / X.shape[0]
         return L
+        
+        
+        
+        
+class RootMeanSquaredError():
+    """
+   Calculate Root Mean Squared Error.
+    """
+
+    @staticmethod
+    def loss(X, Y, W):
+        """
+        Calculate loss by Root Mean Squared Error method.
+
+        PARAMETERS
+        ==========
+
+        X:ndarray(dtype=float,ndim=1)
+          input vector
+        Y:ndarray(dtype=float)
+          output vector
+        W:ndarray(dtype=float)
+          Weights
+
+         RETURNS
+         =======
+
+         array of Root Mean Squared losses
+        """
+        M = X.shape[0]
+        return np.sqrt(np.sum(np.square(np.dot(X, W) - Y)) / M)
+
+    @staticmethod
+    def derivative(X, Y, W):
+        """
+        Calculate derivative for Root Mean Squared error method.
+
+        PARAMETERS
+        ==========
+
+        X:ndarray(dtype=float,ndim=1)
+          input vector
+        Y:ndarray(dtype=float)
+          output vector
+        W:ndarray(dtype=float)
+          Weights
+
+         RETURNS
+         =======
+
+         array of derivates
+        """
+        M = X.shape[0]
+        return np.dot(X.T, np.dot(X, W) - Y) / M
+
+
